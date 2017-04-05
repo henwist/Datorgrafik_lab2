@@ -44,13 +44,21 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Components\CameraComponent.cs" />
     <Compile Include="Components\Component.cs" />
+    <Compile Include="Components\HeightmapComponent.cs" />
+    <Compile Include="Components\ModelComponent.cs" />
+    <Compile Include="Components\TransformComponent.cs" />
     <Compile Include="Managers\ComponentManager.cs" />
     <Compile Include="Managers\SceneManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Systems\CameraSystem.cs" />
     <Compile Include="Systems\DrawSystem.cs" />
+    <Compile Include="Systems\HeightmapSystem.cs" />
     <Compile Include="Systems\IUpdatable.cs" />
+    <Compile Include="Systems\ModelSystem.cs" />
+    <Compile Include="Systems\TransformSystem.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
