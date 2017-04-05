@@ -27,3 +27,14 @@
 *.exe
 *.out
 *.app
+
+#bin objects
+bin/
+
+#obj objects
+obj/
+
+#.suo objects
+*.suo
+
+Datorgrafik_lab1/.vs/Datorgrafik_lab1/v14/.suo
