@@ -79,5 +79,57 @@ namespace Datorgrafik_lab1
 
             base.Draw(gameTime);
         }
+
+
+        private void CreateControllerBindings()
+        {
+            //controller.AddBinding(Keys.A, new Vector2(-10, 0));
+            //controller.AddBinding(Keys.D, new Vector2(10, 0));
+            //controller.AddBinding(Keys.W, new Vector2(0, -10));
+            //controller.AddBinding(Keys.S, new Vector2(0, 10));
+        }
+
+
+
+        private void CreatePlayer()
+        {
+            //Transform trans = new Transform();
+
+            //Collide coll = new Collide();
+
+            //MySprite sprite = new MySprite();
+            //sprite.Texture = Content.Load<Texture2D>("runningcat");
+            //sprite.Width = 512;
+            //sprite.Height = 256;
+
+            //Score score = new Score();
+            //score.Font = Content.Load<SpriteFont>("font");
+
+            //Sound sound = new Sound();
+            //sound.sound = Content.Load<SoundEffect>("laserfire");
+            //sound.soundInstance = sound.sound.CreateInstance();
+
+            //ComponentManager.StoreComponent(player1.PlayerId, trans);
+            //ComponentManager.StoreComponent(player1.PlayerId, coll);
+            //ComponentManager.StoreComponent(player1.PlayerId, sprite);
+            //ComponentManager.StoreComponent(player1.PlayerId, score);
+            //ComponentManager.StoreComponent(player1.PlayerId, sound);
+
+        }
+
+
+        private void MovePlayer()
+        {
+            //ComponentManager.GetComponent<Transform>(player1.PlayerId).XVel = controller.GetNextMove().X;
+            //ComponentManager.GetComponent<Transform>(player1.PlayerId).YVel = controller.GetNextMove().Y;
+
+        }
+
+
+        private enum Constants : int
+        {
+            Pristine = 0,
+            GameLength = 6000
+        }
     }
 }
