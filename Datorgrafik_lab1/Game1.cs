@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using GameEngine.Managers;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 
@@ -37,6 +38,7 @@ namespace Datorgrafik_lab1
 
         Texture2D cross;
 
+        private SceneManager sceneManager;
 
         public Game1()
         {
@@ -51,6 +53,8 @@ namespace Datorgrafik_lab1
             graphics.IsFullScreen = false;
             graphics.ApplyChanges();
             Window.Title = "Riemer's XNA Tutorials -- 3D Series 1";
+
+            sceneManager = new SceneManager(graphics.GraphicsDevice);
 
             base.Initialize();
         }
