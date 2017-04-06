@@ -30,14 +30,15 @@
 
 #bin objects
 bin/
-bin/*
+**bin/
 
 #obj objects
 obj/
-obj/*
+**/obj/
 
 #.suo objects
 *.suo
 .suo
+**/.suo
 
 Datorgrafik_lab1/.vs/Datorgrafik_lab1/v14/.suo
