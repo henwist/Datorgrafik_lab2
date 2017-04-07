@@ -18,6 +18,7 @@ namespace GameEngine.Components
         public float scaleFactor { get; set; }
 
         public int vertexCount   { get; private set; }
+        public int indexCount    { get; private set; }
 
         public VertexPositionNormalTexture[] vertices { get; set; }
 
@@ -29,19 +30,23 @@ namespace GameEngine.Components
 
         public Bitmap bmp { get; private set; }
 
-        public HeightmapComponent(GraphicsDevice gd, int terrainWidth, int terrainHeight, string pictureFileName)
+        public HeightmapComponent(GraphicsDevice gd, int terrainWidth, int terrainHeight, float scaleFactor, string pictureFileName)
         {
             this.terrainHeight = terrainHeight;
             this.terrainWidth = terrainWidth;
 
+            this.scaleFactor = scaleFactor;
+
             vertexCount = terrainWidth * terrainHeight;
+            indexCount = (terrainWidth - 1) * (terrainHeight - 1) * 6;
 
             vertices = new VertexPositionNormalTexture[vertexCount];
-            indices = new int[(terrainWidth - 1) * (terrainHeight - 1) * 6];
+            indices = new int[indexCount];
 
             heightData = new float[terrainWidth, terrainHeight];
 
             vertexBuffer = new VertexBuffer(gd, typeof(VertexPositionNormalTexture), vertexCount, BufferUsage.None);
+            indexBuffer = new IndexBuffer(gd, typeof(int), indexCount, BufferUsage.None);
 
             bmp = new Bitmap(pictureFileName);
 

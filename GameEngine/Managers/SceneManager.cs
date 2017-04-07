@@ -15,7 +15,7 @@ namespace GameEngine.Managers
 
         private List<HeightmapObject> heightmapObjects;
 
-        private HeightmapSystem hmSystem;
+        private HeightmapSystem heightmapSystem;
 
         public SceneManager(GraphicsDevice gd)//, SpriteBatch spriteBatch, Rectangle window)
         {
@@ -25,7 +25,7 @@ namespace GameEngine.Managers
             heightmapObjects = new List<HeightmapObject>();
             createHeightmapObjects();
 
-            //hmSystem = new HeightmapSystem(gd, heightmapObjects);
+            heightmapSystem = new HeightmapSystem(gd, heightmapObjects);
 
             //LoadComponents();
             //draw_sys = new DrawSystem(spriteBatch);
@@ -38,6 +38,7 @@ namespace GameEngine.Managers
 
         public void Draw(GameTime gameTime)
         {
+            heightmapSystem.Draw();
             //draw_sys.Update(gameTime);
         }
 
@@ -50,10 +51,13 @@ namespace GameEngine.Managers
         private void createHeightmapObjects()
         {
             HeightmapObject hmobj = new HeightmapObject();
-            hmobj.scaleFactor = 1.0f;
-            hmobj.terrainHeight = 100;
-            hmobj.terrainWidth = 100;
-            hmobj.terrainMapName = "US_Canyon.png";
+            hmobj.scaleFactor = 10.0f;
+            hmobj.terrainHeight = 3;
+            hmobj.terrainWidth = 4;
+            hmobj.terrainMapName = "..\\..\\..\\..\\Content\\Textures\\US_Canyon.png";
+
+            //System.Console.Out.WriteLine("current folder: " + System.Environment.CurrentDirectory);
+            
 
             heightmapObjects.Add(hmobj);
         }

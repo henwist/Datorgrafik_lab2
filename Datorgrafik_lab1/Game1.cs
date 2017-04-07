@@ -247,8 +247,9 @@ namespace Datorgrafik_lab1
                                     * Matrix.CreateRotationZ(radz)
                                     * Matrix.CreateScale(scale);
 
-                device.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, vertices, 0, vertices.Length, indices, 0, indices.Length / 3, VertexPositionNormalTexture.VertexDeclaration);
+                //device.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, vertices, 0, vertices.Length, indices, 0, indices.Length / 3, VertexPositionNormalTexture.VertexDeclaration);
 
+                sceneManager.Draw(gameTime);
 
             }
 
