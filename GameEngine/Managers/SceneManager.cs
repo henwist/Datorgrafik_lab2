@@ -2,6 +2,8 @@
 using GameEngine.Components;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.Collections.Generic;
+using GameEngine.Objects;
 
 namespace GameEngine.Managers
 {
@@ -10,20 +12,22 @@ namespace GameEngine.Managers
 
         //private PhysicsSystem phys_sys;
         private GraphicsDevice gd;
-        //private DrawSystem draw_sys;
 
-        private int terrainHeight;
-        private int terrainWidth;
-        private string terrainMapName = "bild.png";
+        private List<HeightmapObject> heightmapObjects;
+
+        private HeightmapSystem hmSystem;
 
         public SceneManager(GraphicsDevice gd)//, SpriteBatch spriteBatch, Rectangle window)
         {
             //phys_sys = new PhysicsSystem(window);
             this.gd = gd;
-            terrainHeight = 100;
-            terrainWidth = 100;
 
-            LoadComponents();
+            heightmapObjects = new List<HeightmapObject>();
+            createHeightmapObjects();
+
+            //hmSystem = new HeightmapSystem(gd, heightmapObjects);
+
+            //LoadComponents();
             //draw_sys = new DrawSystem(spriteBatch);
         }
 
@@ -40,8 +44,18 @@ namespace GameEngine.Managers
         private void LoadComponents()
         {
             //Terrain component
-            ComponentManager.StoreComponent(ComponentManager.GetNewId(),
-                                            new HeightmapComponent(gd, terrainWidth, terrainHeight, terrainMapName));
+
+        }
+
+        private void createHeightmapObjects()
+        {
+            HeightmapObject hmobj = new HeightmapObject();
+            hmobj.scaleFactor = 1.0f;
+            hmobj.terrainHeight = 100;
+            hmobj.terrainWidth = 100;
+            hmobj.terrainMapName = "US_Canyon.png";
+
+            heightmapObjects.Add(hmobj);
         }
 
     }
