@@ -52,12 +52,12 @@ namespace GameEngine.Managers
             return (T)(Object)null;
         }
 
-        public static List<Component> GetComponents<T>()
+        public static List<T> GetComponents<T>()
         {
             Type type = typeof(T);
 
             if (components.ContainsKey(type))
-                return components[type].Values.ToList<Component>();
+                return (List<T>)(object)components[type].Values.ToList<Component>();
 
             return null;
         }

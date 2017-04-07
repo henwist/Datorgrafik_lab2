@@ -1,4 +1,7 @@
-﻿using Microsoft.Xna.Framework;
+﻿using GameEngine.Components;
+using GameEngine.Managers;
+using GameEngine.Objects;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -12,27 +15,49 @@ namespace GameEngine.Systems
     public class HeightmapSystem :IUdatable
     {
 
-        public HeightmapSystem(int terrainWidth, int terrainHeight )
-        {
-            //this.terrainHeight = terrainHeight;
-            //this.terrainWidth = terrainWidth;
+        private List<HeightmapComponent> heightmapComponents;
+        private List<HeightmapObject> hmobjects;
+        private GraphicsDevice gd;
 
-            //vertices = new VertexPositionNormalTexture[terrainWidth * terrainHeight];
+        public HeightmapSystem(GraphicsDevice gd, List<HeightmapObject> hmobjects)
+        {
+            this.gd = gd;
+            this.hmobjects = hmobjects;
+
+            CreateHeightmapComponents();
+
+            
+
+            LoadHeightData();
+            SetUpVertices();
         }
 
-        //private void SetUpVertices()
-        //{
-            
-        //    for (int x = 0; x < terrainWidth; x++)
-        //    {
-        //        for (int y = 0; y < terrainHeight; y++)
-        //        {
-        //            vertices[x + y * terrainWidth].Position = new Vector3(x * 10, heightData[x, y], -y * 10);
-        //            vertices[x + y * terrainWidth].Normal = new Vector3(0, 0, 1); //+Z
-        //            vertices[x + y * terrainWidth].TextureCoordinate = new Vector2(1, 0);
-        //        }
-        //    }
-        //}
+        private void CreateHeightmapComponents()
+        {
+            foreach(HeightmapObject hmobj in hmobjects)
+            {
+                ComponentManager.StoreComponent(ComponentManager.GetNewId(),
+                    new HeightmapComponent(gd, hmobj.terrainWidth, hmobj.terrainHeight, hmobj.terrainMapName));
+            }
+
+            heightmapComponents = ComponentManager.GetComponents<HeightmapComponent>();
+        }
+
+        private void SetUpVertices()
+        {
+            foreach(HeightmapComponent cmp in heightmapComponents)
+            for (int x = 0; x < cmp.terrainWidth; x++)
+            {
+                for (int y = 0; y < cmp.terrainHeight; y++)
+                {
+                    cmp.vertices[x + y * cmp.terrainWidth].Position = new Vector3(x * cmp.scaleFactor, 
+                                                                                  cmp.heightData[x, y], 
+                                                                                  -y * cmp.scaleFactor);
+                    cmp.vertices[x + y * cmp.terrainWidth].Normal = new Vector3(0, 0, 1); //+Z
+                    cmp.vertices[x + y * cmp.terrainWidth].TextureCoordinate = new Vector2(0, 0);
+                }
+            }
+        }
 
         //private void SetUpIndices()
         //{
@@ -58,25 +83,19 @@ namespace GameEngine.Systems
         //    }
         //}
 
-        //private void LoadHeightData()
-        //{
-        //    heightData = new float[terrainWidth, terrainHeight];
-        //    heightData[0, 0] = 0;
-        //    heightData[1, 0] = 0;
-        //    heightData[2, 0] = 0;
-        //    heightData[3, 0] = 0;
-
-        //    heightData[0, 1] = 0.5f;
-        //    heightData[1, 1] = 0;
-        //    heightData[2, 1] = -1.0f;
-        //    heightData[3, 1] = 0.2f;
-
-        //    heightData[0, 2] = 1.0f;
-        //    heightData[1, 2] = 1.2f;
-        //    heightData[2, 2] = 0.8f;
-        //    heightData[3, 2] = 0;
-        //}
+        private void LoadHeightData()
+        {
+            foreach (HeightmapComponent cmp in heightmapComponents)
+                for (int x = 0; x < cmp.terrainWidth; x++)
+                {
+                    for (int y = 0; y < cmp.terrainHeight; y++)
+                    {
+                        System.Drawing.Color color = cmp.bmp.GetPixel(y, x);
+                        cmp.heightData[y, x] = ((color.R + color.G + color.B) / 3);
+                    }
+                }
+           
+        }
     }
 
-    
 }
