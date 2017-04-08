@@ -166,10 +166,10 @@ namespace Datorgrafik_lab1
 
 
             if (Keyboard.GetState().IsKeyDown(Keys.Right))
-                cameraPosition.X += 0.1f;
+                cameraPosition.X += 1.0f;
 
             if (Keyboard.GetState().IsKeyDown(Keys.Left))
-                cameraPosition.X -= 0.1f;
+                cameraPosition.X -= 1.0f;
 
             if (Keyboard.GetState().IsKeyDown(Keys.A))
                 radx += 0.1f;
@@ -181,11 +181,11 @@ namespace Datorgrafik_lab1
                 radz += 0.1f;
 
             if (Keyboard.GetState().IsKeyDown(Keys.W))
-                scale += 0.5f;
+                scale += 0.01f;
 
 
             if (Keyboard.GetState().IsKeyDown(Keys.E))
-                scale -= 0.5f;
+                scale -= 0.01f;
         }
 
 

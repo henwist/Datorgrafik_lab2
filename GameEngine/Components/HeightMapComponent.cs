@@ -30,10 +30,15 @@ namespace GameEngine.Components
 
         public Bitmap bmp { get; private set; }
 
-        public HeightmapComponent(GraphicsDevice gd, int terrainWidth, int terrainHeight, float scaleFactor, string pictureFileName)
+        public HeightmapComponent(GraphicsDevice gd, float scaleFactor, string pictureFileName)
         {
-            this.terrainHeight = terrainHeight;
-            this.terrainWidth = terrainWidth;
+            bmp = new Bitmap(pictureFileName);
+
+            terrainHeight = bmp.Height;
+            terrainWidth = bmp.Width;
+
+            //this.terrainHeight = terrainHeight;
+            //this.terrainWidth = terrainWidth;
 
             this.scaleFactor = scaleFactor;
 
@@ -48,7 +53,7 @@ namespace GameEngine.Components
             vertexBuffer = new VertexBuffer(gd, typeof(VertexPositionNormalTexture), vertexCount, BufferUsage.None);
             indexBuffer = new IndexBuffer(gd, typeof(int), indexCount, BufferUsage.None);
 
-            bmp = new Bitmap(pictureFileName);
+           
 
         }
     }

@@ -64,7 +64,7 @@ namespace GameEngine.Systems
             foreach(HeightmapObject hmobj in hmobjects)
             {
                 ComponentManager.StoreComponent(ComponentManager.GetNewId(),
-                    new HeightmapComponent(gd, hmobj.terrainWidth, hmobj.terrainHeight, hmobj.scaleFactor, hmobj.terrainMapName));
+                    new HeightmapComponent(gd, hmobj.scaleFactor, hmobj.terrainMapName));
             }
 
             heightmapComponents = ComponentManager.GetComponents<HeightmapComponent>();
@@ -73,15 +73,21 @@ namespace GameEngine.Systems
 
         private void SetUpVertices()
         {
+            Random rnd = new Random();
+
             foreach(HeightmapComponent cmp in heightmapComponents)
             for (int x = 0; x < cmp.terrainWidth; x++)
             {
                 for (int y = 0; y < cmp.terrainHeight; y++)
                 {
-                    cmp.vertices[x + y * cmp.terrainWidth].Position = new Vector3(x * cmp.scaleFactor, 
+                    cmp.vertices[x + y * cmp.terrainWidth].Position = new Vector3(x, 
                                                                                   cmp.heightData[x, y], 
-                                                                                  -y * cmp.scaleFactor);
-                    cmp.vertices[x + y * cmp.terrainWidth].Normal = new Vector3(0, 0, 1); //+Z
+                                                                                  -y);
+
+                    cmp.vertices[x + y * cmp.terrainWidth].Position = Vector3.Transform(cmp.vertices[x + y * cmp.terrainWidth].Position, 
+                                                                                            Matrix.CreateScale(cmp.scaleFactor));
+
+                    cmp.vertices[x + y * cmp.terrainWidth].Normal = new Vector3(rnd.Next(0,101)/100f, rnd.Next(0, 101) / 100f, rnd.Next(0, 101) / 100f); //+Z
                     cmp.vertices[x + y * cmp.terrainWidth].TextureCoordinate = new Vector2(0, 0);
                 }
             }

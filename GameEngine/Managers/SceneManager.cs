@@ -51,9 +51,9 @@ namespace GameEngine.Managers
         private void createHeightmapObjects()
         {
             HeightmapObject hmobj = new HeightmapObject();
-            hmobj.scaleFactor = 10.0f;
-            hmobj.terrainHeight = 3;
-            hmobj.terrainWidth = 4;
+            hmobj.scaleFactor = 1.0f;
+            //hmobj.terrainHeight = 300;
+            //hmobj.terrainWidth = 400;
             hmobj.terrainMapName = "..\\..\\..\\..\\Content\\Textures\\US_Canyon.png";
 
             //System.Console.Out.WriteLine("current folder: " + System.Environment.CurrentDirectory);
