@@ -1,6 +1,18 @@
-﻿namespace GameEngine.Components
+﻿using Microsoft.Xna.Framework;
+
+namespace GameEngine.Components
 {
-    public class Component
+    public abstract class Component
     {
+
+        public virtual void Update()
+        {
+            
+        }
+
+        public virtual void Initialize()
+        {
+
+        }
     }
 }

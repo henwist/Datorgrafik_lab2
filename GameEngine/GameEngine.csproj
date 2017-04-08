@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="Components\CameraComponent.cs" />
     <Compile Include="Components\Component.cs" />
+    <Compile Include="Components\DrawableComponent.cs" />
     <Compile Include="Components\HeightmapComponent.cs" />
     <Compile Include="Components\ModelComponent.cs" />
     <Compile Include="Components\TransformComponent.cs" />
