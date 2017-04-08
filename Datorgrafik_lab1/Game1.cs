@@ -18,17 +18,12 @@ namespace Datorgrafik_lab1
         VertexPositionNormalTexture[] vertices;
         Matrix viewMatrix;
         Matrix projectionMatrix;
-        int[] indices;
 
         private float angle = 0f;
-        private int terrainWidth = 4;
-        private int terrainHeight = 3;
-        private float[,] heightData;
 
         private Matrix _view, _projection;
 
         private Vector3 cameraPosition = new Vector3(200.0f, 200.0f, 100.0f);
-
 
         float cameraMovex = 0f;
         float radx = 0f;
@@ -36,7 +31,7 @@ namespace Datorgrafik_lab1
         float radz = 0f;
         float scale = 1f;
 
-        Texture2D cross;
+        Texture2D grass;
 
         private SceneManager sceneManager;
 
@@ -52,7 +47,6 @@ namespace Datorgrafik_lab1
             graphics.PreferredBackBufferHeight = 500;
             graphics.IsFullScreen = false;
             graphics.ApplyChanges();
-            Window.Title = "Riemer's XNA Tutorials -- 3D Series 1";
 
             sceneManager = new SceneManager(graphics.GraphicsDevice);
 
@@ -67,13 +61,7 @@ namespace Datorgrafik_lab1
 
             effect = new BasicEffect(graphics.GraphicsDevice);
 
-            cross = Content.Load<Texture2D>("Textures/grass");
-
-            RasterizerState rstate = new RasterizerState();
-            rstate.CullMode = CullMode.None;
-            rstate.FillMode = FillMode.Solid;
-
-            graphics.GraphicsDevice.RasterizerState = rstate;
+            grass = Content.Load<Texture2D>("Textures/grass");
 
             _view = Matrix.CreateLookAt(cameraPosition, Vector3.Zero, Vector3.Up);
             _projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, 4.0f / 3.0f, 1, 3000);
@@ -83,77 +71,19 @@ namespace Datorgrafik_lab1
             effect.Projection = _projection;
             effect.PreferPerPixelLighting = true;
 
-            LoadHeightData();
-            SetUpVertices();
-            SetUpIndices();
         }
 
         protected override void UnloadContent()
         {
         }
 
-        private void SetUpVertices()
-        {
-            vertices = new VertexPositionNormalTexture[terrainWidth * terrainHeight];
-            for (int x = 0; x < terrainWidth; x++)
-            {
-                for (int y = 0; y < terrainHeight; y++)
-                {
-                    vertices[x + y * terrainWidth].Position = new Vector3(x * 10, heightData[x, y], -y * 10);
-                    vertices[x + y * terrainWidth].Normal = new Vector3(0, 0, 1); //+Z
-                    vertices[x + y * terrainWidth].TextureCoordinate = new Vector2(1, 0);
-                }
-            }
-        }
-
-        private void SetUpIndices()
-        {
-            indices = new int[(terrainWidth - 1) * (terrainHeight - 1) * 6];
-            int counter = 0;
-            for (int y = 0; y < terrainHeight - 1; y++)
-            {
-                for (int x = 0; x < terrainWidth - 1; x++)
-                {
-                    int lowerLeft = x + y * terrainWidth;
-                    int lowerRight = (x + 1) + y * terrainWidth;
-                    int topLeft = x + (y + 1) * terrainWidth;
-                    int topRight = (x + 1) + (y + 1) * terrainWidth;
-
-                    indices[counter++] = topLeft;
-                    indices[counter++] = lowerRight;
-                    indices[counter++] = lowerLeft;
-
-                    indices[counter++] = topLeft;
-                    indices[counter++] = topRight;
-                    indices[counter++] = lowerRight;
-                }
-            }
-        }
-
-        private void LoadHeightData()
-        {
-            heightData = new float[terrainWidth, terrainHeight];
-            heightData[0, 0] = 0;
-            heightData[1, 0] = 0;
-            heightData[2, 0] = 0;
-            heightData[3, 0] = 0;
-
-            heightData[0, 1] = 0.5f;
-            heightData[1, 1] = 0;
-            heightData[2, 1] = -1.0f;
-            heightData[3, 1] = 0.2f;
-
-            heightData[0, 2] = 1.0f;
-            heightData[1, 2] = 1.2f;
-            heightData[2, 2] = 0.8f;
-            heightData[3, 2] = 0;
-        }
 
         private void SetUpCamera()
         {
             viewMatrix = Matrix.CreateLookAt(new Vector3(0, 10, 0), new Vector3(0, 0, 0), new Vector3(0, 0, -1));
             projectionMatrix = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, device.Viewport.AspectRatio, 1.0f, 300.0f);
         }
+
 
         protected override void Update(GameTime gameTime)
         {
@@ -201,14 +131,9 @@ namespace Datorgrafik_lab1
 
             effect.EnableDefaultLighting();
             effect.TextureEnabled = true;
-            effect.Texture = cross;
-
-            /*effect.CurrentTechnique = effect.Techniques["ColoredNoShading"];
-            effect.Parameters["xView"].SetValue(viewMatrix);
-            effect.Parameters["xProjection"].SetValue(projectionMatrix);*/
+            effect.Texture = grass;
 
             Matrix worldMatrix = Matrix.Identity;
-            //ffect.Parameters["xWorld"].SetValue(worldMatrix);
 
             foreach (EffectPass pass in effect.CurrentTechnique.Passes)
             {
@@ -247,7 +172,6 @@ namespace Datorgrafik_lab1
                                     * Matrix.CreateRotationZ(radz)
                                     * Matrix.CreateScale(scale);
 
-                //device.DrawUserIndexedPrimitives(PrimitiveType.TriangleList, vertices, 0, vertices.Length, indices, 0, indices.Length / 3, VertexPositionNormalTexture.VertexDeclaration);
 
                 sceneManager.Draw(gameTime);
 
@@ -264,35 +188,6 @@ namespace Datorgrafik_lab1
             //controller.AddBinding(Keys.W, new Vector2(0, -10));
             //controller.AddBinding(Keys.S, new Vector2(0, 10));
         }
-
-
-
-        private void CreatePlayer()
-        {
-            //Transform trans = new Transform();
-
-            //Collide coll = new Collide();
-
-            //MySprite sprite = new MySprite();
-            //sprite.Texture = Content.Load<Texture2D>("runningcat");
-            //sprite.Width = 512;
-            //sprite.Height = 256;
-
-            //Score score = new Score();
-            //score.Font = Content.Load<SpriteFont>("font");
-
-            //Sound sound = new Sound();
-            //sound.sound = Content.Load<SoundEffect>("laserfire");
-            //sound.soundInstance = sound.sound.CreateInstance();
-
-            //ComponentManager.StoreComponent(player1.PlayerId, trans);
-            //ComponentManager.StoreComponent(player1.PlayerId, coll);
-            //ComponentManager.StoreComponent(player1.PlayerId, sprite);
-            //ComponentManager.StoreComponent(player1.PlayerId, score);
-            //ComponentManager.StoreComponent(player1.PlayerId, sound);
-
-        }
-
 
         private void MovePlayer()
         {
