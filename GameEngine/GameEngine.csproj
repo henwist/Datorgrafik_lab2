@@ -60,6 +60,7 @@
     <Compile Include="Systems\CameraSystem.cs" />
     <Compile Include="Systems\DrawSystem.cs" />
     <Compile Include="Systems\HeightmapSystem.cs" />
+    <Compile Include="Systems\ISysDrawable.cs" />
     <Compile Include="Systems\IUpdatable.cs" />
     <Compile Include="Systems\ModelSystem.cs" />
     <Compile Include="Systems\TransformSystem.cs" />

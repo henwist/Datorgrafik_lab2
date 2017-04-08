@@ -27,6 +27,14 @@ namespace GameEngine.Components
             projectionMatrix = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, game.GraphicsDevice.Viewport.AspectRatio, 1.0f, 500.0f);
         }
 
-        
+        public override void Initialize()
+        {
+            base.Initialize();
+        }
+
+        public override void Update(GameTime gametime)
+        {
+            base.Update(gametime);
+        }
     }
 }

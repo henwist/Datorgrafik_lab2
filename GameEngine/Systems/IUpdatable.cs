@@ -4,6 +4,6 @@ namespace GameEngine.Systems
 {
     public interface IUdatable
     {
-        //void Update(GameTime gameTime);
+        void Update(GameTime gameTime);
     }
 }

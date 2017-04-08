@@ -18,7 +18,7 @@ namespace GameEngine.Components
             model = m;
         }
 
-        public override void Update()
+        public override void Update(GameTime gametime)
         {
 
         }
@@ -34,7 +34,10 @@ namespace GameEngine.Components
                 {
                     be.EnableDefaultLighting();
                     be.Projection = camera.projectionMatrix;
+                    be.View = camera.viewMatrix;
+                    be.World = world * mesh.ParentBone.Transform;
                 }
+                mesh.Draw();
             }
         }
 
