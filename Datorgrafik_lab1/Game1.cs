@@ -111,7 +111,8 @@ namespace Datorgrafik_lab1
             angle += 0.005f;
 
             cameraSystem.Update(gameTime);
-            
+            modelSystem.camera = cameraSystem.camera;
+
 
             base.Update(gameTime);
 
@@ -131,14 +132,14 @@ namespace Datorgrafik_lab1
             if (Keyboard.GetState().IsKeyDown(Keys.A))
                 radx += 0.1f;
 
-            if (Keyboard.GetState().IsKeyDown(Keys.S))
-                rady += 0.1f;
+            //if (Keyboard.GetState().IsKeyDown(Keys.S))
+            //    rady += 0.1f;
 
             if (Keyboard.GetState().IsKeyDown(Keys.D))
                 radz += 0.1f;
 
-            if (Keyboard.GetState().IsKeyDown(Keys.W))
-                scale += 0.01f;
+            //if (Keyboard.GetState().IsKeyDown(Keys.W))
+            //    scale += 0.01f;
 
 
             if (Keyboard.GetState().IsKeyDown(Keys.E))

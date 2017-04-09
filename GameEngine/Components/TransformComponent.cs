@@ -8,5 +8,6 @@ namespace GameEngine.Components
 {
     public class TransformComponent : Component
     {
+        
     }
 }
