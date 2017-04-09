@@ -1,11 +1,9 @@
-﻿using Microsoft.Xna.Framework;
+﻿
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
+
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
 
 namespace GameEngine.Components
 {
@@ -15,7 +13,8 @@ namespace GameEngine.Components
         public int terrainWidth  { get; private set; }
         public int terrainHeight { get; private set; }
 
-        public float scaleFactor { get; set; }
+        public Vector3 scaleFactor { get; set; }
+        public Vector3 position { get; set; }
 
         public int vertexCount   { get; private set; }
         public int indexCount    { get; private set; }
@@ -28,14 +27,21 @@ namespace GameEngine.Components
         public int[] indices       { get; set; }
         public float[,] heightData { get; set; }
 
-        public Bitmap bmp { get; private set; }
+        public Bitmap bmpHeightdata { get; private set; }
 
-        public HeightmapComponent(GraphicsDevice gd, float scaleFactor, string pictureFileName)
+        public Bitmap bmpTexture { get; private set; }
+
+        public Texture2D texture;
+
+        public Matrix objectWorld { get; set; }
+        public Matrix world { get; set; }
+
+
+        public HeightmapComponent(GraphicsDevice gd, Vector3 scaleFactor, string pictureFileName, string textureFileName, Matrix world)
         {
-            bmp = new Bitmap(pictureFileName);
-
-            terrainHeight = bmp.Height;
-            terrainWidth = bmp.Width;
+            bmpHeightdata = new Bitmap(pictureFileName);
+            terrainHeight = bmpHeightdata.Height;
+            terrainWidth = bmpHeightdata.Width;
 
             //this.terrainHeight = terrainHeight;
             //this.terrainWidth = terrainWidth;
@@ -53,8 +59,14 @@ namespace GameEngine.Components
             vertexBuffer = new VertexBuffer(gd, typeof(VertexPositionNormalTexture), vertexCount, BufferUsage.None);
             indexBuffer = new IndexBuffer(gd, typeof(int), indexCount, BufferUsage.None);
 
-           
+            bmpTexture = new Bitmap(textureFileName);
+            //texture = Texture2D.CreateTex2DFromBitmap(bmpTexture, gd) //; bmpTexture, gd);
+            //texture = Texture2D.FromStream(gd, new FileStream(textureFileName, System.IO.FileMode.Open));// CreateTex2DFromBitmap(bmpTexture, gd);
+            texture = Texture2D.FromStream(gd, new StreamReader(textureFileName).BaseStream);
+            texture.Name = textureFileName;
 
+            objectWorld = Matrix.Identity;
+            this.world = world;
         }
     }
 }

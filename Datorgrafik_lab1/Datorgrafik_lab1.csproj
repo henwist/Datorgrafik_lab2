@@ -53,6 +53,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\Textures\grass.png" />
+    <Content Include="Content\Textures\play.png" />
     <Content Include="Content\Textures\US_Canyon.png" />
     <Content Include="Icon.ico" />
   </ItemGroup>
