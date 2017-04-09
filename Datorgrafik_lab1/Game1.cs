@@ -1,4 +1,5 @@
-﻿using GameEngine.Managers;
+﻿using GameEngine.Components;
+using GameEngine.Managers;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -34,6 +35,8 @@ namespace Datorgrafik_lab1
         Texture2D grass;
 
         private SceneManager sceneManager;
+
+        public CameraComponent camera { get; protected set; }
 
         public Game1()
         {

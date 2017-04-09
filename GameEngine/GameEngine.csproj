@@ -47,6 +47,7 @@
   <ItemGroup>
     <Compile Include="Components\CameraComponent.cs" />
     <Compile Include="Components\Component.cs" />
+    <Compile Include="Components\DrawableComponent.cs" />
     <Compile Include="Components\HeightmapComponent.cs" />
     <Compile Include="Components\ModelComponent.cs" />
     <Compile Include="Components\TransformComponent.cs" />
@@ -58,6 +59,7 @@
     <Compile Include="Systems\CameraSystem.cs" />
     <Compile Include="Systems\DrawSystem.cs" />
     <Compile Include="Systems\HeightmapSystem.cs" />
+    <Compile Include="Systems\ISysDrawable.cs" />
     <Compile Include="Systems\IUpdatable.cs" />
     <Compile Include="Systems\ModelSystem.cs" />
     <Compile Include="Systems\TransformSystem.cs" />

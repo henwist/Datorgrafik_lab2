@@ -7,11 +7,8 @@ using Microsoft.Xna.Framework;
 
 namespace GameEngine.Systems
 {
-    public class TransformSystem : IUdatable
+    public interface ISysDrawable
     {
-        public void Update(GameTime gameTime)
-        {
-            throw new NotImplementedException();
-        }
+        void Draw(GameTime gametime);
     }
 }

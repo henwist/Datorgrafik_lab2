@@ -215,6 +215,11 @@ namespace GameEngine.Systems
                 }
 
         }
+
+        public void Update(GameTime gameTime)
+        {
+            throw new NotImplementedException();
+        }
     }
 
 }
