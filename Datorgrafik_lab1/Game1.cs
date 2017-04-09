@@ -82,6 +82,8 @@ namespace Datorgrafik_lab1
             effect.Projection = _projection;
             effect.PreferPerPixelLighting = true;
 
+            sceneManager = new SceneManager(graphics.GraphicsDevice, effect.World);
+
         }
 
         protected override void UnloadContent()
@@ -151,7 +153,7 @@ namespace Datorgrafik_lab1
 
             effect.EnableDefaultLighting();
             effect.TextureEnabled = true;
-            effect.Texture = grass;
+            //effect.Texture = grass;
 
             Matrix worldMatrix = Matrix.Identity;
 
@@ -187,13 +189,13 @@ namespace Datorgrafik_lab1
                 //* Matrix.CreateRotationY(rady)
                 //* Matrix.CreateRotationZ(radz);
 
-                effect.World = Matrix.CreateRotationX(radx)
-                                    * Matrix.CreateRotationY(rady)
-                                    * Matrix.CreateRotationZ(radz)
-                                    * Matrix.CreateScale(scale);
+                //effect.World = Matrix.CreateRotationX(radx)
+                //                    * Matrix.CreateRotationY(rady)
+                //                    * Matrix.CreateRotationZ(radz)
+                //                    * Matrix.CreateScale(scale);
 
 
-                sceneManager.Draw(gameTime);
+                sceneManager.Draw(effect, gameTime);
 
             }
 
