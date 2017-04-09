@@ -128,7 +128,7 @@ namespace GameEngine.Systems
                         cmp.vertices[index].Position = Vector3.Transform(cmp.vertices[index].Position,
                                                                                                 Matrix.CreateScale(cmp.scaleFactor));
 
-                        cmp.vertices[index].Normal = new Vector3(rnd.Next(0, 101) / 100f, rnd.Next(0, 101) / 100f, rnd.Next(0, 101) / 100f); //+Z
+                        cmp.vertices[index].Normal = new Vector3(rnd.Next(0, 101) / 100f, rnd.Next(0, 101) / 100f, rnd.Next(0, 101) / 100f);
                         cmp.vertices[index].TextureCoordinate = new Vector2(0, 0);
                     }
                 }

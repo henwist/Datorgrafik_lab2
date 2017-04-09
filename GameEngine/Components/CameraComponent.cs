@@ -41,9 +41,9 @@ namespace GameEngine.Components
                 cameraPosition += cameraDirection * speed;
             if (Keyboard.GetState().IsKeyDown(Keys.S))
                 cameraPosition -= cameraDirection * speed;
-            if (Keyboard.GetState().IsKeyDown(Keys.A))
-                cameraPosition += Vector3.Cross(cameraUp, cameraDirection) * speed;
             if (Keyboard.GetState().IsKeyDown(Keys.D))
+                cameraPosition += Vector3.Cross(cameraUp, cameraDirection) * speed;
+            if (Keyboard.GetState().IsKeyDown(Keys.A))
                 cameraPosition -= Vector3.Cross(cameraUp, cameraDirection) * speed;
             CreateLookAt();
 

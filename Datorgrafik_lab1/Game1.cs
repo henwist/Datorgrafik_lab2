@@ -159,9 +159,7 @@ namespace Datorgrafik_lab1
 
             effect.EnableDefaultLighting();
             effect.TextureEnabled = true;
-            //effect.Texture = grass;
 
-            Matrix worldMatrix = Matrix.Identity;
             modelSystem.Draw(gameTime);
 
             foreach (EffectPass pass in effect.CurrentTechnique.Passes)
@@ -186,8 +184,8 @@ namespace Datorgrafik_lab1
                 effect.DiffuseColor = new Vector3(0.4f, 0.4f, 0.7f);
                 effect.EmissiveColor = new Vector3(1.0f, 1.0f, 1.0f);
 
-                _view = Matrix.CreateLookAt(cameraPosition, Vector3.Zero, Vector3.Up);
-                _projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, 4.0f / 3.0f, 1, 3000);
+                //_view = Matrix.CreateLookAt(cameraPosition, Vector3.Zero, Vector3.Up);
+                //_projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, 4.0f / 3.0f, 1, 3000);
 
 
 
