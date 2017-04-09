@@ -14,11 +14,13 @@ namespace GameEngine.Components
         protected Matrix world = Matrix.Identity;
 
         private Matrix scale;
+        private Matrix translation;
 
         public ModelComponent(GraphicsDevice device, Model m) : base(device)
         {
             model = m;
             scale = Matrix.CreateScale(10);
+            translation = Matrix.CreateTranslation(10, 10, 0);
         }
 
         public override void Update(GameTime gametime)
@@ -38,7 +40,7 @@ namespace GameEngine.Components
                     be.EnableDefaultLighting();
                     be.Projection = camera.projectionMatrix;
                     be.View = camera.viewMatrix;
-                    be.World = world * mesh.ParentBone.Transform * scale;
+                    be.World = world * mesh.ParentBone.Transform * translation * scale;
                 }
                 mesh.Draw();
             }

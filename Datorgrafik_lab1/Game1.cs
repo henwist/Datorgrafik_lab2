@@ -49,8 +49,8 @@ namespace Datorgrafik_lab1
 
         protected override void Initialize()
         {
-            graphics.PreferredBackBufferWidth = 500;
-            graphics.PreferredBackBufferHeight = 500;
+            graphics.PreferredBackBufferWidth = 1024;
+            graphics.PreferredBackBufferHeight = 768;
             graphics.IsFullScreen = false;
             graphics.ApplyChanges();
 
@@ -136,7 +136,7 @@ namespace Datorgrafik_lab1
             //    rady += 0.1f;
 
             if (Keyboard.GetState().IsKeyDown(Keys.D))
-                radz += 0.1f;
+                radx += 0.1f;
 
             //if (Keyboard.GetState().IsKeyDown(Keys.W))
             //    scale += 0.01f;
@@ -189,7 +189,8 @@ namespace Datorgrafik_lab1
 
 
 
-                effect.View = Matrix.CreateLookAt(cameraPosition, Vector3.Zero, Vector3.Up);
+                effect.View = Matrix.CreateLookAt(cameraPosition, Vector3.Zero, Vector3.Up) * Matrix.CreateTranslation(-radx, 0 ,0);
+
                 //* Matrix.CreateRotationX(radx)
                 //* Matrix.CreateRotationY(rady)
                 //* Matrix.CreateRotationZ(radz);

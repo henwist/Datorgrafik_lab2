@@ -55,7 +55,7 @@ namespace GameEngine.Managers
         private void createHeightmapObjects()
         {
             HeightmapObject hmobj = new HeightmapObject();
-            hmobj.scaleFactor = Vector3.One;
+            hmobj.scaleFactor = 0.5f*Vector3.One;
             hmobj.position = Vector3.Zero;
             hmobj.terrainMapName = "..\\..\\..\\..\\Content\\Textures\\US_Canyon.png";
             hmobj.textureName = "..\\..\\..\\..\\Content\\Textures\\grass.png";
