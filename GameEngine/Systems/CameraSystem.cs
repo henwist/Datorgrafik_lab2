@@ -14,7 +14,7 @@ namespace GameEngine.Systems
     {
         private static CameraSystem instance;
         public GraphicsDevice device { get; protected set; }
-        CameraComponent camera;
+        public CameraComponent camera { get; protected set; }
 
         public static CameraSystem Instance
         {

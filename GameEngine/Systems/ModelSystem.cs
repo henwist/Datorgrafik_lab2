@@ -14,14 +14,7 @@ namespace GameEngine.Systems
         private static ModelSystem instance;
 
         
-        CameraComponent camera;
-
-        
-
-        //private ModelSystem(CameraComponent camera)
-        //{
-        //    this.camera = camera;
-        //}
+        public CameraComponent camera;
         
 
         public static ModelSystem Instance

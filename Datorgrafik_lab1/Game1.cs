@@ -54,12 +54,15 @@ namespace Datorgrafik_lab1
             graphics.IsFullScreen = false;
             graphics.ApplyChanges();
 
-            sceneManager = new SceneManager(graphics.GraphicsDevice);
+            //sceneManager = new SceneManager(graphics.GraphicsDevice, Matrix.Identity);
             cameraSystem = CameraSystem.Instance;
             modelSystem = ModelSystem.Instance;
             
 
             cameraSystem.setUpCamera(this, cameraPosition, Vector3.Zero, Vector3.Up);
+            modelSystem.camera = cameraSystem.camera;
+
+            createGameEntity();
 
             base.Initialize();
         }
@@ -73,6 +76,8 @@ namespace Datorgrafik_lab1
             effect = new BasicEffect(graphics.GraphicsDevice);
 
             grass = Content.Load<Texture2D>("Textures/grass");
+
+            
 
             _view = Matrix.CreateLookAt(cameraPosition, Vector3.Zero, Vector3.Up);
             _projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, 4.0f / 3.0f, 1, 3000);
@@ -156,6 +161,7 @@ namespace Datorgrafik_lab1
             //effect.Texture = grass;
 
             Matrix worldMatrix = Matrix.Identity;
+            modelSystem.Draw(gameTime);
 
             foreach (EffectPass pass in effect.CurrentTechnique.Passes)
             {
@@ -196,12 +202,24 @@ namespace Datorgrafik_lab1
 
 
                 sceneManager.Draw(effect, gameTime);
+                
 
             }
 
             base.Draw(gameTime);
         }
 
+        public ulong createGameEntity()
+        {
+            ulong id = ComponentManager.GetNewId();
+
+            ComponentManager.StoreComponent(id, CameraSystem.Instance.camera);
+            ComponentManager.StoreComponent(id, new ModelComponent(GraphicsDevice, Content.Load<Model>(@"Models/Chopper")));
+            //ComponentManager.StoreComponent(id, Transform);
+            //ComponentManager.StoreComponent(id, Controller);
+
+            return id;
+        }
 
         private void CreateControllerBindings()
         {
