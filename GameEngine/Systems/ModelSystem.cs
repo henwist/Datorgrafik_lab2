@@ -9,32 +9,44 @@ using GameEngine.Managers;
 
 namespace GameEngine.Systems
 {
-    public class ModelSystem : IUdatable, ISysDrawable
+    public class ModelSystem : ISysDrawable
     {
-        List<Component> models = new List<Component>();
+        private static ModelSystem instance;
+
+        
         CameraComponent camera;
 
-        public ModelSystem(CameraComponent camera)
+        
+
+        //private ModelSystem(CameraComponent camera)
+        //{
+        //    this.camera = camera;
+        //}
+        
+
+        public static ModelSystem Instance
         {
-            this.camera = camera;
+            get
+            {
+                if (instance == null)
+                    instance = new ModelSystem();
+                return instance;
+            }
         }
 
         public void LoadContent()
         {
-            models = ComponentManager.GetComponents<ModelComponent>();
+            
         }
 
         public void Draw(GameTime gametime)
         {
+            List<Component> models = ComponentManager.GetComponents<ModelComponent>(); 
             foreach (ModelComponent m in models)
             {
                 m.Draw(gametime, camera);
             }
         }
 
-        public void Update(GameTime gameTime)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

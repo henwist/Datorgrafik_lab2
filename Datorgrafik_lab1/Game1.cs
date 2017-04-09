@@ -1,5 +1,6 @@
 ﻿using GameEngine.Components;
 using GameEngine.Managers;
+using GameEngine.Systems;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -35,6 +36,8 @@ namespace Datorgrafik_lab1
         Texture2D grass;
 
         private SceneManager sceneManager;
+        private ModelSystem modelSystem;
+        private CameraSystem cameraSystem;
 
         public CameraComponent camera { get; protected set; }
 
@@ -52,6 +55,11 @@ namespace Datorgrafik_lab1
             graphics.ApplyChanges();
 
             sceneManager = new SceneManager(graphics.GraphicsDevice);
+            cameraSystem = CameraSystem.Instance;
+            modelSystem = ModelSystem.Instance;
+            
+
+            cameraSystem.setUpCamera(this, cameraPosition, Vector3.Zero, Vector3.Up);
 
             base.Initialize();
         }
@@ -94,6 +102,9 @@ namespace Datorgrafik_lab1
                 this.Exit();
 
             angle += 0.005f;
+
+            cameraSystem.Update(gameTime);
+            
 
             base.Update(gameTime);
 
