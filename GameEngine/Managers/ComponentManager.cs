@@ -37,8 +37,15 @@ namespace GameEngine.Managers
                 components.Add(type, new Dictionary<ulong, Component>());
 
             components[type].Add(id, comp);
+        }
 
-
+        public static List<ulong> GetAllEntitiesWithComp<T>() where T : Component
+        {
+            if (components.ContainsKey(typeof(T)))
+            {
+                return components[typeof(T)].Keys.ToList();
+            }
+            return null;
         }
 
         public static T GetComponent<T>(ulong id)

@@ -38,6 +38,7 @@ namespace Datorgrafik_lab1
         private SceneManager sceneManager;
         private ModelSystem modelSystem;
         private CameraSystem cameraSystem;
+        private TransformSystem transformSystem;
 
         public CameraComponent camera { get; protected set; }
 
@@ -57,6 +58,7 @@ namespace Datorgrafik_lab1
             //sceneManager = new SceneManager(graphics.GraphicsDevice, Matrix.Identity);
             cameraSystem = CameraSystem.Instance;
             modelSystem = ModelSystem.Instance;
+            transformSystem = TransformSystem.Instance;
             
 
             cameraSystem.setUpCamera(this, cameraPosition, Vector3.Zero, Vector3.Up);
@@ -112,6 +114,7 @@ namespace Datorgrafik_lab1
 
             cameraSystem.Update(gameTime);
             modelSystem.camera = cameraSystem.camera;
+            transformSystem.Update(gameTime);
 
 
             base.Update(gameTime);
@@ -212,10 +215,11 @@ namespace Datorgrafik_lab1
         public ulong createGameEntity()
         {
             ulong id = ComponentManager.GetNewId();
+            TransformComponent transform = new TransformComponent(new Vector3(200.0f, 300.0f, 100.0f), 0f, 10f);
 
             ComponentManager.StoreComponent(id, CameraSystem.Instance.camera);
             ComponentManager.StoreComponent(id, new ModelComponent(GraphicsDevice, Content.Load<Model>(@"Models/Chopper")));
-            //ComponentManager.StoreComponent(id, Transform);
+            ComponentManager.StoreComponent(id, transform);
             //ComponentManager.StoreComponent(id, Controller);
 
             return id;

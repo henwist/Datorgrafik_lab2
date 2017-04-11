@@ -11,12 +11,14 @@ namespace GameEngine.Components
 {
     public class CameraComponent : Component
     {
-        public Matrix viewMatrix { get; protected set; }
-        public Matrix projectionMatrix { get; protected set; }
+        private static Vector3 perspectiveOffset = new Vector3(0, 200, -200);
 
-        public Vector3 cameraPosition { get; protected set; }
-        Vector3 cameraDirection;
-        Vector3 cameraUp;
+        public Matrix viewMatrix { get; set; }
+        public Matrix projectionMatrix { get; set; }
+
+        public Vector3 cameraPosition { get; set; }
+        public Vector3 cameraDirection { get; set; }
+        public Vector3 cameraUp { get; set; }
 
         float speed = 3f;
 
@@ -50,7 +52,7 @@ namespace GameEngine.Components
             base.Update(gametime);
         }
 
-        private void CreateLookAt()
+        public void CreateLookAt()
         {
             viewMatrix = Matrix.CreateLookAt(cameraPosition, cameraPosition + cameraDirection, cameraUp);
         }

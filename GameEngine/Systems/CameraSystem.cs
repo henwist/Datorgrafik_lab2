@@ -38,11 +38,20 @@ namespace GameEngine.Systems
 
         public void Update(GameTime gameTime)
         {
-            List<Component> comps = ComponentManager.GetComponents<CameraComponent>();
-            
-            foreach(Component c in comps)
+            //List<Component> comps = ComponentManager.GetComponents<CameraComponent>();
+            List<ulong> comps = ComponentManager.GetAllEntitiesWithComp<CameraComponent>();
+
+            foreach (ulong c in comps)
             {
-                c.Update(gameTime);
+                TransformComponent transform = ComponentManager.GetComponent<TransformComponent>(c);
+                CameraComponent curCam = ComponentManager.GetComponent<CameraComponent>(c);
+
+                curCam.cameraPosition = transform.position;
+                Matrix rotation = Matrix.CreateRotationY(transform.rotation);
+                Vector3 transformedRef = Vector3.Transform(curCam.cameraDirection, rotation);
+                curCam.viewMatrix = Matrix.CreateLookAt(curCam.cameraPosition, curCam.cameraPosition + transformedRef, Vector3.Up);
+
+                curCam.Update(gameTime);
             }
         }
     }
