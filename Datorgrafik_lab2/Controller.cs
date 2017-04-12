@@ -8,11 +8,15 @@ namespace Datorgrafik_lab2
     {
         private Dictionary<Keys, Vector3> bindings;
 
-        Vector3 dir;
+        private Vector3 dir;
 
-        public Controller()
+        private float scaleMove;
+
+        public Controller(float scaleMove)
         {
             bindings = new Dictionary<Keys, Vector3>();
+
+            this.scaleMove = scaleMove;
         }
 
         public void AddBinding(Keys k, Vector3 direction)
@@ -29,7 +33,7 @@ namespace Datorgrafik_lab2
             {
                 if (bindings.ContainsKey(k))
                 {
-                    dir += bindings[k];
+                    dir += scaleMove * bindings[k];
                 }
             }
 

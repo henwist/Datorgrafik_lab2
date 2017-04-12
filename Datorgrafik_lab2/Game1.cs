@@ -34,6 +34,9 @@ namespace Datorgrafik_lab2
         private CameraSystem cameraSystem;
         private TransformSystem transformSystem;
 
+        private Controller controller;
+        private float scaleMove = 1.0f; //used to scale movements if move is to fast or slow.
+
         public CameraComponent camera { get; protected set; }
 
         public Game1()
@@ -75,6 +78,8 @@ namespace Datorgrafik_lab2
             setEffectOptions();
 
             sceneManager = new SceneManager(graphics.GraphicsDevice, effect.World);
+
+            controller = new Controller(scaleMove);
 
         }
 
