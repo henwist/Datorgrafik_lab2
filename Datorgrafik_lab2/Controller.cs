@@ -6,24 +6,24 @@ namespace Datorgrafik_lab2
 {
     public class Controller
     {
-        private Dictionary<Keys, Vector2> bindings;
+        private Dictionary<Keys, Vector3> bindings;
 
-        Vector2 dir;
+        Vector3 dir;
 
         public Controller()
         {
-            bindings = new Dictionary<Keys, Vector2>();
+            bindings = new Dictionary<Keys, Vector3>();
         }
 
-        public void AddBinding(Keys k, Vector2 direction)
+        public void AddBinding(Keys k, Vector3 direction)
         {
             if (!bindings.ContainsKey(k))
                 bindings.Add(k, direction);
         }
 
-        public Vector2 GetNextMove()
+        public Vector3 GetNextMove()
         {
-            dir = Vector2.Zero;
+            dir = Vector3.Zero;
 
             foreach (Keys k in Keyboard.GetState().GetPressedKeys())
             {
