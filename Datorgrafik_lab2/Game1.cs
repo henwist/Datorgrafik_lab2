@@ -17,9 +17,6 @@ namespace Datorgrafik_lab2
         GraphicsDevice device;
 
         BasicEffect effect;
-        VertexPositionNormalTexture[] vertices;
-        Matrix viewMatrix;
-        Matrix projectionMatrix;
 
         private float angle = 0f;
 
@@ -27,10 +24,7 @@ namespace Datorgrafik_lab2
 
         private Vector3 cameraPosition = new Vector3(200.0f, 200.0f, 100.0f);
 
-        float cameraMovex = 0f;
         float radx = 0f;
-        float rady = 0f;
-        float radz = 0f;
         float scale = 1f;
 
         Texture2D grass;
@@ -55,12 +49,10 @@ namespace Datorgrafik_lab2
             graphics.IsFullScreen = false;
             graphics.ApplyChanges();
 
-            //sceneManager = new SceneManager(graphics.GraphicsDevice, Matrix.Identity);
             cameraSystem = CameraSystem.Instance;
             modelSystem = ModelSystem.Instance;
             transformSystem = TransformSystem.Instance;
             
-
             cameraSystem.setUpCamera(this, cameraPosition, Vector3.Zero, Vector3.Up);
             modelSystem.camera = cameraSystem.camera;
 
@@ -75,33 +67,41 @@ namespace Datorgrafik_lab2
 
             device = graphics.GraphicsDevice;
 
-            effect = new BasicEffect(graphics.GraphicsDevice);
-
             grass = Content.Load<Texture2D>("Textures/grass");
-
-            
 
             _view = Matrix.CreateLookAt(cameraPosition, Vector3.Zero, Vector3.Up);
             _projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, 4.0f / 3.0f, 1, 3000);
+
+            setEffectOptions();
+
+            sceneManager = new SceneManager(graphics.GraphicsDevice, effect.World);
+
+        }
+
+
+        private void setEffectOptions()
+        {
+            effect = new BasicEffect(graphics.GraphicsDevice);
 
             effect.World = Matrix.Identity;
             effect.View = _view;
             effect.Projection = _projection;
             effect.PreferPerPixelLighting = true;
 
-            sceneManager = new SceneManager(graphics.GraphicsDevice, effect.World);
+            effect.EnableDefaultLighting();
+            effect.LightingEnabled = true;
+            effect.TextureEnabled = true;
+            effect.Texture = grass;
 
+            RasterizerState rs = new RasterizerState();
+            rs.CullMode = CullMode.None;
+            rs.FillMode = FillMode.Solid;
+            device.RasterizerState = rs;
         }
+
 
         protected override void UnloadContent()
         {
-        }
-
-
-        private void SetUpCamera()
-        {
-            viewMatrix = Matrix.CreateLookAt(new Vector3(0, 10, 0), new Vector3(0, 0, 0), new Vector3(0, 0, -1));
-            projectionMatrix = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, device.Viewport.AspectRatio, 1.0f, 300.0f);
         }
 
 
@@ -154,59 +154,16 @@ namespace Datorgrafik_lab2
         {
             device.Clear(Color.DarkSlateBlue);
 
-            RasterizerState rs = new RasterizerState();
-            rs.CullMode = CullMode.None;
-            rs.FillMode = FillMode.Solid;
-            device.RasterizerState = rs;
-
-
-            effect.EnableDefaultLighting();
-            effect.TextureEnabled = true;
 
             modelSystem.Draw(gameTime);
 
             foreach (EffectPass pass in effect.CurrentTechnique.Passes)
             {
-
-
                 pass.Apply();
-
-                effect.EmissiveColor = new Vector3(0.5f, 0.5f, 0f);
-
-                effect.EnableDefaultLighting();
-                effect.LightingEnabled = true;
-
-                effect.DirectionalLight0.DiffuseColor = new Vector3(0.5f, 0.5f, 0.5f);
-                effect.DirectionalLight0.Direction = new Vector3(0.5f, -1, 0);
-                effect.DirectionalLight0.SpecularColor = new Vector3(1, 1, 1);
-                effect.DirectionalLight0.Enabled = true;
-
-                effect.AmbientLightColor = new Vector3(0.5f, 0.5f, 0.5f);
-                effect.PreferPerPixelLighting = true;
-                effect.SpecularPower = 100;
-                effect.DiffuseColor = new Vector3(0.4f, 0.4f, 0.7f);
-                effect.EmissiveColor = new Vector3(1.0f, 1.0f, 1.0f);
-
-                //_view = Matrix.CreateLookAt(cameraPosition, Vector3.Zero, Vector3.Up);
-                //_projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, 4.0f / 3.0f, 1, 3000);
-
-
 
                 effect.View = Matrix.CreateLookAt(cameraPosition, Vector3.Zero, Vector3.Up) * Matrix.CreateTranslation(-radx, 0 ,0);
 
-                //* Matrix.CreateRotationX(radx)
-                //* Matrix.CreateRotationY(rady)
-                //* Matrix.CreateRotationZ(radz);
-
-                //effect.World = Matrix.CreateRotationX(radx)
-                //                    * Matrix.CreateRotationY(rady)
-                //                    * Matrix.CreateRotationZ(radz)
-                //                    * Matrix.CreateScale(scale);
-
-
                 sceneManager.Draw(effect, gameTime);
-                
-
             }
 
             base.Draw(gameTime);
@@ -225,26 +182,11 @@ namespace Datorgrafik_lab2
             return id;
         }
 
-        private void CreateControllerBindings()
-        {
-            //controller.AddBinding(Keys.A, new Vector2(-10, 0));
-            //controller.AddBinding(Keys.D, new Vector2(10, 0));
-            //controller.AddBinding(Keys.W, new Vector2(0, -10));
-            //controller.AddBinding(Keys.S, new Vector2(0, 10));
-        }
-
-        private void MovePlayer()
-        {
-            //ComponentManager.GetComponent<Transform>(player1.PlayerId).XVel = controller.GetNextMove().X;
-            //ComponentManager.GetComponent<Transform>(player1.PlayerId).YVel = controller.GetNextMove().Y;
-
-        }
 
 
         private enum Constants : int
         {
-            Pristine = 0,
-            GameLength = 6000
+
         }
     }
 }
