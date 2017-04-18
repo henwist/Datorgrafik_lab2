@@ -9,8 +9,8 @@
     <ProjectGuid>{2B37E2D7-015A-40B8-901C-1DF80DAD6453}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Datorgrafik_lab1</RootNamespace>
-    <AssemblyName>Datorgrafik_lab1</AssemblyName>
+    <RootNamespace>Datorgrafik_lab2</RootNamespace>
+    <AssemblyName>Datorgrafik_lab2</AssemblyName>
     <FileAlignment>512</FileAlignment>
     <MonoGamePlatform>Windows</MonoGamePlatform>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
@@ -39,6 +39,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Controller.cs" />
+    <Compile Include="CreateModels\Tree.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -68,6 +69,9 @@
       <Project>{f7bcba1e-dd99-4bda-9034-76c4dab60203}</Project>
       <Name>GameEngine</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Content\Effects\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(MSBuildExtensionsPath)\MonoGame\v3.0\MonoGame.Content.Builder.targets" />

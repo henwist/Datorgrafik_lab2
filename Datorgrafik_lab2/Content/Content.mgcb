@@ -44,3 +44,9 @@
 /processorParam:TextureFormat=DxtCompressed
 /build:Models/Chopper.fbx
 
+#begin Effects/myeffect.fx
+/importer:EffectImporter
+/processor:EffectProcessor
+/processorParam:DebugMode=Auto
+/build:Effects/myeffect.fx
+
