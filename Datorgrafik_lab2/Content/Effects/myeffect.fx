@@ -53,17 +53,35 @@ struct VertexShaderOutput
 //}
 
 
+//VertexShaderOutput MainVS(in float4 position : SV_POSITION,
+//	in VertexShaderInput input,
+//	in float4x4 objWorld : TEXCOORD1,
+//	in float4 perInstancePos : TEXCOORD5)
+//{
+//
+//	VertexShaderOutput output = (VertexShaderOutput)0;
+//
+//	output.Position = mul(position, mul(objWorld, mul(World, mul(View, Projection))));
+//	output.Position = output.Position + perInstancePos;
+//	output.Color = output.Position;
+//	output.TexCoord = input.TexCoord;
+//
+//	//    // Compute lighting, using a simple Lambert model.
+//	//float3 worldNormal = mul(input.Normal, objWorld);
+//	//float diffuseAmount = max(-dot(worldNormal, LightDirection), 0);
+//	//float3 lightingResult = saturate(diffuseAmount * DiffuseLight + AmbientLight);
+//	//output.Color = float4(lightingResult, 1);
+//
+//	return output;
+//}
+
 VertexShaderOutput MainVS(in float4 position : SV_POSITION,
-	in VertexShaderInput input,
-	in float4x4 objWorld : TEXCOORD1,
-	in float4 perInstancePos : TEXCOORD5)
+	in VertexShaderInput input)
 {
 
 	VertexShaderOutput output = (VertexShaderOutput)0;
 
-	output.Position = mul(position, mul(objWorld, mul(World, mul(View, Projection))));
-	output.Position = output.Position + perInstancePos;
-	output.Color = output.Position;
+	output.Position = mul(position, mul(World, mul(View, Projection)));
 	output.TexCoord = input.TexCoord;
 
 	//    // Compute lighting, using a simple Lambert model.

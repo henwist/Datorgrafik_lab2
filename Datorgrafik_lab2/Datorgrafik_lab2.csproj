@@ -39,6 +39,8 @@
   </PropertyGroup>
   <ItemGroup>
     <Compile Include="Controller.cs" />
+    <Compile Include="CreateModels\Cube.cs" />
+    <Compile Include="CreateModels\Figure.cs" />
     <Compile Include="CreateModels\Tree.cs" />
     <Compile Include="Game1.cs" />
     <Compile Include="Program.cs" />

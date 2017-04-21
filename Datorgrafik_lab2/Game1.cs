@@ -20,6 +20,10 @@ namespace Datorgrafik_lab2
 
         BasicEffect effect;
         Effect myeffect;
+        Figure figure;
+
+        VertexBuffer figureBuffer;
+        IndexBuffer figureIndices;
 
         Matrix objRotation;
 
@@ -71,11 +75,12 @@ namespace Datorgrafik_lab2
 
         protected override void Initialize()
         {
-            graphics.PreferredBackBufferWidth = 1024;
-            graphics.PreferredBackBufferHeight = 768;
+            graphics.PreferredBackBufferWidth = 500;
+            graphics.PreferredBackBufferHeight = 500;
             graphics.IsFullScreen = false;
             graphics.ApplyChanges();
 
+            figure = new Figure();
 
             tree = new Tree(graphics.GraphicsDevice, 1f, MathHelper.PiOver4 + 0.4f, "F[LF]F[RF]F", 0, 1f, new string[] { "F" });
 
@@ -175,7 +180,8 @@ namespace Datorgrafik_lab2
 
             device = graphics.GraphicsDevice;
 
-
+            figureBuffer = new VertexBuffer(GraphicsDevice, typeof(VertexPositionNormalTexture), 72, BufferUsage.None);
+            figureIndices = new IndexBuffer(GraphicsDevice, IndexElementSize.ThirtyTwoBits, 72, BufferUsage.None);
 
             grass = Content.Load<Texture2D>("Textures/grass");
 
@@ -333,34 +339,40 @@ namespace Datorgrafik_lab2
             {
                 pass.Apply();
 
+                figureBuffer.SetData(figure.vertices.ToArray());
+                figureIndices.SetData(figure.getIndices());
 
+                graphics.GraphicsDevice.SetVertexBuffer(figureBuffer);
+                graphics.GraphicsDevice.Indices = figureIndices;
+
+                graphics.GraphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, figure.vertices.Count / 3);
 
                 //Trying rotation of object's world for all objects.
-                objRotation = Matrix.CreateRotationY(radObj) * Matrix.CreateRotationZ(0.0001f);
-                bindings[1].VertexBuffer.GetData<instance_matrice>(objectWorldMatrices);
+                //objRotation = Matrix.CreateRotationY(radObj) * Matrix.CreateRotationZ(0.0001f);
+                //bindings[1].VertexBuffer.GetData<instance_matrice>(objectWorldMatrices);
 
-                int i = 0;
-                foreach (instance_matrice m in objectWorldMatrices)
-                {
-                    Vector3 translate = m.matrice.Translation;
-                    //translate.Normalize();
-                    objectWorldMatrices[i++].matrice = m.matrice * Matrix.CreateTranslation(-1 * translate) * objRotation * Matrix.CreateTranslation(translate);
+                //int i = 0;
+                //foreach (instance_matrice m in objectWorldMatrices)
+                //{
+                //    Vector3 translate = m.matrice.Translation;
+                //    //translate.Normalize();
+                //    objectWorldMatrices[i++].matrice = m.matrice * Matrix.CreateTranslation(-1 * translate) * objRotation * Matrix.CreateTranslation(translate);
 
-                }
+                //}
 
-                bindings[1].VertexBuffer.SetData<instance_matrice>(objectWorldMatrices);
-                //end trying rotation.
+                //bindings[1].VertexBuffer.SetData<instance_matrice>(objectWorldMatrices);
+                ////end trying rotation.
 
 
-                //setBasiceffectParameters();
+                ////setBasiceffectParameters();
                 setCustomShaderParameters();
 
-                graphics.GraphicsDevice.Indices = tree.indexBuffer;
+                //graphics.GraphicsDevice.Indices = tree.indexBuffer;
 
-                graphics.GraphicsDevice.SetVertexBuffers(bindings);
+                //graphics.GraphicsDevice.SetVertexBuffers(bindings);
 
-                //tree
-                graphics.GraphicsDevice.DrawInstancedPrimitives(PrimitiveType.LineList, 0, 0, tree.vertexBuffer.VertexCount, 0, tree.indexBuffer.IndexCount / 2, INSTANCECOUNT);
+                ////tree
+                //graphics.GraphicsDevice.DrawInstancedPrimitives(PrimitiveType.LineList, 0, 0, tree.vertexBuffer.VertexCount, 0, tree.indexBuffer.IndexCount / 2, INSTANCECOUNT);
 
                 //boxes
                 //graphics.GraphicsDevice.DrawInstancedPrimitives(PrimitiveType.TriangleList, 0, 0, tree.vertexBuffer.VertexCount, 0, tree.indexBuffer.IndexCount / 3, INSTANCECOUNT);
