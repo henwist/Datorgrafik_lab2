@@ -43,6 +43,7 @@
     <Compile Include="CreateModels\Figure.cs" />
     <Compile Include="CreateModels\Tree.cs" />
     <Compile Include="Game1.cs" />
+    <Compile Include="InstanceContainers\InstanceStack.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>

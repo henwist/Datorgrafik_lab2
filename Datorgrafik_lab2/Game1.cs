@@ -180,8 +180,8 @@ namespace Datorgrafik_lab2
 
             device = graphics.GraphicsDevice;
 
-            figureBuffer = new VertexBuffer(GraphicsDevice, typeof(VertexPositionNormalTexture), 72, BufferUsage.None);
-            figureIndices = new IndexBuffer(GraphicsDevice, IndexElementSize.ThirtyTwoBits, 72, BufferUsage.None);
+            figureBuffer = new VertexBuffer(GraphicsDevice, typeof(VertexPositionNormalTexture), figure.vertices.Count, BufferUsage.None);
+            figureIndices = new IndexBuffer(GraphicsDevice, IndexElementSize.ThirtyTwoBits, figure.indices.Length, BufferUsage.None);
 
             grass = Content.Load<Texture2D>("Textures/grass");
 
@@ -340,7 +340,7 @@ namespace Datorgrafik_lab2
                 pass.Apply();
 
                 figureBuffer.SetData(figure.vertices.ToArray());
-                figureIndices.SetData(figure.getIndices());
+                figureIndices.SetData(figure.indices);
 
                 graphics.GraphicsDevice.SetVertexBuffer(figureBuffer);
                 graphics.GraphicsDevice.Indices = figureIndices;
