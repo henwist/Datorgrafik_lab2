@@ -13,10 +13,10 @@ matrix Projection;
 
 //Lighting
 
-//// This sample uses a simple Lambert lighting model.
-//float3 LightDirection = normalize(float3(-1, -1, -1));
-//float3 DiffuseLight = 1.25;
-//float3 AmbientLight = 0.35;
+// This sample uses a simple Lambert lighting model.
+float3 LightDirection = normalize(float3(1, 1, 1));
+float3 DiffuseLight = 1.25;
+float3 AmbientLight = 0.35;
 Texture Texture;
 
 sampler TextureSampler = sampler_state
@@ -84,11 +84,11 @@ VertexShaderOutput MainVS(in float4 position : SV_POSITION,
 	output.Position = mul(position, mul(World, mul(View, Projection)));
 	output.TexCoord = input.TexCoord;
 
-	//    // Compute lighting, using a simple Lambert model.
+	    // Compute lighting, using a simple Lambert model.
 	//float3 worldNormal = mul(input.Normal, objWorld);
-	//float diffuseAmount = max(-dot(worldNormal, LightDirection), 0);
-	//float3 lightingResult = saturate(diffuseAmount * DiffuseLight + AmbientLight);
-	//output.Color = float4(lightingResult, 1);
+	float diffuseAmount = max(-dot(input.Normal, LightDirection), 0);
+	float3 lightingResult = saturate(diffuseAmount * DiffuseLight + AmbientLight);
+	output.Color = float4(lightingResult, 1);
 
 	return output;
 }
@@ -96,7 +96,7 @@ VertexShaderOutput MainVS(in float4 position : SV_POSITION,
 float4 MainPS(VertexShaderOutput input) : COLOR
 {
 
-	float4 output = tex2D(TextureSampler, input.TexCoord);/*  * input.Color;*/
+	float4 output = tex2D(TextureSampler, input.TexCoord) * input.Color;
 
 	return output;
 }
