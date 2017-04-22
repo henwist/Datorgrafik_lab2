@@ -271,8 +271,11 @@ namespace Datorgrafik_lab2
             if (Keyboard.GetState().IsKeyDown(Keys.N))
                 translatez -= 1f;
 
+            figure.RotateUpperRightLeg(posX += 0.000001f);
 
         }
+
+        float posX = 0.01f;
 
         private void setBasiceffectParameters()
         {

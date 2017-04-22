@@ -17,6 +17,7 @@ namespace Datorgrafik_lab2.CreateModels
         Dictionary<String, Matrix> transforms;
         InstanceStack stack;
         
+        private readonly int RIGHT_LEG_INDEX_START = 216;
         
         public Figure()
         {
@@ -138,6 +139,29 @@ namespace Datorgrafik_lab2.CreateModels
 
         private void LowerRightLeg()
         {
+
+        }
+
+        public void RotateUpperRightLeg(float posX)
+        {
+            Vector3 translation = transforms["UpperRightLeg"].Translation;
+            Matrix translateBackToPos = Matrix.CreateTranslation(translation);
+            Matrix translateToOrigo = Matrix.CreateTranslation(-1*translation);
+;
+            Quaternion qrot = (transforms["UpperRightLeg"].Rotation
+                              + Quaternion.CreateFromRotationMatrix(Matrix.CreateRotationX(posX)));
+            qrot.Normalize();
+
+            Matrix rotate = Matrix.CreateFromQuaternion(qrot);
+
+            VertexPositionNormalTexture vertex;
+
+            foreach (int index in Enumerable.Range(RIGHT_LEG_INDEX_START, 36))
+            {
+                vertex = vertices.ElementAt(index);
+                vertex.Position = Vector3.Transform(vertices[index].Position, translateToOrigo * rotate * translateBackToPos);
+                vertices[index] = vertex;
+            }
 
         }
     }
