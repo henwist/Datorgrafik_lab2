@@ -37,11 +37,11 @@ namespace Datorgrafik_lab2.CreateModels
             UpperLeftArm();
             LowerLeftArm();
             UpperRightArm();
-            //LowerRightArm();
+            LowerRightArm();
             UpperLeftLeg();
-            //LowerLeftLeg();
+            LowerLeftLeg();
             UpperRightLeg();
-            //LowerRigtLeg();
+            LowerRightLeg();
 
             foreach(Cube part in parts)
             {
@@ -83,9 +83,9 @@ namespace Datorgrafik_lab2.CreateModels
             Matrix relPos;
             transforms.TryGetValue("UpperLeftArm", out relPos);
 
-            Matrix instance = Matrix.CreateTranslation(new Vector3(0f , -2f / .25f, 0f)) *
-                (relPos / Matrix.CreateFromAxisAngle(new Vector3(.25f, .25f, .25f), 0f))
-                * Matrix.CreateScale(.25f);
+            Matrix instance = Matrix.CreateScale(.3f) * Matrix.CreateTranslation(new Vector3(1f, -2f, 0f)) *
+                relPos;
+                
 
             lowerLeftArm.transform(instance);
             parts.Add(lowerLeftArm);
@@ -105,7 +105,16 @@ namespace Datorgrafik_lab2.CreateModels
 
         private void LowerRightArm()
         {
+            Cube lowerRightArm = new Cube();
+            Matrix relPos;
+            transforms.TryGetValue("UpperRightArm", out relPos);
 
+            Matrix instance = Matrix.CreateScale(.3f) * Matrix.CreateTranslation(new Vector3(-1f, -2f, 0f)) *
+                relPos;
+
+
+            lowerRightArm.transform(instance);
+            parts.Add(lowerRightArm);
         }
 
         private void UpperLeftLeg()
@@ -122,7 +131,16 @@ namespace Datorgrafik_lab2.CreateModels
 
         private void LowerLeftLeg()
         {
+            Cube lowerLeftLeg = new Cube();
+            Matrix relPos;
+            transforms.TryGetValue("UpperLeftLeg", out relPos);
 
+            Matrix instance = Matrix.CreateScale(.3f) * Matrix.CreateTranslation(new Vector3(1f, -2f, 0f)) *
+                relPos;
+
+
+            lowerLeftLeg.transform(instance);
+            parts.Add(lowerLeftLeg);
         }
 
         private void UpperRightLeg()
@@ -139,7 +157,16 @@ namespace Datorgrafik_lab2.CreateModels
 
         private void LowerRightLeg()
         {
+            Cube lowerRightLeg = new Cube();
+            Matrix relPos;
+            transforms.TryGetValue("UpperRightLeg", out relPos);
 
+            Matrix instance = Matrix.CreateScale(.3f) * Matrix.CreateTranslation(new Vector3(-1f, -2f, 0f)) *
+                relPos;
+
+
+            lowerRightLeg.transform(instance);
+            parts.Add(lowerRightLeg);
         }
 
         public void RotateUpperRightLeg(float posX)
