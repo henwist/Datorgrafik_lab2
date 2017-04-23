@@ -12,11 +12,14 @@ matrix View;
 matrix Projection;
 
 //Lighting
-
 // This sample uses a simple Lambert lighting model.
+//Start hämtat från http://community.monogame.net/t/help-cant-use-setinstancebuffer/8233
 float3 LightDirection = normalize(float3(1, 1, 1));
 float3 DiffuseLight = 1.25;
 float3 AmbientLight = 0.35;
+//Slut hämtat från http://community.monogame.net/t/help-cant-use-setinstancebuffer/8233
+
+
 Texture Texture;
 
 sampler TextureSampler = sampler_state
@@ -46,13 +49,6 @@ struct VertexShaderOutput
 };
 
 
-//float rand_1_05(in float2 uv)
-//{
-//    float2 noise = (frac(sin(dot(uv ,float2(12.9898,78.233)*2.0)) * 43758.5453));
-//        return abs(noise.x + noise.y) * 0.5;
-//}
-
-
 //VertexShaderOutput MainVS(in float4 position : SV_POSITION,
 //	in VertexShaderInput input,
 //	in float4x4 objWorld : TEXCOORD1,
@@ -66,11 +62,13 @@ struct VertexShaderOutput
 //	output.Color = output.Position;
 //	output.TexCoord = input.TexCoord;
 //
-//	//    // Compute lighting, using a simple Lambert model.
-//	//float3 worldNormal = mul(input.Normal, objWorld);
-//	//float diffuseAmount = max(-dot(worldNormal, LightDirection), 0);
-//	//float3 lightingResult = saturate(diffuseAmount * DiffuseLight + AmbientLight);
-//	//output.Color = float4(lightingResult, 1);
+//// Compute lighting, using a simple Lambert model.
+////Start hämtat från http://community.monogame.net/t/help-cant-use-setinstancebuffer/8233
+////float3 worldNormal = mul(input.Normal, objWorld);
+//float diffuseAmount = max(-dot(input.Normal, LightDirection), 0);
+//float3 lightingResult = saturate(diffuseAmount * DiffuseLight + AmbientLight);
+//output.Color = float4(lightingResult, 1);
+////Slut hämtat från http://community.monogame.net/t/help-cant-use-setinstancebuffer/8233
 //
 //	return output;
 //}
@@ -84,11 +82,13 @@ VertexShaderOutput MainVS(in float4 position : SV_POSITION,
 	output.Position = mul(position, mul(World, mul(View, Projection)));
 	output.TexCoord = input.TexCoord;
 
-	    // Compute lighting, using a simple Lambert model.
+// Compute lighting, using a simple Lambert model.
+	//Start hämtat från http://community.monogame.net/t/help-cant-use-setinstancebuffer/8233
 	//float3 worldNormal = mul(input.Normal, objWorld);
 	float diffuseAmount = max(-dot(input.Normal, LightDirection), 0);
 	float3 lightingResult = saturate(diffuseAmount * DiffuseLight + AmbientLight);
 	output.Color = float4(lightingResult, 1);
+	//Slut hämtat från http://community.monogame.net/t/help-cant-use-setinstancebuffer/8233
 
 	return output;
 }
