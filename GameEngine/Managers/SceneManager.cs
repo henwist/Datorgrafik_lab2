@@ -40,7 +40,7 @@ namespace GameEngine.Managers
             //phys_sys.Update(gameTime);
         }
 
-        public void Draw(BasicEffect effect, GameTime gameTime)
+        public void Draw(Effect effect, GameTime gameTime)
         {
             heightmapSystem.Draw(effect);
             //draw_sys.Update(gameTime);
@@ -55,12 +55,47 @@ namespace GameEngine.Managers
         private void createHeightmapObjects()
         {
             HeightmapObject hmobj = new HeightmapObject();
-            hmobj.scaleFactor = 0.5f*Vector3.One;
+            hmobj.scaleFactor = 0.1f*Vector3.One;
             hmobj.position = Vector3.Zero;
-            hmobj.terrainMapName = "..\\..\\..\\..\\Content\\Textures\\US_Canyon.png";
-            hmobj.textureName = "..\\..\\..\\..\\Content\\Textures\\grass.png";
+            hmobj.terrainMapName = "..\\..\\..\\..\\Content\\Textures\\Play.png";
+            hmobj.textureNames = new string[] {
+                                            "..\\..\\..\\..\\Content\\Textures\\grass.png",
+                                            "..\\..\\..\\..\\Content\\Textures\\fire.png",
+                                            //"..\\..\\..\\..\\Content\\Textures\\grass.png",
+                                            //"..\\..\\..\\..\\Content\\Textures\\fire.png",
+                                            //"..\\..\\..\\..\\Content\\Textures\\grass.png",
+                                            //"..\\..\\..\\..\\Content\\Textures\\fire.png",
+                                            //"..\\..\\..\\..\\Content\\Textures\\grass.png",
+                                            //"..\\..\\..\\..\\Content\\Textures\\fire.png",
+                                            //"..\\..\\..\\..\\Content\\Textures\\grass.png",
+                                            //"..\\..\\..\\..\\Content\\Textures\\fire.png",
+                                            //"..\\..\\..\\..\\Content\\Textures\\grass.png",
+                                            //"..\\..\\..\\..\\Content\\Textures\\fire.png",
+                                            //"..\\..\\..\\..\\Content\\Textures\\grass.png",
+                                            //"..\\..\\..\\..\\Content\\Textures\\fire.png",
+                                            //"..\\..\\..\\..\\Content\\Textures\\grass.png",
+                                            //"..\\..\\..\\..\\Content\\Textures\\fire.png",
+                                            //                                            "..\\..\\..\\..\\Content\\Textures\\grass.png",
+                                            //"..\\..\\..\\..\\Content\\Textures\\fire.png",
+                                            //"..\\..\\..\\..\\Content\\Textures\\grass.png",
+                                            //"..\\..\\..\\..\\Content\\Textures\\fire.png",
+                                            //"..\\..\\..\\..\\Content\\Textures\\grass.png",
+                                            //"..\\..\\..\\..\\Content\\Textures\\fire.png",
+                                            //"..\\..\\..\\..\\Content\\Textures\\grass.png",
+                                            //"..\\..\\..\\..\\Content\\Textures\\fire.png",
+                                            //"..\\..\\..\\..\\Content\\Textures\\grass.png",
+                                            //"..\\..\\..\\..\\Content\\Textures\\fire.png",
+                                            //"..\\..\\..\\..\\Content\\Textures\\grass.png",
+                                            //"..\\..\\..\\..\\Content\\Textures\\fire.png",
+                                            //"..\\..\\..\\..\\Content\\Textures\\grass.png",
+                                            //"..\\..\\..\\..\\Content\\Textures\\fire.png",
+                                            //"..\\..\\..\\..\\Content\\Textures\\grass.png",
+                                            //"..\\..\\..\\..\\Content\\Textures\\fire.png",
+            };
             hmobj.objectWorld = Matrix.Identity;
             hmobj.world = Matrix.Identity;
+            hmobj.breakUpInNumParts =2; //16 //match with count of textureNames above
+            hmobj.spacingBetweenParts = new Vector3(0f,2f,0f);
             heightmapObjects.Add(hmobj);
 
             //HeightmapObject hmobj2 = new HeightmapObject();

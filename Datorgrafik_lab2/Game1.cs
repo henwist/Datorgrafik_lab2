@@ -78,6 +78,7 @@ namespace Datorgrafik_lab2
             graphics.PreferredBackBufferWidth = 500;
             graphics.PreferredBackBufferHeight = 500;
             graphics.IsFullScreen = false;
+            graphics.GraphicsProfile = GraphicsProfile.HiDef;
             graphics.ApplyChanges();
 
             figure = new Figure();
@@ -379,6 +380,8 @@ namespace Datorgrafik_lab2
 
                 //boxes
                 //graphics.GraphicsDevice.DrawInstancedPrimitives(PrimitiveType.TriangleList, 0, 0, tree.vertexBuffer.VertexCount, 0, tree.indexBuffer.IndexCount / 3, INSTANCECOUNT);
+
+                sceneManager.Draw(myeffect, gameTime);
 
             }
             //}
