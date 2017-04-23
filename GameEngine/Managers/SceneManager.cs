@@ -55,7 +55,7 @@ namespace GameEngine.Managers
         private void createHeightmapObjects()
         {
             HeightmapObject hmobj = new HeightmapObject();
-            hmobj.scaleFactor = 0.1f*Vector3.One;
+            hmobj.scaleFactor = 0.01f*Vector3.One;
             hmobj.position = Vector3.Zero;
             hmobj.terrainMapName = "..\\..\\..\\..\\Content\\Textures\\Play.png";
             hmobj.textureNames = new string[] {
@@ -95,7 +95,7 @@ namespace GameEngine.Managers
             hmobj.objectWorld = Matrix.Identity;
             hmobj.world = Matrix.Identity;
             hmobj.breakUpInNumParts =2; //16 //match with count of textureNames above
-            hmobj.spacingBetweenParts = new Vector3(0f,2f,0f);
+            hmobj.spacingBetweenParts = new Vector3(0f,20f,0f);
             heightmapObjects.Add(hmobj);
 
             //HeightmapObject hmobj2 = new HeightmapObject();
