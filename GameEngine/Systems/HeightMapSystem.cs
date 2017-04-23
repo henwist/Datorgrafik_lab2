@@ -42,6 +42,12 @@ namespace GameEngine.Systems
 
         }
 
+        private float[,] GetHeightData(HeightmapObject hmobj)
+        {
+            //use terrainMapName to distinguish the hmobjs.
+            return new float[0,0]; // to be continued...
+        }
+
 
         private HeightmapComponent CreateHeightmapComponent(HeightmapComponent cmp)
         {
@@ -64,7 +70,13 @@ namespace GameEngine.Systems
                 indexCount = iCount,
                 vertexCount = vCount,
 
-                scaleFactor = cmp.scaleFactor
+                scaleFactor = cmp.scaleFactor,
+
+                 terrainWidth = cmp.terrainWidth,
+                 terrainHeight = cmp.terrainHeight,
+                 heightData = cmp.heightData,
+                 
+                 
             };
 
             return partCmp;

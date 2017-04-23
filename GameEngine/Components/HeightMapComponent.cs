@@ -10,8 +10,8 @@ namespace GameEngine.Components
     public class HeightmapComponent : Component
     {
 
-        public int terrainWidth  { get; private set; }
-        public int terrainHeight { get; private set; }
+        public int terrainWidth  { get;  set; }
+        public int terrainHeight { get;  set; }
 
         public Vector3 scaleFactor { get; set; }
         public Vector3 position { get; set; }
