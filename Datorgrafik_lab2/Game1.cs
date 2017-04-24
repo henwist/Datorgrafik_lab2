@@ -55,8 +55,8 @@ namespace Datorgrafik_lab2
 
         protected override void Initialize()
         {
-            graphics.PreferredBackBufferWidth = 500;
-            graphics.PreferredBackBufferHeight = 500;
+            graphics.PreferredBackBufferWidth = 1024;
+            graphics.PreferredBackBufferHeight = 768;
             graphics.IsFullScreen = false;
             graphics.GraphicsProfile = GraphicsProfile.HiDef;
             graphics.ApplyChanges();
@@ -222,6 +222,8 @@ namespace Datorgrafik_lab2
         protected override void Draw(GameTime gameTime)
         {
             device.Clear(Color.DarkSlateBlue);
+
+            Window.Title = "Datorgrafik_lab2 av: Rasmus Lundquist(S142465) och Henrik Wistbacka(S142066) - a,s,d,w,e tangenter fungerar.";
 
 
             foreach (EffectPass pass in myeffect.Techniques[(int)EnumTechnique.CurrentTechnique].Passes)
