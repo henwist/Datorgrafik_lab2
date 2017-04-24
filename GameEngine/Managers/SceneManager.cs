@@ -57,8 +57,8 @@ namespace GameEngine.Managers
             HeightmapObject hmobj = new HeightmapObject();
             hmobj.scaleFactor = 0.01f*Vector3.One;
             hmobj.position = Vector3.Zero;
-            hmobj.terrainMapName = "..\\..\\..\\..\\Content\\Textures\\Play.png";
-            hmobj.textureNames = new string[] {
+            hmobj.terrainFileName = "..\\..\\..\\..\\Content\\Textures\\Play.png";
+            hmobj.textureFileNames = new string[] {
                                             "..\\..\\..\\..\\Content\\Textures\\grass.png",
                                             "..\\..\\..\\..\\Content\\Textures\\fire.png",
                                             //"..\\..\\..\\..\\Content\\Textures\\grass.png",

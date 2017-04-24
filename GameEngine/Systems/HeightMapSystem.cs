@@ -42,7 +42,7 @@ namespace GameEngine.Systems
 
         }
 
-        private float[,] GetHeightData(HeightmapObject hmobj)
+        private float[,] GetHeightData(string terrainMapName)
         {
             //use terrainMapName to distinguish the hmobjs.
             return new float[0,0]; // to be continued...
@@ -222,7 +222,7 @@ namespace GameEngine.Systems
         {
             foreach (HeightmapObject hmobj in hmobjects)
             {
-                HeightmapComponent cmp = new HeightmapComponent(gd, hmobj.scaleFactor, hmobj.terrainMapName, hmobj.textureNames, hmobj.world);
+                HeightmapComponent cmp = new HeightmapComponent(gd, hmobj.scaleFactor, hmobj.terrainFileName, hmobj.textureFileNames, hmobj.world);
                 cmp.breakUpInNumParts = hmobj.breakUpInNumParts;
                 cmp.spacingBetweenParts = hmobj.spacingBetweenParts;
 

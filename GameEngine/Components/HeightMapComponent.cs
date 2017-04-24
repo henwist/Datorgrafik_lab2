@@ -9,7 +9,7 @@ namespace GameEngine.Components
 {
     public class HeightmapComponent : Component
     {
-
+        public string terrainFileName { get; set; }
         public int terrainWidth  { get;  set; }
         public int terrainHeight { get;  set; }
 
@@ -41,9 +41,11 @@ namespace GameEngine.Components
 
         public Vector3 spacingBetweenParts { get; set; }
 
-        public HeightmapComponent(GraphicsDevice gd, Vector3 scaleFactor, string pictureFileName, string[] textureFileNames, Matrix world)
+        public HeightmapComponent(GraphicsDevice gd, Vector3 scaleFactor, string terrainFileName, string[] textureFileNames, Matrix world)
         {
-            bmpHeightdata = new Bitmap(pictureFileName);
+            this.terrainFileName = terrainFileName;
+
+            bmpHeightdata = new Bitmap(terrainFileName);
             terrainHeight = bmpHeightdata.Height;
             terrainWidth = bmpHeightdata.Width;
 
