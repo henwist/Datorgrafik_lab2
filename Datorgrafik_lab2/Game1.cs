@@ -46,10 +46,10 @@ namespace Datorgrafik_lab2
         Texture2D grass;
 
         instance_matrice[] objectWorldMatrices;
-        instance_pos[] objectWorldPos;
+        //instance_pos[] objectWorldPos;
 
         static readonly int MATRICE_CHANGE_EVERY_X_INSTANCES_FREQUENCY = 5;
-        static readonly int OBJECTPOS_CHANGE_EVERY_X_INSTANCES_FREQUENCY = 1;
+
         static readonly int COUNTOBJECTPOSITIONS = 10; // set to something dividable by MATRICE_CHANGE_EVERY_X_INSTANCES_FREQUENCY.
         static readonly int INSTANCECOUNT = COUNTOBJECTPOSITIONS;
         static readonly int COUNTOBJECTMATRICES = COUNTOBJECTPOSITIONS / MATRICE_CHANGE_EVERY_X_INSTANCES_FREQUENCY;
@@ -57,8 +57,8 @@ namespace Datorgrafik_lab2
         VertexBuffer matriceIVB;
         VertexDeclaration matriceVD;
 
-        VertexBuffer posIVB;
-        VertexDeclaration posVD;
+        //VertexBuffer posIVB;
+        //VertexDeclaration posVD;
 
         private SceneManager sceneManager;
 
@@ -105,7 +105,7 @@ namespace Datorgrafik_lab2
                                              new VertexElement(48, VertexElementFormat.Vector4, VertexElementUsage.TextureCoordinate, 3)
                                              );
 
-            posVD = new VertexDeclaration(new VertexElement(0, VertexElementFormat.Vector4, VertexElementUsage.TextureCoordinate, 0));
+            //posVD = new VertexDeclaration(new VertexElement(0, VertexElementFormat.Vector4, VertexElementUsage.TextureCoordinate, 0));
         }
 
 
@@ -117,13 +117,13 @@ namespace Datorgrafik_lab2
             matriceIVB = new VertexBuffer(graphics.GraphicsDevice, matriceVD, COUNTOBJECTMATRICES, BufferUsage.None);
             matriceIVB.SetData<instance_matrice>(objectWorldMatrices);
 
-            posIVB = new VertexBuffer(graphics.GraphicsDevice, posVD, COUNTOBJECTPOSITIONS, BufferUsage.None);
-            posIVB.SetData<instance_pos>(objectWorldPos);
+            //posIVB = new VertexBuffer(graphics.GraphicsDevice, posVD, COUNTOBJECTPOSITIONS, BufferUsage.None);
+            //posIVB.SetData<instance_pos>(objectWorldPos);
 
-            bindings = new VertexBufferBinding[3];
+            bindings = new VertexBufferBinding[2];
             bindings[0] = new VertexBufferBinding(tree.vertexBuffer);
             bindings[1] = new VertexBufferBinding(matriceIVB, 0, INSTANCECOUNT);
-            bindings[2] = new VertexBufferBinding(posIVB, 0, OBJECTPOS_CHANGE_EVERY_X_INSTANCES_FREQUENCY);
+            //bindings[2] = new VertexBufferBinding(posIVB, 0, OBJECTPOS_CHANGE_EVERY_X_INSTANCES_FREQUENCY);
 
 
         }
@@ -136,10 +136,10 @@ namespace Datorgrafik_lab2
 
         }
 
-        struct instance_pos
-        {
-            public Vector4 position;
-        }
+        //struct instance_pos
+        //{
+        //    public Vector4 position;
+        //}
 
         private void initMatrices()
         {
@@ -163,13 +163,13 @@ namespace Datorgrafik_lab2
 
 
             ////////////////
-            objectWorldPos = new instance_pos[COUNTOBJECTPOSITIONS];
+            //objectWorldPos = new instance_pos[COUNTOBJECTPOSITIONS];
 
-            index = 0;
-            foreach (instance_pos ipos in objectWorldPos)
-            {
-                objectWorldPos[index++].position = new Vector4((float)Math.Pow(index, 1.3), 0, 0, 0);
-            }
+            //index = 0;
+            //foreach (instance_pos ipos in objectWorldPos)
+            //{
+            //    objectWorldPos[index++].position = new Vector4((float)Math.Pow(index, 1.3), 0, 0, 0);
+            //}
 
 
         }
