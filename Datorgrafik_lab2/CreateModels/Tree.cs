@@ -47,8 +47,7 @@ namespace Datorgrafik_lab2.CreateModels
         private Vector3 directionL;
         private Vector3 directionR;
 
-        private int fCount;
-        private int fCountTwice;
+
 
         public static readonly Vector3 ONE = new Vector3(1, -2, 1);
         public static readonly Vector3 TWO = new Vector3(-1, -2, -1);
@@ -103,9 +102,6 @@ namespace Datorgrafik_lab2.CreateModels
             directionF = new Vector3(0, 1, 0);
             directionL = new Vector3(0, 1, 0);
             directionR = new Vector3(0, 1, 0);
-
-            fCount = originalDna.Count(x => x.Equals(recursiveStrings[0].ToCharArray()[0]));
-            fCountTwice = 2 * fCount;
 
 
             buildDna(ref this.dna, 0);

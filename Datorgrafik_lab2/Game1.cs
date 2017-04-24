@@ -25,13 +25,10 @@ namespace Datorgrafik_lab2
         VertexBuffer figureBuffer;
         IndexBuffer figureIndices;
 
-        Matrix objRotation;
-
         private float angle = 0f;
 
         private Matrix _view, _projection;
 
-        //private Vector3 cameraPosition = new Vector3(0.0f, 0.0f, 70.0f);
         private Vector3 cameraPosition = new Vector3(0.0f, 40.0f, 1.0f);
 
         float radx = 0f;
@@ -45,25 +42,7 @@ namespace Datorgrafik_lab2
 
         Texture2D grass;
 
-        instance_matrice[] objectWorldMatrices;
-        //instance_pos[] objectWorldPos;
-
-        static readonly int MATRICE_CHANGE_EVERY_X_INSTANCES_FREQUENCY = 5;
-
-        static readonly int COUNTOBJECTPOSITIONS = 10; // set to something dividable by MATRICE_CHANGE_EVERY_X_INSTANCES_FREQUENCY.
-        static readonly int INSTANCECOUNT = COUNTOBJECTPOSITIONS;
-        static readonly int COUNTOBJECTMATRICES = COUNTOBJECTPOSITIONS / MATRICE_CHANGE_EVERY_X_INSTANCES_FREQUENCY;
-        VertexBufferBinding[] bindings;
-        VertexBuffer matriceIVB;
-        VertexDeclaration matriceVD;
-
-        //VertexBuffer posIVB;
-        //VertexDeclaration posVD;
-
         private SceneManager sceneManager;
-
-
-        Tree tree;
 
         public CameraComponent camera { get; protected set; }
 
@@ -83,95 +62,7 @@ namespace Datorgrafik_lab2
 
             figure = new Figure();
 
-            tree = new Tree(graphics.GraphicsDevice, 1f, MathHelper.PiOver4 + 0.4f, "F[LF]F[RF]F", 0, 1f, new string[] { "F" });
-
-            GenerateIVD();
-
-            t();
-
-
-
             base.Initialize();
-        }
-
-
-        private void GenerateIVD()
-        {
-
-            matriceVD = new VertexDeclaration(
-                                             new VertexElement(0, VertexElementFormat.Vector4, VertexElementUsage.TextureCoordinate, 0),
-                                             new VertexElement(16, VertexElementFormat.Vector4, VertexElementUsage.TextureCoordinate, 1),
-                                             new VertexElement(32, VertexElementFormat.Vector4, VertexElementUsage.TextureCoordinate, 2),
-                                             new VertexElement(48, VertexElementFormat.Vector4, VertexElementUsage.TextureCoordinate, 3)
-                                             );
-
-            //posVD = new VertexDeclaration(new VertexElement(0, VertexElementFormat.Vector4, VertexElementUsage.TextureCoordinate, 0));
-        }
-
-
-        private void t()
-        {
-
-            initMatrices();
-
-            matriceIVB = new VertexBuffer(graphics.GraphicsDevice, matriceVD, COUNTOBJECTMATRICES, BufferUsage.None);
-            matriceIVB.SetData<instance_matrice>(objectWorldMatrices);
-
-            //posIVB = new VertexBuffer(graphics.GraphicsDevice, posVD, COUNTOBJECTPOSITIONS, BufferUsage.None);
-            //posIVB.SetData<instance_pos>(objectWorldPos);
-
-            bindings = new VertexBufferBinding[2];
-            bindings[0] = new VertexBufferBinding(tree.vertexBuffer);
-            bindings[1] = new VertexBufferBinding(matriceIVB, 0, INSTANCECOUNT);
-            //bindings[2] = new VertexBufferBinding(posIVB, 0, OBJECTPOS_CHANGE_EVERY_X_INSTANCES_FREQUENCY);
-
-
-        }
-
-
-        struct instance_matrice
-        {
-            public Matrix matrice;
-            //public Vector4 position;
-
-        }
-
-        //struct instance_pos
-        //{
-        //    public Vector4 position;
-        //}
-
-        private void initMatrices()
-        {
-            Random rnd = new Random();
-
-            objectWorldMatrices = new instance_matrice[COUNTOBJECTMATRICES];
-
-            float x = 0, y = 0, z = 0;
-
-            float[] localRotation = { .7f, 1.57f };
-
-            int index = 0;
-            foreach (instance_matrice m in objectWorldMatrices)
-            {
-                objectWorldMatrices[index].matrice = Matrix.Identity
-                                             * Matrix.CreateRotationY(localRotation[index]) /** Matrix.CreateTranslation(pos = new Vector3((x++) * scale, (x % 2) * scale, (z++) * scale))*/
-                                             ;//* Matrix.CreateScale(rnd.Next(100, 140) / 100f);
-                //objectWorldMatrices[index++].position = new Vector4((float)Math.Pow(index, 1.3));
-            }
-
-
-
-            ////////////////
-            //objectWorldPos = new instance_pos[COUNTOBJECTPOSITIONS];
-
-            //index = 0;
-            //foreach (instance_pos ipos in objectWorldPos)
-            //{
-            //    objectWorldPos[index++].position = new Vector4((float)Math.Pow(index, 1.3), 0, 0, 0);
-            //}
-
-
         }
 
 
@@ -185,8 +76,6 @@ namespace Datorgrafik_lab2
             figureIndices = new IndexBuffer(GraphicsDevice, IndexElementSize.ThirtyTwoBits, figure.indices.Length, BufferUsage.None);
 
             grass = Content.Load<Texture2D>("Textures/grass");
-
-
 
             _view = Matrix.CreateLookAt(cameraPosition, Vector3.Zero, Vector3.Up);
             _projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, 4.0f / 3.0f, 1, 3000);
@@ -315,10 +204,7 @@ namespace Datorgrafik_lab2
 
         private void setCustomShaderParameters()
         {
-
-
-
-            myeffect.Parameters["World"].SetValue(/*objectWorldMatrices[counter++ % countObjectMatrices]*/
+            myeffect.Parameters["World"].SetValue(
                             Matrix.CreateRotationX(radx)
                             * Matrix.CreateRotationY(rady)
                             * Matrix.CreateRotationZ(radz)
@@ -326,13 +212,11 @@ namespace Datorgrafik_lab2
                             * Matrix.CreateTranslation(translatex, translatey, translatez));
 
 
-            //myeffect.Parameters["World"].SetValue(Matrix.Identity);
             myeffect.Parameters["View"].SetValue(_view);
             myeffect.Parameters["Projection"].SetValue(_projection);
             myeffect.Parameters["Texture"].SetValue(grass);
-
-
         }
+
 
         protected override void Draw(GameTime gameTime)
         {
@@ -351,46 +235,13 @@ namespace Datorgrafik_lab2
 
                 graphics.GraphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, figure.vertices.Count / 3);
 
-                //Trying rotation of object's world for all objects.
-                //objRotation = Matrix.CreateRotationY(radObj) * Matrix.CreateRotationZ(0.0001f);
-                //bindings[1].VertexBuffer.GetData<instance_matrice>(objectWorldMatrices);
-
-                //int i = 0;
-                //foreach (instance_matrice m in objectWorldMatrices)
-                //{
-                //    Vector3 translate = m.matrice.Translation;
-                //    //translate.Normalize();
-                //    objectWorldMatrices[i++].matrice = m.matrice * Matrix.CreateTranslation(-1 * translate) * objRotation * Matrix.CreateTranslation(translate);
-
-                //}
-
-                //bindings[1].VertexBuffer.SetData<instance_matrice>(objectWorldMatrices);
-                ////end trying rotation.
-
-
-                ////setBasiceffectParameters();
                 setCustomShaderParameters();
-
-                //graphics.GraphicsDevice.Indices = tree.indexBuffer;
-
-                //graphics.GraphicsDevice.SetVertexBuffers(bindings);
-
-                ////tree
-                //graphics.GraphicsDevice.DrawInstancedPrimitives(PrimitiveType.LineList, 0, 0, tree.vertexBuffer.VertexCount, 0, tree.indexBuffer.IndexCount / 2, INSTANCECOUNT);
-
-                //boxes
-                //graphics.GraphicsDevice.DrawInstancedPrimitives(PrimitiveType.TriangleList, 0, 0, tree.vertexBuffer.VertexCount, 0, tree.indexBuffer.IndexCount / 3, INSTANCECOUNT);
 
                 sceneManager.Draw(myeffect, gameTime);
 
             }
-            //}
-
-            //sceneManager.Draw(effect, gameTime);
 
             base.Draw(gameTime);
-
-
         }
 
 
