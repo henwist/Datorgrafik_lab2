@@ -31,6 +31,7 @@ namespace GameEngine.Managers
 
             heightmapSystem = new HeightmapSystem(gd, heightmapObjects);
 
+            //float[,] hdata = HeightmapSystem.GetHeightData("..\\..\\..\\..\\Content\\Textures\\Play.png");
             //LoadComponents();
             //draw_sys = new DrawSystem(spriteBatch);
         }

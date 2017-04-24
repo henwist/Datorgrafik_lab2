@@ -42,10 +42,23 @@ namespace GameEngine.Systems
 
         }
 
-        private float[,] GetHeightData(string terrainMapName)
+        public static float[,] GetHeightData(string terrainFileName)
         {
-            //use terrainMapName to distinguish the hmobjs.
-            return new float[0,0]; // to be continued...
+            float[,] array;
+
+            try
+            {
+                array = ComponentManager.GetComponents<HeightmapComponent>()
+                .Cast<HeightmapComponent>()
+                .First(x => x.terrainFileName.Equals(terrainFileName))
+                .heightData;
+            }
+            catch(System.InvalidOperationException)
+            {
+                array = new float[0, 0];
+            }
+
+            return array;
         }
 
 
@@ -154,6 +167,8 @@ namespace GameEngine.Systems
                     partCmp.texture.Name = textureName;
 
                     partCmp.spacingBetweenParts = counter++ * cmp.spacingBetweenParts;
+
+                    partCmp.terrainFileName = cmp.terrainFileName;
 
                     ComponentManager.StoreComponent(ComponentManager.GetNewId(), partCmp);
                 }
