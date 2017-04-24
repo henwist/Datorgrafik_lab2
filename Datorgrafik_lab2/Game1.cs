@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
+using static Datorgrafik_lab2.Enums.Enums;
 
 namespace Datorgrafik_lab2
 {
@@ -42,7 +43,7 @@ namespace Datorgrafik_lab2
 
         Texture2D grass;
 
-        private SceneManager sceneManager;
+        private Managers.SceneManager sceneManager;
 
         public CameraComponent camera { get; protected set; }
 
@@ -81,7 +82,7 @@ namespace Datorgrafik_lab2
             _projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, 4.0f / 3.0f, 1, 3000);
 
             myeffect = Content.Load<Effect>("Effects/myeffect");
-            sceneManager = new SceneManager(graphics.GraphicsDevice, Matrix.Identity);
+            sceneManager = new Managers.SceneManager(graphics.GraphicsDevice, Matrix.Identity);
 
             RasterizerState rs = new RasterizerState();
             rs.CullMode = CullMode.None;
@@ -223,7 +224,7 @@ namespace Datorgrafik_lab2
             device.Clear(Color.DarkSlateBlue);
 
 
-            foreach (EffectPass pass in myeffect.CurrentTechnique.Passes)
+            foreach (EffectPass pass in myeffect.Techniques[(int)EnumTechnique.CurrentTechnique].Passes)
             {
                 pass.Apply();
 

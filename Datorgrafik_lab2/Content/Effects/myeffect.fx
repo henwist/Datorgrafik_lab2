@@ -49,30 +49,30 @@ struct VertexShaderOutput
 };
 
 
-//VertexShaderOutput MainVS(in float4 position : SV_POSITION,
-//	in VertexShaderInput input,
-//	in float4x4 objWorld : TEXCOORD1,
-//	in float4 perInstancePos : TEXCOORD5)
-//{
-//
-//	VertexShaderOutput output = (VertexShaderOutput)0;
-//
-//	output.Position = mul(position, mul(objWorld, mul(World, mul(View, Projection))));
-//	output.Position = output.Position + perInstancePos;
-//	output.Color = output.Position;
-//	output.TexCoord = input.TexCoord;
-//
-//// Compute lighting, using a simple Lambert model.
-////Start hämtat från http://community.monogame.net/t/help-cant-use-setinstancebuffer/8233
-////float3 worldNormal = mul(input.Normal, objWorld);
-//float diffuseAmount = max(-dot(input.Normal, LightDirection), 0);
-//float3 lightingResult = saturate(diffuseAmount * DiffuseLight + AmbientLight);
-//output.Color = float4(lightingResult, 1);
-////Slut hämtat från http://community.monogame.net/t/help-cant-use-setinstancebuffer/8233
-//
-//	return output;
-//}
+//VertexShader for instanced objects (will need a objMatrice per instance).
+VertexShaderOutput InstanceVS(in float4 position : SV_POSITION,
+	in VertexShaderInput input,
+	in float4x4 objWorld : TEXCOORD1)
+{
 
+	VertexShaderOutput output = (VertexShaderOutput)0;
+
+	output.Position = mul(position, mul(objWorld, mul(World, mul(View, Projection))));
+	output.TexCoord = input.TexCoord;
+
+	// Compute lighting, using a simple Lambert model.
+	//Start hämtat från http://community.monogame.net/t/help-cant-use-setinstancebuffer/8233
+	//float3 worldNormal = mul(input.Normal, objWorld);
+	float diffuseAmount = max(-dot(input.Normal, LightDirection), 0);
+	float3 lightingResult = saturate(diffuseAmount * DiffuseLight + AmbientLight);
+	output.Color = float4(lightingResult, 1);
+	//Slut hämtat från http://community.monogame.net/t/help-cant-use-setinstancebuffer/8233
+
+	return output;
+}
+
+
+//VertexShader for ordinary graphics.
 VertexShaderOutput MainVS(in float4 position : SV_POSITION,
 	in VertexShaderInput input)
 {
@@ -101,11 +101,21 @@ float4 MainPS(VertexShaderOutput input) : COLOR
 	return output;
 }
 
-technique BasicColorDrawing
+technique BasicVertexPositionNormalDrawing
 {
 	pass P0
 	{
 		VertexShader = compile VS_SHADERMODEL MainVS();
+		PixelShader = compile PS_SHADERMODEL MainPS();
+	}
+};
+
+
+technique InstancedVertexPositionNormalDrawing
+{
+	pass P0
+	{
+		VertexShader = compile VS_SHADERMODEL InstanceVS();
 		PixelShader = compile PS_SHADERMODEL MainPS();
 	}
 };
