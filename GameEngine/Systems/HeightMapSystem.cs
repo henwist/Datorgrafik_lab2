@@ -20,6 +20,12 @@ namespace GameEngine.Systems
         private List<HeightmapObject> hmobjects;
         private GraphicsDevice gd;
 
+        public struct HeightData
+        {
+            public float[,] heightData;
+            public int terrainWidth;
+            public int terrainHeight;
+        }
 
         public HeightmapSystem(GraphicsDevice gd, List<HeightmapObject> hmobjects)
         {
@@ -42,23 +48,27 @@ namespace GameEngine.Systems
 
         }
 
-        public static float[,] GetHeightData(string terrainFileName)
+        public static HeightData GetHeightData(string terrainFileName)
         {
-            float[,] array;
+            HeightData heightData = new HeightData();
 
             try
             {
-                array = ComponentManager.GetComponents<HeightmapComponent>()
+                HeightmapComponent cmp = ComponentManager.GetComponents<HeightmapComponent>()
                 .Cast<HeightmapComponent>()
-                .First(x => x.terrainFileName.Equals(terrainFileName))
-                .heightData;
+                .First(x => x.terrainFileName.Equals(terrainFileName));
+
+                heightData.heightData = cmp.heightData;
+                heightData.terrainWidth = cmp.terrainWidth;
+                heightData.terrainHeight = cmp.terrainHeight;
+
             }
             catch(System.InvalidOperationException)
             {
-                array = new float[0, 0];
+                heightData = new HeightData();
             }
 
-            return array;
+            return heightData;
         }
 
 
@@ -206,7 +216,7 @@ namespace GameEngine.Systems
 
                 cmp.objectWorld = Matrix.CreateTranslation(cmp.position + cmp.spacingBetweenParts)
                                 * Matrix.CreateScale(cmp.scaleFactor);
-                                 
+
 
 
                 effect.Parameters["World"].SetValue(currentWorldMatrix * cmp.objectWorld);

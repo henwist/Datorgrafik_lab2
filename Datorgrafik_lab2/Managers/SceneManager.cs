@@ -19,21 +19,25 @@ namespace Datorgrafik_lab2.Managers
 
         private HeightmapSystem heightmapSystem;
 
-        private Matrix world;
+        private Microsoft.Xna.Framework.Matrix world;
 
-        private instance_matrice[] objectWorldMatrices;
+        private Matrix[] objectWorldMatrices;
         private static readonly int INSTANCECOUNT = 100;
         private VertexBufferBinding[] bindings;
         private VertexBuffer matriceIVB;
         private VertexDeclaration matriceVD;
         private Tree tree;
 
-        struct instance_matrice
-        {
-            public Matrix matrice;
-        }
+        private float HEIGHTMAP_SCALE = 0.1f;
 
-        public SceneManager(GraphicsDevice gd, Matrix world)
+        private HeightmapSystem.HeightData heightMapData;
+
+        //struct Matrix
+        //{
+        //    public Microsoft.Xna.Framework.Matrix matrice;
+        //}
+
+        public SceneManager(GraphicsDevice gd, Microsoft.Xna.Framework.Matrix world)
         {
             this.gd = gd;
             this.world = world;
@@ -43,7 +47,7 @@ namespace Datorgrafik_lab2.Managers
 
             heightmapSystem = new HeightmapSystem(gd, heightmapObjects);
 
-            float[,] hdata = HeightmapSystem.GetHeightData("..\\..\\..\\..\\Content\\Textures\\Play.png");
+            heightMapData = HeightmapSystem.GetHeightData("..\\..\\..\\..\\Content\\Textures\\Play.png");
 
             tree = new Tree(gd, 1f, MathHelper.PiOver4 + 0.4f, "F[LF]F[RF]F", 0, 1f, new string[] { "F" });
 
@@ -63,7 +67,7 @@ namespace Datorgrafik_lab2.Managers
             initMatrices();
 
             matriceIVB = new VertexBuffer(gd, matriceVD, INSTANCECOUNT, BufferUsage.None);
-            matriceIVB.SetData<instance_matrice>(objectWorldMatrices);
+            matriceIVB.SetData<Matrix>(objectWorldMatrices);
 
             bindings = new VertexBufferBinding[2];
             bindings[0] = new VertexBufferBinding(tree.vertexBuffer);
@@ -79,18 +83,25 @@ namespace Datorgrafik_lab2.Managers
         {
             Random rnd = new Random();
 
-            objectWorldMatrices = new instance_matrice[INSTANCECOUNT];
+            objectWorldMatrices = new Matrix[INSTANCECOUNT];
 
-            float x = 0, y = 0, z = 0;
-
-            float[] localRotation = { .7f, 1.57f };
+            int x = 0, z = 0;
+            float y = 0f;
 
             int index = 0;
-            foreach (instance_matrice m in objectWorldMatrices)
+            foreach (Matrix m in objectWorldMatrices)
             {
-                objectWorldMatrices[index].matrice = Matrix.Identity
-                                             * Matrix.CreateRotationY(localRotation[index]) /** Matrix.CreateTranslation(pos = new Vector3((x++) * scale, (x % 2) * scale, (z++) * scale))*/
-                                             ;//* Matrix.CreateScale(rnd.Next(100, 140) / 100f);
+                x = rnd.Next(0, heightMapData.terrainWidth);
+                z = rnd.Next(0, heightMapData.terrainHeight);
+                y = heightMapData.heightData[x, z];
+
+
+                objectWorldMatrices[index++] = Matrix.Identity
+                                             * Matrix.CreateScale(rnd.Next(10, 14) * HEIGHTMAP_SCALE)
+                                             * Matrix.CreateTranslation(
+                                                new Vector3(x, y, -z) * HEIGHTMAP_SCALE);
+                                             //* Matrix.CreateScale(rnd.Next(100, 140) * HEIGHTMAP_SCALE);
+                                            // * Matrix.CreateRotationY(rnd.Next(0, 171) / 100f);
                 //objectWorldMatrices[index++].position = new Vector4((float)Math.Pow(index, 1.3));
             }
 
@@ -107,24 +118,21 @@ namespace Datorgrafik_lab2.Managers
 
             heightmapSystem.Draw(effect);
 
-            //Trying rotation of object's world for all objects.
-            //objRotation = Matrix.CreateRotationY(radObj) * Matrix.CreateRotationZ(0.0001f);
-            //bindings[1].VertexBuffer.GetData<instance_matrice>(objectWorldMatrices);
+            ////Trying rotation of object's world for all objects.
+            ////objRotation = Matrix.CreateRotationY(radObj) * Matrix.CreateRotationZ(0.0001f);
+            //bindings[1].VertexBuffer.GetData<Matrix>(objectWorldMatrices);
 
             //int i = 0;
-            //foreach (instance_matrice m in objectWorldMatrices)
+            //foreach (Matrix m in objectWorldMatrices)
             //{
-            //    Vector3 translate = m.matrice.Translation;
-            //    //translate.Normalize();
-            //    objectWorldMatrices[i++].matrice = m.matrice * Matrix.CreateTranslation(-1 * translate) * objRotation * Matrix.CreateTranslation(translate);
+            //    //Vector3 translate = m.matrice.Translation;
+            //    ////translate.Normalize()<
+            //    objectWorldMatrices[i++] = heightmapSystem.objWorld; /*m.matrice * Matrix.CreateTranslation(-1 * translate) * objRotation * Matrix.CreateTranslation(translate);*/
 
             //}
 
-            //bindings[1].VertexBuffer.SetData<instance_matrice>(objectWorldMatrices);
+            //bindings[1].VertexBuffer.SetData<Matrix>(objectWorldMatrices);
             ////end trying rotation.
-
-
-            ////setBasiceffectParameters();
 
             foreach (EffectPass pass in effect.Techniques[(int)EnumTechnique.InstancedTechnique].Passes)
             {
@@ -152,7 +160,7 @@ namespace Datorgrafik_lab2.Managers
         private void createHeightmapObjects()
         {
             HeightmapObject hmobj = new HeightmapObject();
-            hmobj.scaleFactor = 0.01f*Vector3.One;
+            hmobj.scaleFactor = HEIGHTMAP_SCALE*Vector3.One;
             hmobj.position = Vector3.Zero;
             hmobj.terrainFileName = "..\\..\\..\\..\\Content\\Textures\\Play.png";
             hmobj.textureFileNames = new string[] {
@@ -189,8 +197,8 @@ namespace Datorgrafik_lab2.Managers
                                             //"..\\..\\..\\..\\Content\\Textures\\grass.png",
                                             //"..\\..\\..\\..\\Content\\Textures\\fire.png",
             };
-            hmobj.objectWorld = Matrix.Identity;
-            hmobj.world = Matrix.Identity;
+            hmobj.objectWorld = Microsoft.Xna.Framework.Matrix.Identity;
+            hmobj.world = Microsoft.Xna.Framework.Matrix.Identity;
             hmobj.breakUpInNumParts =2; //16 //match with count of textureNames above
             hmobj.spacingBetweenParts = new Vector3(0f,20f,0f);
             heightmapObjects.Add(hmobj);

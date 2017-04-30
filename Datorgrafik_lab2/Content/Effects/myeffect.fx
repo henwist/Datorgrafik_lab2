@@ -57,7 +57,7 @@ VertexShaderOutput InstanceVS(in float4 position : SV_POSITION,
 
 	VertexShaderOutput output = (VertexShaderOutput)0;
 
-	output.Position = mul(position, mul(objWorld, mul(World, mul(View, Projection))));
+	output.Position = mul(position, mul(transpose(objWorld), mul(World, mul(View, Projection))));
 	output.TexCoord = input.TexCoord;
 
 	// Compute lighting, using a simple Lambert model.
