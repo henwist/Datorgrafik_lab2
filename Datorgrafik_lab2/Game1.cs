@@ -46,6 +46,7 @@ namespace Datorgrafik_lab2
         private Managers.SceneManager sceneManager;
 
         public CameraComponent camera { get; protected set; }
+        private int CAMERA_MOVE_SCALE = 10;
 
         public Game1()
         {
@@ -82,7 +83,7 @@ namespace Datorgrafik_lab2
             _projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, 4.0f / 3.0f, 1, 3000);
 
             myeffect = Content.Load<Effect>("Effects/myeffect");
-            sceneManager = new Managers.SceneManager(graphics.GraphicsDevice, Matrix.Identity);
+            sceneManager = new Managers.SceneManager(this, Matrix.Identity);
 
             RasterizerState rs = new RasterizerState();
             rs.CullMode = CullMode.None;
@@ -110,17 +111,17 @@ namespace Datorgrafik_lab2
             base.Update(gameTime);
 
 
-            if (Keyboard.GetState().IsKeyDown(Keys.Right))
-                cameraPosition.X += 1.0f;
+            //if (Keyboard.GetState().IsKeyDown(Keys.Right))
+            //    cameraPosition.X += 1.0f;
 
-            if (Keyboard.GetState().IsKeyDown(Keys.Left))
-                cameraPosition.X -= 1.0f;
+            //if (Keyboard.GetState().IsKeyDown(Keys.Left))
+            //    cameraPosition.X -= 1.0f;
 
-            if (Keyboard.GetState().IsKeyDown(Keys.Up))
-                cameraPosition.Y += 1.0f;
+            //if (Keyboard.GetState().IsKeyDown(Keys.Up))
+            //    cameraPosition.Y += 1.0f;
 
-            if (Keyboard.GetState().IsKeyDown(Keys.Down))
-                cameraPosition.Y -= 1.0f;
+            //if (Keyboard.GetState().IsKeyDown(Keys.Down))
+            //    cameraPosition.Y -= 1.0f;
 
             if (Keyboard.GetState().IsKeyDown(Keys.A))
                 radx += 0.1f;
@@ -143,26 +144,33 @@ namespace Datorgrafik_lab2
 
 
 
+
+            TransformComponent transform = ComponentManager.GetComponent<TransformComponent>(sceneManager.cameraID);
+            //CameraComponent curCam = ComponentManager.GetComponent<CameraComponent>();
+
             if (Keyboard.GetState().IsKeyDown(Keys.Z))
-                translatex += 1f;
+                transform.position.X += 1f * CAMERA_MOVE_SCALE;
 
             if (Keyboard.GetState().IsKeyDown(Keys.X))
-                translatey += 1f;
+                transform.position.Y += 1f * CAMERA_MOVE_SCALE;
 
             if (Keyboard.GetState().IsKeyDown(Keys.C))
-                translatez += 1f;
+                transform.position.Z += 1f * CAMERA_MOVE_SCALE;
 
 
             if (Keyboard.GetState().IsKeyDown(Keys.V))
-                translatex -= 1f;
+                transform.position.X -= 1f * CAMERA_MOVE_SCALE;
 
             if (Keyboard.GetState().IsKeyDown(Keys.B))
-                translatey -= 1f;
+                transform.position.Y -= 1f * CAMERA_MOVE_SCALE;
 
             if (Keyboard.GetState().IsKeyDown(Keys.N))
-                translatez -= 1f;
+                transform.position.Z -= 1f * CAMERA_MOVE_SCALE;
 
-            figure.RotateUpperRightLeg(posX += 0.000001f);
+            if (Keyboard.GetState().IsKeyDown(Keys.M))
+                transform.position.Z = transform.position.Y = transform.position.X = 0f;
+
+            sceneManager.Update(gameTime);
 
         }
 
@@ -213,8 +221,14 @@ namespace Datorgrafik_lab2
                             * Matrix.CreateTranslation(translatex, translatey, translatez));
 
 
-            myeffect.Parameters["View"].SetValue(_view);
-            myeffect.Parameters["Projection"].SetValue(_projection);
+            //myeffect.Parameters["View"].SetValue(_view);
+            //myeffect.Parameters["Projection"].SetValue(_projection);
+
+            Matrix viewMatrix = ComponentManager.GetComponent<CameraComponent>(sceneManager.cameraID).viewMatrix;
+            Matrix projMatrix = ComponentManager.GetComponent<CameraComponent>(sceneManager.cameraID).projectionMatrix;
+            myeffect.Parameters["View"].SetValue(viewMatrix);
+            myeffect.Parameters["Projection"].SetValue(projMatrix);
+
             myeffect.Parameters["Texture"].SetValue(grass);
         }
 
@@ -225,6 +239,8 @@ namespace Datorgrafik_lab2
 
             Window.Title = "Datorgrafik_lab2 av: Rasmus Lundquist(S142465) och Henrik Wistbacka(S142066) - a,s,d,w,e tangenter fungerar.";
 
+
+            setCustomShaderParameters();
 
             foreach (EffectPass pass in myeffect.Techniques[(int)EnumTechnique.CurrentTechnique].Passes)
             {
@@ -238,7 +254,6 @@ namespace Datorgrafik_lab2
 
                 graphics.GraphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, figure.vertices.Count / 3);
 
-                setCustomShaderParameters();
 
                 sceneManager.Draw(myeffect, gameTime);
 
@@ -248,26 +263,26 @@ namespace Datorgrafik_lab2
         }
 
 
-        private void CreateControllerBindings()
-        {
-            //controller.AddBinding(Keys.A, new Vector2(-10, 0));
-            //controller.AddBinding(Keys.D, new Vector2(10, 0));
-            //controller.AddBinding(Keys.W, new Vector2(0, -10));
-            //controller.AddBinding(Keys.S, new Vector2(0, 10));
-        }
+        //private void CreateControllerBindings()
+        //{
+        //    controller.AddBinding(Keys.A, new Vector2(-10, 0));
+        //    controller.AddBinding(Keys.D, new Vector2(10, 0));
+        //    controller.AddBinding(Keys.W, new Vector2(0, -10));
+        //    controller.AddBinding(Keys.S, new Vector2(0, 10));
+        //}
 
-        private void MovePlayer()
-        {
-            //ComponentManager.GetComponent<Transform>(player1.PlayerId).XVel = controller.GetNextMove().X;
-            //ComponentManager.GetComponent<Transform>(player1.PlayerId).YVel = controller.GetNextMove().Y;
+        //private void MoveCamera()
+        //{
+        //    ComponentManager.GetComponent<Transform>(player1.PlayerId).XVel = controller.GetNextMove().X;
+        //    ComponentManager.GetComponent<Transform>(player1.PlayerId).YVel = controller.GetNextMove().Y;
 
-        }
+        //}
 
 
-        private enum Constants : int
-        {
-            Pristine = 0,
-            GameLength = 6000
-        }
+        //private enum Constants : int
+        //{
+        //    Pristine = 0,
+        //    GameLength = 6000
+        //}
     }
 }

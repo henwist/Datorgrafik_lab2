@@ -26,45 +26,45 @@ namespace GameEngine.Systems
 
         public void Update(GameTime gameTime)
         {
-            List<ulong> comps = ComponentManager.GetAllEntitiesWithComp<TransformComponent>();
+            //List<ulong> comps = ComponentManager.GetAllEntitiesWithComp<TransformComponent>();
 
-            foreach (ulong c in comps)
-            {
-                CameraComponent camera = ComponentManager.GetComponent<CameraComponent>(c);
-                TransformComponent transform = ComponentManager.GetComponent<TransformComponent>(c);
+            //foreach (ulong c in comps)
+            //{
+            //    CameraComponent camera = ComponentManager.GetComponent<CameraComponent>(c);
+            //    TransformComponent transform = ComponentManager.GetComponent<TransformComponent>(c);
 
-                if (Keyboard.GetState().IsKeyDown(Keys.W))
-                {
-                    Matrix movement = Matrix.CreateRotationY(transform.rotation);
-                    Vector3 v = new Vector3(0, 0, transform.speed);
-                    v = Vector3.Transform(v, movement);
+            //    if (Keyboard.GetState().IsKeyDown(Keys.W))
+            //    {
+            //        Matrix movement = Matrix.CreateRotationY(transform.rotation);
+            //        Vector3 v = new Vector3(0, 0, transform.speed);
+            //        v = Vector3.Transform(v, movement);
 
-                    transform.position.Z += v.Z;
-                    transform.position.Z += v.X;
-                    //camera.cameraPosition += camera.cameraDirection * transform.speed;
-                }
-                if (Keyboard.GetState().IsKeyDown(Keys.S))
-                {
+            //        transform.position.Z += v.Z;
+            //        transform.position.Z += v.X;
+            //        //camera.cameraPosition += camera.cameraDirection * transform.speed;
+            //    }
+            //    if (Keyboard.GetState().IsKeyDown(Keys.S))
+            //    {
 
-                    Matrix movement = Matrix.CreateRotationY(transform.rotation);
-                    Vector3 v = new Vector3(0, 0, -transform.speed);
-                    v = Vector3.Transform(v, movement);
+            //        Matrix movement = Matrix.CreateRotationY(transform.rotation);
+            //        Vector3 v = new Vector3(0, 0, -transform.speed);
+            //        v = Vector3.Transform(v, movement);
 
-                    transform.position.Z += v.Z;
-                    transform.position.Z += v.X;
-                    //camera.cameraPosition -= camera.cameraDirection * transform.speed;
+            //        transform.position.Z += v.Z;
+            //        transform.position.Z += v.X;
+            //        //camera.cameraPosition -= camera.cameraDirection * transform.speed;
                     
-                }
+            //    }
                     
-                if (Keyboard.GetState().IsKeyDown(Keys.D))
-                    transform.rotation += transform.speed;
-                    //camera.cameraPosition += Vector3.Cross(camera.cameraUp, camera.cameraDirection) * transform.speed;
-                if (Keyboard.GetState().IsKeyDown(Keys.A))
-                    transform.rotation += transform.speed;
-                    //camera.cameraPosition -= Vector3.Cross(camera.cameraUp, camera.cameraDirection) * transform.speed;
+            //    if (Keyboard.GetState().IsKeyDown(Keys.D))
+            //        transform.rotation += transform.speed;
+            //        //camera.cameraPosition += Vector3.Cross(camera.cameraUp, camera.cameraDirection) * transform.speed;
+            //    if (Keyboard.GetState().IsKeyDown(Keys.A))
+            //        transform.rotation += transform.speed;
+            //        //camera.cameraPosition -= Vector3.Cross(camera.cameraUp, camera.cameraDirection) * transform.speed;
 
-                camera.CreateLookAt();
-            }
+            //    //camera.CreateLookAt();
+            //}
         }
     }
 }

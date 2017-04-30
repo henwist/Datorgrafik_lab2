@@ -8,11 +8,14 @@ using Microsoft.Xna.Framework.Content;
 using System;
 using Datorgrafik_lab2.CreateModels;
 using static Datorgrafik_lab2.Enums.Enums;
+using GameEngine.Managers;
+using Microsoft.Xna.Framework.Input;
 
 namespace Datorgrafik_lab2.Managers
 {
     public class SceneManager
     {
+        private Game game;
         private GraphicsDevice gd;
 
         private List<HeightmapObject> heightmapObjects;
@@ -27,29 +30,63 @@ namespace Datorgrafik_lab2.Managers
         private VertexBuffer matriceIVB;
         private VertexDeclaration matriceVD;
         private Tree tree;
+        private int TREE_SCALE_MIN = 5;
+        private int TREE_SCALE_MAX = 50;
 
-        private float HEIGHTMAP_SCALE = 0.1f;
+        private float HEIGHTMAP_SCALE = .1f;
 
         private HeightmapSystem.HeightData heightMapData;
+
+        private Vector3 cameraPos = new Vector3(200, 200, 200);
+        private Vector3 cameraTarget = new Vector3(0, 0, 0);
+        private Vector3 cameraUp = Vector3.Up;
+        public ulong cameraID { get; private set; }
+        
 
         //struct Matrix
         //{
         //    public Microsoft.Xna.Framework.Matrix matrice;
         //}
 
-        public SceneManager(GraphicsDevice gd, Microsoft.Xna.Framework.Matrix world)
+        public SceneManager(Game game, Microsoft.Xna.Framework.Matrix world)
         {
-            this.gd = gd;
+            this.game = game;
+            this.gd = game.GraphicsDevice;
             this.world = world;
 
+            createHeightmap();
+
+            createTreeStructures();
+
+            createCameraStructures();
+
+        }
+
+        private void createCameraStructures()
+        {
+            CameraComponent cameraCmp = new CameraComponent(cameraTarget, cameraUp, game.GraphicsDevice.DisplayMode.AspectRatio);
+
+            TransformComponent transform = new TransformComponent(new Vector3(200, 200, 200), 0f, 1f);
+
+            cameraID = ComponentManager.GetNewId();
+            ComponentManager.StoreComponent(cameraID, transform);
+            ComponentManager.StoreComponent(cameraID, cameraCmp);
+        }
+
+        private void createHeightmap()
+        {
             heightmapObjects = new List<HeightmapObject>();
             createHeightmapObjects();
 
             heightmapSystem = new HeightmapSystem(gd, heightmapObjects);
 
             heightMapData = HeightmapSystem.GetHeightData("..\\..\\..\\..\\Content\\Textures\\Play.png");
+        }
 
-            tree = new Tree(gd, 1f, MathHelper.PiOver4 + 0.4f, "F[LF]F[RF]F", 0, 1f, new string[] { "F" });
+
+        private void createTreeStructures()
+        {
+            tree = new Tree(gd, 1f, MathHelper.PiOver4 - 0.4f, "F[LF]F[RF]F", 0, 1f, new string[] { "F" });
 
             initStructures();
         }
@@ -87,6 +124,7 @@ namespace Datorgrafik_lab2.Managers
 
             int x = 0, z = 0;
             float y = 0f;
+            float treeScale = 1f;
 
             int index = 0;
             foreach (Matrix m in objectWorldMatrices)
@@ -95,13 +133,14 @@ namespace Datorgrafik_lab2.Managers
                 z = rnd.Next(0, heightMapData.terrainHeight);
                 y = heightMapData.heightData[x, z];
 
-
+                treeScale = rnd.Next(TREE_SCALE_MIN, TREE_SCALE_MAX) * HEIGHTMAP_SCALE;
                 objectWorldMatrices[index++] = Matrix.Identity
-                                             * Matrix.CreateScale(rnd.Next(10, 14) * HEIGHTMAP_SCALE)
+                                             * Matrix.CreateRotationY(rnd.Next(0, 171) / 100f)
+                                             * Matrix.CreateScale(treeScale)
                                              * Matrix.CreateTranslation(
                                                 new Vector3(x, y, -z) * HEIGHTMAP_SCALE);
-                                             //* Matrix.CreateScale(rnd.Next(100, 140) * HEIGHTMAP_SCALE);
-                                            // * Matrix.CreateRotationY(rnd.Next(0, 171) / 100f);
+                //* Matrix.CreateScale(rnd.Next(100, 140) * HEIGHTMAP_SCALE);
+                                             
                 //objectWorldMatrices[index++].position = new Vector4((float)Math.Pow(index, 1.3));
             }
 
@@ -110,12 +149,13 @@ namespace Datorgrafik_lab2.Managers
 
         public void Update(GameTime gameTime)
         {
-            //phys_sys.Update(gameTime);
+
+
         }
 
         public void Draw(Effect effect, GameTime gameTime)
         {
-
+            
             heightmapSystem.Draw(effect);
 
             ////Trying rotation of object's world for all objects.
@@ -133,6 +173,13 @@ namespace Datorgrafik_lab2.Managers
 
             //bindings[1].VertexBuffer.SetData<Matrix>(objectWorldMatrices);
             ////end trying rotation.
+
+            CameraSystem.Instance.Update(gameTime);
+
+            //Matrix viewMatrix = ComponentManager.GetComponent<CameraComponent>(cameraID).viewMatrix;
+            //Matrix projMatrix = ComponentManager.GetComponent<CameraComponent>(cameraID).projectionMatrix;
+            //effect.Parameters["View"].SetValue(viewMatrix);
+            //effect.Parameters["Projection"].SetValue(projMatrix);
 
             foreach (EffectPass pass in effect.Techniques[(int)EnumTechnique.InstancedTechnique].Passes)
             {
@@ -200,7 +247,7 @@ namespace Datorgrafik_lab2.Managers
             hmobj.objectWorld = Microsoft.Xna.Framework.Matrix.Identity;
             hmobj.world = Microsoft.Xna.Framework.Matrix.Identity;
             hmobj.breakUpInNumParts =2; //16 //match with count of textureNames above
-            hmobj.spacingBetweenParts = new Vector3(0f,20f,0f);
+            hmobj.spacingBetweenParts = new Vector3(0f,0f,0f);
             heightmapObjects.Add(hmobj);
 
             //HeightmapObject hmobj2 = new HeightmapObject();
