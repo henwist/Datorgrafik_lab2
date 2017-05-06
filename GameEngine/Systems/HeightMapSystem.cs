@@ -20,6 +20,7 @@ namespace GameEngine.Systems
         private List<HeightmapObject> hmobjects;
         private GraphicsDevice gd;
 
+
         public struct HeightData
         {
             public float[,] heightData;
@@ -29,6 +30,7 @@ namespace GameEngine.Systems
 
         public HeightmapSystem(GraphicsDevice gd, List<HeightmapObject> hmobjects)
         {
+
             this.gd = gd;
             this.hmobjects = hmobjects;
 
@@ -83,16 +85,17 @@ namespace GameEngine.Systems
                 spacingBetweenParts = cmp.spacingBetweenParts,
                 world = cmp.world,
                 objectWorld = cmp.objectWorld,
-                vertexBuffer = new VertexBuffer(gd, typeof(VertexPositionNormalTexture),
-                                                vCount, BufferUsage.None),
-                indexBuffer = new IndexBuffer(gd, typeof(int), iCount, BufferUsage.None), 
-                vertices = new VertexPositionNormalTexture[vCount],
+                //vertexBuffer = new VertexBuffer(gd, typeof(VertexPositionNormalTexture),
+                //                                vCount, BufferUsage.None),
+                indexBuffer = new IndexBuffer(gd, typeof(int), iCount, BufferUsage.None),
+                //vertices = new VertexPositionNormalTexture[vCount],
                 indices = new int[iCount],
-                texture = cmp.texture,
+
 
                 indexCount = iCount,
-                vertexCount = vCount,
+                //vertexCount = vCount,
 
+                texture = cmp.texture,
                 scaleFactor = cmp.scaleFactor,
 
                  terrainWidth = cmp.terrainWidth,
@@ -106,7 +109,7 @@ namespace GameEngine.Systems
         }
 
 
-        private void RebuildArray(int[] indices, VertexPositionNormalTexture[] vertices, 
+        private void RebuildArray(int[] indices, VertexPositionNormalTexture[] vertices,
                                   out int[] outIndices, out VertexPositionNormalTexture[] outVertices)
         {
             Dictionary<int, int> verticePositions = new Dictionary<int, int>();
@@ -136,6 +139,42 @@ namespace GameEngine.Systems
         }
 
 
+        //private void StoreVerticePositions(int[] indices, ref Dictionary<int, int> verticePositions)
+        //{
+        //    int indexCounter = 0;
+        //    foreach (int index in indices)//just store an index once and give it a new position (indexCounter) in another array.
+        //        if (!verticePositions.ContainsKey(index))
+        //            verticePositions.Add(index, indexCounter++);
+        //}
+
+
+        //private void RebuildArray(int[] indices, VertexPositionNormalTexture[] vertices,
+        //              out int[] outIndices, out VertexPositionNormalTexture[] outVertices)
+        //{
+        //    Dictionary<int, int> verticePositions = new Dictionary<int, int>();
+
+        //    StoreVerticePositions(indices, ref verticePositions);
+
+        //    int indexCounter = 0;
+        //    int vertexCounter = 0;
+
+        //    outIndices = new int[indices.Length];
+        //    outVertices = new VertexPositionNormalTexture[indices.Length]; //length not longer than number of indices at least.
+
+        //    foreach (int index in indices) //store the vertices on new positions.
+        //    {
+        //        outVertices.SetValue(vertices.GetValue(index), verticePositions[index]);
+        //        vertexCounter++; //measure length of the built array.
+        //    }
+
+
+        //    foreach (int index in indices) //Rebuild the indices to match the new positions in outVertices.
+        //        outIndices[indexCounter++] = verticePositions[index];
+
+        //    Array.Resize<int>(ref outIndices, indexCounter);
+        //    Array.Resize<VertexPositionNormalTexture>(ref outVertices, vertexCounter);
+        //}
+
         private void SplitHeightmap()
         {
             int takeIndices;
@@ -148,6 +187,7 @@ namespace GameEngine.Systems
 
             foreach (HeightmapComponent cmp in heightmapComponents)
             {
+
                 for (int i = 0; i < cmp.breakUpInNumParts; i++)
                 {
                     int[] indices;
@@ -168,11 +208,15 @@ namespace GameEngine.Systems
 
                     partCmp.indices = indices;
                     partCmp.vertices = vertices;
+                    partCmp.vertexBuffer = new VertexBuffer(gd, typeof(VertexPositionNormalTexture), vertices.Count(), BufferUsage.None);
+                    partCmp.vertexCount = vertices.Count();
 
-                    partCmp.vertexBuffer.SetData(partCmp.vertices, 0, partCmp.vertexCount);
-                    partCmp.indexBuffer.SetData(partCmp.indices, 0, partCmp.indexCount);
+                    //partCmp.vertexBuffer.SetData(partCmp.vertices, 0, partCmp.vertexCount);
+                    //partCmp.indexBuffer.SetData(partCmp.indices, 0, partCmp.indexCount);
+                    partCmp.vertexBuffer.SetData(partCmp.vertices);
+                    partCmp.indexBuffer.SetData(partCmp.indices);
+                    //VERTICES ARE A FEW MORE THAN THE ONES SET IN SETDATA! TO_DO!
 
-                    
                     partCmp.texture = Texture2D.FromStream(gd, new StreamReader(textureName).BaseStream);
                     partCmp.texture.Name = textureName;
 
@@ -183,6 +227,35 @@ namespace GameEngine.Systems
                     ComponentManager.StoreComponent(ComponentManager.GetNewId(), partCmp);
                 }
             }
+
+            saveIndicesToDisc();
+        }
+
+        void saveIndicesToDisc()
+        {
+            int counter = 1;
+            using (StreamWriter outstream = new StreamWriter("./indices.txt"))
+            {
+                foreach(HeightmapComponent cmp in ComponentManager.GetComponents<HeightmapComponent>())
+                {
+                    foreach (int num in cmp.indices)
+                    {
+                        outstream.Write(num.ToString());
+                        outstream.Write(",");
+
+                        if(counter++ >= 40 )
+                        {
+                            outstream.Write('\n');
+                            counter = 1;
+                        }
+
+                    }
+
+                    outstream.Write('\n');
+                    outstream.Write('\n');
+                }
+            }
+
         }
 
 
