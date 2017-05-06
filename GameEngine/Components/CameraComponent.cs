@@ -4,27 +4,32 @@ namespace GameEngine.Components
 {
     public class CameraComponent : Component
     {
-        private static Vector3 perspectiveOffset = new Vector3(0, 200, -200);
+        public Vector3 perspectiveOffset { get; set; }
 
         public Matrix viewMatrix { get; set; }
         public Matrix projectionMatrix { get; set; }
 
-        //public Vector3 cameraPosition { get; set; }
-        //public Vector3 cameraDirection { get; set; }
+        public bool isActive { get; set; } 
+
+        public BoundingFrustum bFrustum { get; set; }
+
         public Vector3 cameraUp { get; set; }
         public Vector3 target { get; set; }
-        float speed = 3f;
 
-        public CameraComponent(/*Vector3 position,*/ Vector3 target, Vector3 up, float aspectRatio)
+
+        public CameraComponent(Vector3 target, Vector3 up, float aspectRatio, Vector3 perspectiveOffset, bool isActive = false)
         {
-            //cameraPosition = position;
-            //cameraDirection = target - position;
-            // cameraDirection.Normalize();
             this.target = target;
             cameraUp = up;
 
+            this.perspectiveOffset = perspectiveOffset;
+
             projectionMatrix = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, aspectRatio, 1.0f, 50000.0f);
-            viewMatrix = Matrix.CreateLookAt(new Vector3(0,0,0), target, up);
+            viewMatrix = Matrix.CreateLookAt(new Vector3(0,0,-1), target, up);
+
+            bFrustum = new BoundingFrustum(viewMatrix * projectionMatrix);
+
+            this.isActive = isActive;
         }
 
 

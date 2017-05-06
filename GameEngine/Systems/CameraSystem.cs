@@ -10,11 +10,9 @@ using GameEngine.Managers;
 
 namespace GameEngine.Systems
 {
-    public class CameraSystem : IUdatable
+    public class CameraSystem
     {
         private static CameraSystem instance;
-        public GraphicsDevice device { get; protected set; }
-        public CameraComponent camera { get; protected set; }
 
         public static CameraSystem Instance
         {
@@ -32,20 +30,24 @@ namespace GameEngine.Systems
         }
 
 
-        public void Update(GameTime gameTime)
+        public void Update(Effect effect, GameTime gameTime)
         {
-            //List<Component> comps = ComponentManager.GetComponents<CameraComponent>();
-            List<ulong> comps = ComponentManager.GetAllEntitiesWithComp<CameraComponent>();
+            List<ulong> compIds = ComponentManager.GetAllEntitiesWithComp<CameraComponent>();
 
-            foreach (ulong c in comps)
+            foreach (ulong c in compIds)
             {
                 TransformComponent transform = ComponentManager.GetComponent<TransformComponent>(c);
                 CameraComponent curCam = ComponentManager.GetComponent<CameraComponent>(c);
 
-                //curCam.cameraPosition = ;
-                Matrix rotation = Matrix.CreateRotationY(transform.rotation);
-                //Vector3 transformedRef = Vector3.Transform(curCam.cameraDirection, rotation);
-                curCam.viewMatrix = Matrix.CreateLookAt(transform.position, curCam.target, Vector3.Up);
+                if (curCam.isActive)
+                {
+                    Matrix rotation = Matrix.CreateRotationY(transform.rotation);
+                    curCam.viewMatrix = Matrix.CreateLookAt(transform.position, curCam.target, Vector3.Up);
+
+                    effect.Parameters["View"].SetValue(curCam.viewMatrix * rotation);
+                    effect.Parameters["Projection"].SetValue(curCam.projectionMatrix);
+                }
+
             }
         }
     }

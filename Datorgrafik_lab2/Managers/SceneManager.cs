@@ -54,17 +54,17 @@ namespace Datorgrafik_lab2.Managers
             this.gd = game.GraphicsDevice;
             this.world = world;
 
+            createCameraStructures();
+
             createHeightmap();
 
             createTreeStructures();
-
-            createCameraStructures();
 
         }
 
         private void createCameraStructures()
         {
-            CameraComponent cameraCmp = new CameraComponent(cameraTarget, cameraUp, game.GraphicsDevice.DisplayMode.AspectRatio);
+            CameraComponent cameraCmp = new CameraComponent(cameraTarget, cameraUp, game.GraphicsDevice.DisplayMode.AspectRatio, new Vector3(0, -200, -200), true);
 
             TransformComponent transform = new TransformComponent(new Vector3(200, 200, 200), 0f, 1f);
 
@@ -174,7 +174,7 @@ namespace Datorgrafik_lab2.Managers
             //bindings[1].VertexBuffer.SetData<Matrix>(objectWorldMatrices);
             ////end trying rotation.
 
-            CameraSystem.Instance.Update(gameTime);
+            CameraSystem.Instance.Update(effect, gameTime);
 
             //Matrix viewMatrix = ComponentManager.GetComponent<CameraComponent>(cameraID).viewMatrix;
             //Matrix projMatrix = ComponentManager.GetComponent<CameraComponent>(cameraID).projectionMatrix;

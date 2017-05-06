@@ -224,10 +224,10 @@ namespace Datorgrafik_lab2
             //myeffect.Parameters["View"].SetValue(_view);
             //myeffect.Parameters["Projection"].SetValue(_projection);
 
-            Matrix viewMatrix = ComponentManager.GetComponent<CameraComponent>(sceneManager.cameraID).viewMatrix;
-            Matrix projMatrix = ComponentManager.GetComponent<CameraComponent>(sceneManager.cameraID).projectionMatrix;
-            myeffect.Parameters["View"].SetValue(viewMatrix);
-            myeffect.Parameters["Projection"].SetValue(projMatrix);
+            //Matrix viewMatrix = ComponentManager.GetComponent<CameraComponent>(sceneManager.cameraID).viewMatrix;
+            //Matrix projMatrix = ComponentManager.GetComponent<CameraComponent>(sceneManager.cameraID).projectionMatrix;
+            //myeffect.Parameters["View"].SetValue(viewMatrix);
+            //myeffect.Parameters["Projection"].SetValue(projMatrix);
 
             myeffect.Parameters["Texture"].SetValue(grass);
         }
