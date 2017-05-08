@@ -252,7 +252,7 @@ namespace GameEngine.Systems
         {
             Matrix currentWorldMatrix = effect.Parameters["World"].GetValueMatrix();
 
-            CameraComponent camera = ComponentManager.GetComponents<CameraComponent>()
+            CameraComponent camera = ComponentManager.GetComponents<CameraComponent>() //it should be just one camera that is actice.
                                                                    .Cast<CameraComponent>().Select(x => x).Where(y => y.isActive == true).ElementAt(0);
 
 
@@ -289,6 +289,9 @@ namespace GameEngine.Systems
 
                 effect.Parameters["World"].SetValue(currentWorldMatrix * cmp.objectWorld);
 
+                //BoundingBox box = ConvertBoundingBoxToWorldCoords(bvCmp.bbox, camera.bFrustum.Matrix);
+                //debugDraw.DrawWireBox(box, Color.White);
+
                 debugDraw.DrawWireBox(bvCmp.bbox, Color.White);
 
                 foreach (EffectPass pass in effect.CurrentTechnique.Passes)
@@ -299,8 +302,9 @@ namespace GameEngine.Systems
 
                     //cmp.indexBuffer.SetData<int>(cmp.indices, 0, cmp.indexCount);
                     gd.Indices = cmp.indexBuffer;
-                        
-                
+
+                    
+
                     if (bvCmp.bbox.Intersects(camera.bFrustum)) //Just draw all parts of heightmap that is anyhow inside the camera frustum.
                         gd.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, cmp.indexCount / 3);
                 }
@@ -312,6 +316,14 @@ namespace GameEngine.Systems
             debugDraw.DrawWireFrustum(camera.bFrustum, Color.White);
 
             
+        }
+
+        //This function is nicked from Thires & Lennart - it should be removed at exam.
+        private BoundingBox ConvertBoundingBoxToWorldCoords(BoundingBox box, Matrix world)
+        {
+            Vector3 pos = Vector3.Transform(Vector3.Zero, Matrix.Invert(world));
+            BoundingBox b = new BoundingBox(box.Min - pos, box.Max - pos);
+            return b;
         }
 
 

@@ -46,6 +46,8 @@ namespace GameEngine.Systems
 
                     effect.Parameters["View"].SetValue(curCam.viewMatrix * rotation);
                     effect.Parameters["Projection"].SetValue(curCam.projectionMatrix);
+
+                    curCam.bFrustum = new BoundingFrustum(curCam.viewMatrix * curCam.projectionMatrix);
                 }
 
             }

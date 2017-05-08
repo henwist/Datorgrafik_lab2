@@ -59,7 +59,9 @@
     <Compile Include="CreateModels\Tree.cs" />
     <Compile Include="Enums\Enums.cs" />
     <Compile Include="Game1.cs" />
+    <Compile Include="InstanceContainers\InstanceBodyParts.cs" />
     <Compile Include="InstanceContainers\InstanceStack.cs" />
+    <Compile Include="InstanceContainers\InstanceTree.cs" />
     <Compile Include="Managers\SceneManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
