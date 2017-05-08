@@ -194,7 +194,7 @@ namespace GameEngine.Systems
                 }
             }
 
-            saveIndicesToDisc();
+            //saveIndicesToDisc();
         }
 
 
@@ -219,32 +219,32 @@ namespace GameEngine.Systems
         }
 
 
-        void saveIndicesToDisc()
-        {
-            int counter = 1;
-            using (StreamWriter outstream = new StreamWriter("./indices.txt"))
-            {
-                foreach(HeightmapComponent cmp in ComponentManager.GetComponents<HeightmapComponent>())
-                {
-                    foreach (int num in cmp.indices)
-                    {
-                        outstream.Write(num.ToString());
-                        outstream.Write(",");
+        //void saveIndicesToDisc()
+        //{
+        //    int counter = 1;
+        //    using (StreamWriter outstream = new StreamWriter("./indices.txt"))
+        //    {
+        //        foreach(HeightmapComponent cmp in ComponentManager.GetComponents<HeightmapComponent>())
+        //        {
+        //            foreach (int num in cmp.indices)
+        //            {
+        //                outstream.Write(num.ToString());
+        //                outstream.Write(",");
 
-                        if(counter++ >= 40 )
-                        {
-                            outstream.Write('\n');
-                            counter = 1;
-                        }
+        //                if(counter++ >= 40 )
+        //                {
+        //                    outstream.Write('\n');
+        //                    counter = 1;
+        //                }
 
-                    }
+        //            }
 
-                    outstream.Write('\n');
-                    outstream.Write('\n');
-                }
-            }
+        //            outstream.Write('\n');
+        //            outstream.Write('\n');
+        //        }
+        //    }
 
-        }
+        //}
 
 
         float rot = 0.001f;
