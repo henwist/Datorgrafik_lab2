@@ -13,40 +13,81 @@ namespace Datorgrafik_lab2.CreateModels
     {
         public List<VertexPositionNormalTexture> vertices { get; protected set; }
         public int[] indices { get; protected set; }
-        List<Cube> parts;
-        Dictionary<String, Matrix> transforms;
-        InstanceStack stack;
-
-        private readonly int RIGHT_LEG_INDEX_START = 216;
+        public VertexBuffer vertexBuffer;
+        public IndexBuffer indexBuffer;
 
         private string TORSO = "torso";
+        private int INDICES_COUNT = 36;
 
         private InstanceTree root;
         private InstanceBodyParts bodyParts;
 
-        public Figure()
-        {
-            vertices = new List<VertexPositionNormalTexture>();
-            vertices.Add(new VertexPositionNormalTexture(new Vector3(0, 0, 0), new Vector3(0, 1, 0), new Vector2(0, 0)));
-            vertices.Add(new VertexPositionNormalTexture(new Vector3(0, 1, 1), new Vector3(0, 1, 0), new Vector2(0, 0)));
-            vertices.Add(new VertexPositionNormalTexture(new Vector3(0, 1, 0), new Vector3(0, 1, 0), new Vector2(0, 0)));
-            //parts = new List<Cube>();
-            //transforms = new Dictionary<string, Matrix>();
-            //stack = new InstanceStack();
+        private GraphicsDevice gd;
 
-            //buildFigure();
-            indices = Enumerable.Range(0, vertices.Count).ToArray();
+        private Matrix currentWorld;
+
+        public Figure(GraphicsDevice gd)
+        {
+            this.gd = gd;
 
             BuildBodyParts();
+
+            InitBuffers();
 
             BuildInstanceTree();
         }
 
+
+        public void Draw(Effect effect)
+        {
+            currentWorld = effect.Parameters["World"].GetValueMatrix();
+
+            gd.SetVertexBuffer(vertexBuffer);
+            gd.Indices = indexBuffer;
+
+            Draw(effect, root);
+
+            effect.Parameters["World"].SetValue(currentWorld);
+        }
+
+
+        private void Draw(Effect effect, InstanceTree root)
+        {
+
+            foreach (EffectPass pass in effect.CurrentTechnique.Passes)
+            {
+                pass.Apply();
+
+                effect.Parameters["World"].SetValue(root.GetParentTransforms() * currentWorld);
+
+                gd.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, INDICES_COUNT / 3);
+            }
+
+            foreach (InstanceTree instance in root)
+                Draw(effect, instance);
+        }
+
+
         private void BuildBodyParts()
         {
             bodyParts = new InstanceBodyParts();
-
             bodyParts.AddBodyPart(TORSO, new Cube());
+
+
+        }
+
+
+        private void InitBuffers()
+        {
+            vertices = new List<VertexPositionNormalTexture>();
+            vertices.AddRange(bodyParts.GetBodyPart(TORSO).vertices.ToArray());
+
+            vertexBuffer = new VertexBuffer(gd, typeof(VertexPositionNormalTexture), bodyParts.GetBodyPart(TORSO).vertices.Count(), BufferUsage.None);
+            vertexBuffer.SetData(vertices.ToArray());
+
+            indices = Enumerable.Range(0, vertices.Count).ToArray();
+            indexBuffer = new IndexBuffer(gd, typeof(int), INDICES_COUNT, BufferUsage.None);
+            indexBuffer.SetData(indices);
         }
 
 
@@ -55,14 +96,12 @@ namespace Datorgrafik_lab2.CreateModels
             root = new InstanceTree("root", Matrix.Identity); //parent tree node
 
             InstanceTree torso = new InstanceTree("torso", Matrix.Identity);
-            InstanceTree upperArm = new InstanceTree("upperArm",  Matrix.CreateScale(0.5f) * Matrix.CreateTranslation(new Vector3(10, 0, 0)));
-            InstanceTree lowerArm = new InstanceTree("lowerArm", Matrix.CreateScale(0.5f));
+            InstanceTree upperArm = new InstanceTree("upperArm",  Matrix.CreateScale(0.8f) * Matrix.CreateTranslation(new Vector3(0, 5, 0)));
+            InstanceTree lowerArm = new InstanceTree("lowerArm", Matrix.CreateScale(0.7f) * Matrix.CreateTranslation(new Vector3(0, 20, 0)));
 
             root.AddChild(torso);
             torso.AddChild(upperArm);
             upperArm.AddChild(lowerArm);
-
-            Matrix allTransforms = lowerArm.GetParentTransforms();
         }
 
 

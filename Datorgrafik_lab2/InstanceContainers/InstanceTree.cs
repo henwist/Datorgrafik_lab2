@@ -1,14 +1,16 @@
 ﻿using Datorgrafik_lab2.CreateModels;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Collections;
 
 namespace Datorgrafik_lab2.InstanceContainers
 {
-    public class InstanceTree
+    public class InstanceTree : IEnumerable<InstanceTree>
     {
 
         private InstanceTree parent;
@@ -27,6 +29,7 @@ namespace Datorgrafik_lab2.InstanceContainers
 
         }
 
+
         public void AddChild(InstanceTree node)
         {
 
@@ -38,6 +41,7 @@ namespace Datorgrafik_lab2.InstanceContainers
 
         }
 
+
         public Matrix GetParentTransforms()
         {
             if (this.parent != null)
@@ -45,6 +49,18 @@ namespace Datorgrafik_lab2.InstanceContainers
 
             else
                 return this.nodeTransform * Matrix.Identity;
+        }
+
+
+        public IEnumerator<InstanceTree> GetEnumerator()
+        {
+            return childNodes.Values.GetEnumerator();
+        }
+
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+           return this.GetEnumerator();
         }
     }
 }

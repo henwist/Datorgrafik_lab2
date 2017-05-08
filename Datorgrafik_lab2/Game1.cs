@@ -62,8 +62,6 @@ namespace Datorgrafik_lab2
             graphics.GraphicsProfile = GraphicsProfile.HiDef;
             graphics.ApplyChanges();
 
-            figure = new Figure();
-
             base.Initialize();
         }
 
@@ -74,6 +72,7 @@ namespace Datorgrafik_lab2
 
             device = graphics.GraphicsDevice;
 
+            figure = new Figure(device);
             figureBuffer = new VertexBuffer(GraphicsDevice, typeof(VertexPositionNormalTexture), figure.vertices.Count, BufferUsage.None);
             figureIndices = new IndexBuffer(GraphicsDevice, IndexElementSize.ThirtyTwoBits, figure.indices.Length, BufferUsage.None);
 
@@ -241,6 +240,8 @@ namespace Datorgrafik_lab2
 
 
             setCustomShaderParameters();
+
+            figure.Draw(myeffect);
 
             foreach (EffectPass pass in myeffect.Techniques[(int)EnumTechnique.CurrentTechnique].Passes)
             {
