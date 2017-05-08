@@ -210,6 +210,11 @@ namespace GameEngine.Systems
             BoundingVolumeComponent bvCmp = new BoundingVolumeComponent();
             bvCmp.bbox = BoundingBox.CreateFromPoints(partCmp.vertices.Select(x => x.Position));
 
+            Vector3 max = bvCmp.bbox.Max;
+            Vector3 min = bvCmp.bbox.Min;
+
+            bvCmp.bbox = new BoundingBox(partCmp.scaleFactor * min, partCmp.scaleFactor * max);
+
             return bvCmp;
         }
 
