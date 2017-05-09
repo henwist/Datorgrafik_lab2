@@ -80,7 +80,7 @@ namespace Datorgrafik_lab2.Managers
 
             heightmapSystem = new HeightmapSystem(gd, heightmapObjects);
 
-            heightMapData = HeightmapSystem.GetHeightData("..\\..\\..\\..\\Content\\Textures\\Play.png");
+            heightMapData = HeightmapSystem.GetHeightData("..\\..\\..\\..\\Content\\Textures\\fire.png");
         }
 
 
@@ -209,7 +209,7 @@ namespace Datorgrafik_lab2.Managers
             HeightmapObject hmobj = new HeightmapObject();
             hmobj.scaleFactor = HEIGHTMAP_SCALE*Vector3.One;
             hmobj.position = Vector3.Zero;
-            hmobj.terrainFileName = "..\\..\\..\\..\\Content\\Textures\\Play.png";
+            hmobj.terrainFileName = "..\\..\\..\\..\\Content\\Textures\\fire.png";
             hmobj.textureFileNames = new string[] {
                                             "..\\..\\..\\..\\Content\\Textures\\grass.png",
                                             "..\\..\\..\\..\\Content\\Textures\\fire.png",

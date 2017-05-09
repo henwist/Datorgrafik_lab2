@@ -10,6 +10,10 @@ namespace Datorgrafik_lab2.CreateModels
 {
     public class Cube
     {
+        public static int LENGTH_X = 2;
+        public static int LENGTH_Y = 4;
+        public static int LENGTH_Z = 2;
+
         public VertexPositionNormalTexture[] vertices { get ; protected set; }
 
         public static readonly Vector3 ONE = new Vector3(1, -2, 1);

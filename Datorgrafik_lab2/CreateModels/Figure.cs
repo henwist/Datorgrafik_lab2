@@ -51,6 +51,12 @@ namespace Datorgrafik_lab2.CreateModels
             textures.Add("orange", Texture2D.FromStream(gd, new StreamReader("Content/Textures/orange.png").BaseStream));
             textures.Add("red", Texture2D.FromStream(gd, new StreamReader("Content/Textures/red.png").BaseStream));
             textures.Add("yellow", Texture2D.FromStream(gd, new StreamReader("Content/Textures/yellow.png").BaseStream));
+
+            textures["blue"].Name = "blue";
+            textures["green"].Name = "green";
+            textures["orange"].Name = "orange";
+            textures["red"].Name ="red";
+            textures["yellow"].Name = "yellow";
         }
 
 
@@ -74,8 +80,8 @@ namespace Datorgrafik_lab2.CreateModels
             { 
                 pass.Apply();
 
-                Matrix parentTransforms = root.GetParentTransforms();
-                effect.Parameters["World"].SetValue(parentTransforms * currentWorld);
+                Matrix finalTransforms = root.GetParentTransforms() * currentWorld;
+                effect.Parameters["World"].SetValue(finalTransforms );
                 effect.Parameters["Texture"].SetValue(root.texture);
 
                 gd.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, INDICES_COUNT / 3);
@@ -111,20 +117,36 @@ namespace Datorgrafik_lab2.CreateModels
 
         private void BuildInstanceTree()
         {
-            root = new InstanceTree("root", Matrix.Identity, textures["orange"]); //parent tree node
+            root = new InstanceTree("torso", Matrix.CreateScale(1f) * Matrix.CreateTranslation(new Vector3(0, 0, 0)), textures["orange"]); //parent tree node
 
-            InstanceTree torso = new InstanceTree("torso", Matrix.CreateScale(1f) * Matrix.CreateTranslation(new Vector3(10, 0, 0)), textures["blue"]); ;
-            InstanceTree upperArm = new InstanceTree("upperArm",  Matrix.CreateScale(1f) * Matrix.CreateTranslation(new Vector3(20, 0, 0)), textures["green"]);
-            InstanceTree lowerArm = new InstanceTree("lowerArm", Matrix.CreateScale(1f) * Matrix.CreateTranslation(new Vector3(30, 0, 0)), textures["orange"]);
-            InstanceTree leftHand = new InstanceTree("leftHand", Matrix.CreateScale(1f) * Matrix.CreateTranslation(new Vector3(40, 0, 0)), textures["red"]);
-            InstanceTree finger = new InstanceTree("finger", Matrix.CreateScale(1f) * Matrix.CreateTranslation(new Vector3(50, 0, 0)), textures["yellow"]);
+            InstanceTree head = new InstanceTree("head", Matrix.CreateScale(0.5f) * Matrix.CreateTranslation(0,Cube.LENGTH_Y/2,0), textures["green"]);
 
-            root.AddChild(torso);
-            //root.AddChild(lowerArm);
-            torso.AddChild(upperArm);
-            upperArm.AddChild(lowerArm);
-            lowerArm.AddChild(leftHand);
-            leftHand.AddChild(finger);
+            InstanceTree upperLeftArm = new InstanceTree("upperLeftArm",  Matrix.CreateScale(0.5f) 
+                                                                        * Matrix.CreateTranslation(new Vector3(-Cube.LENGTH_X/2, Cube.LENGTH_Y/4f, 0)), textures["red"]);
+            InstanceTree lowerLeftArm = new InstanceTree("lowerLeftArm", Matrix.CreateScale(0.7f)
+                                                                       * Matrix.CreateTranslation(new Vector3(-Cube.LENGTH_X/4, -Cube.LENGTH_Y/2f, 0)), textures["orange"]);
+
+            InstanceTree upperRightArm = new InstanceTree("upperRightArm", Matrix.CreateScale(0.5f)
+                                                                        * Matrix.CreateTranslation(new Vector3(Cube.LENGTH_X / 2, Cube.LENGTH_Y / 4f, 0)), textures["red"]);
+            InstanceTree lowerRightArm = new InstanceTree("lowerRightArm", Matrix.CreateScale(0.7f)
+                                                                       * Matrix.CreateTranslation(new Vector3(Cube.LENGTH_X / 4, -Cube.LENGTH_Y / 2f, 0)), textures["orange"]);
+
+            //this bodypart is added as to coverup for a suspect bug. This bodypart will always be drawn in center with identity matrix.
+            InstanceTree bug_adder = new InstanceTree("bug_adder", Matrix.CreateScale(0.25f)
+                                                           * Matrix.CreateTranslation(new Vector3(Cube.LENGTH_X + 4f, Cube.LENGTH_Y / 2f, 0)), textures["blue"]);
+
+            root.AddChild(head);
+
+            root.AddChild(upperLeftArm);
+            upperLeftArm.AddChild(lowerLeftArm);
+
+            root.AddChild(upperRightArm);
+            upperRightArm.AddChild(lowerRightArm);
+
+
+            root.AddChild(bug_adder);
+
+
         }
 
 
