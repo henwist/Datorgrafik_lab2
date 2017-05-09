@@ -113,11 +113,11 @@ namespace Datorgrafik_lab2.CreateModels
         {
             root = new InstanceTree("root", Matrix.Identity, textures["orange"]); //parent tree node
 
-            InstanceTree torso = new InstanceTree("torso", Matrix.CreateScale(1.5f) * Matrix.CreateTranslation(new Vector3(0, -10, 0)), textures["blue"]); ;
-            InstanceTree upperArm = new InstanceTree("upperArm",  Matrix.CreateScale(0.8f) * Matrix.CreateTranslation(new Vector3(0, 5, 0)), textures["green"]);
-            InstanceTree lowerArm = new InstanceTree("lowerArm", Matrix.CreateScale(0.7f) * Matrix.CreateTranslation(new Vector3(0, 10, 0)), textures["orange"]);
-            InstanceTree leftHand = new InstanceTree("leftHand", Matrix.CreateScale(0.5f) * Matrix.CreateTranslation(new Vector3(0, 10, 0)), textures["red"]);
-            InstanceTree finger = new InstanceTree("finger", Matrix.CreateScale(0.5f) * Matrix.CreateTranslation(new Vector3(0, 5, 0)), textures["yellow"]);
+            InstanceTree torso = new InstanceTree("torso", Matrix.CreateScale(1f) * Matrix.CreateTranslation(new Vector3(10, 0, 0)), textures["blue"]); ;
+            InstanceTree upperArm = new InstanceTree("upperArm",  Matrix.CreateScale(1f) * Matrix.CreateTranslation(new Vector3(20, 0, 0)), textures["green"]);
+            InstanceTree lowerArm = new InstanceTree("lowerArm", Matrix.CreateScale(1f) * Matrix.CreateTranslation(new Vector3(30, 0, 0)), textures["orange"]);
+            InstanceTree leftHand = new InstanceTree("leftHand", Matrix.CreateScale(1f) * Matrix.CreateTranslation(new Vector3(40, 0, 0)), textures["red"]);
+            InstanceTree finger = new InstanceTree("finger", Matrix.CreateScale(1f) * Matrix.CreateTranslation(new Vector3(50, 0, 0)), textures["yellow"]);
 
             root.AddChild(torso);
             //root.AddChild(lowerArm);
