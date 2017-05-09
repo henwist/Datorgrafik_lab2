@@ -75,10 +75,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\Textures\blue.png" />
     <Content Include="Content\Textures\fire.png" />
     <Content Include="Content\Textures\grass.png" />
+    <Content Include="Content\Textures\green.png" />
+    <Content Include="Content\Textures\orange.png" />
     <Content Include="Content\Textures\play.png" />
+    <Content Include="Content\Textures\red.png" />
     <Content Include="Content\Textures\US_Canyon.png" />
+    <Content Include="Content\Textures\yellow.png" />
     <Content Include="Icon.ico" />
   </ItemGroup>
   <ItemGroup>

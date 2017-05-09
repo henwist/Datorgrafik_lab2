@@ -45,7 +45,7 @@ namespace Datorgrafik_lab2.InstanceContainers
         public Matrix GetParentTransforms()
         {
             if (this.parent != null)
-                return this.nodeTransform * this.parent.GetParentTransforms();
+                return this.parent.GetParentTransforms() * this.nodeTransform;
 
             else
                 return this.nodeTransform * Matrix.Identity;

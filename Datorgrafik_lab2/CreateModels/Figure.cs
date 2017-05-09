@@ -55,10 +55,11 @@ namespace Datorgrafik_lab2.CreateModels
         {
 
             foreach (EffectPass pass in effect.CurrentTechnique.Passes)
-            {
+            { 
                 pass.Apply();
 
-                effect.Parameters["World"].SetValue(root.GetParentTransforms() * currentWorld);
+                Matrix parentTransforms = root.GetParentTransforms();
+                effect.Parameters["World"].SetValue(parentTransforms * currentWorld);
 
                 gd.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, INDICES_COUNT / 3);
             }
@@ -95,13 +96,18 @@ namespace Datorgrafik_lab2.CreateModels
         {
             root = new InstanceTree("root", Matrix.Identity); //parent tree node
 
-            InstanceTree torso = new InstanceTree("torso", Matrix.Identity);
+            InstanceTree torso = new InstanceTree("torso", Matrix.CreateScale(1.5f) * Matrix.CreateTranslation(new Vector3(0, -10, 0))); ;
             InstanceTree upperArm = new InstanceTree("upperArm",  Matrix.CreateScale(0.8f) * Matrix.CreateTranslation(new Vector3(0, 5, 0)));
-            InstanceTree lowerArm = new InstanceTree("lowerArm", Matrix.CreateScale(0.7f) * Matrix.CreateTranslation(new Vector3(0, 20, 0)));
+            InstanceTree lowerArm = new InstanceTree("lowerArm", Matrix.CreateScale(0.7f) * Matrix.CreateTranslation(new Vector3(0, 10, 0)));
+            InstanceTree leftHand = new InstanceTree("leftHand", Matrix.CreateScale(0.5f) * Matrix.CreateTranslation(new Vector3(0, 10, 0)));
+            InstanceTree finger = new InstanceTree("finger", Matrix.CreateScale(0.5f) * Matrix.CreateTranslation(new Vector3(0, 5, 0)));
 
             root.AddChild(torso);
+            //root.AddChild(lowerArm);
             torso.AddChild(upperArm);
             upperArm.AddChild(lowerArm);
+            lowerArm.AddChild(leftHand);
+            leftHand.AddChild(finger);
         }
 
 
