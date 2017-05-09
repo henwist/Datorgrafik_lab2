@@ -75,15 +75,25 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Content\Textures\blue.png" />
+    <Content Include="Content\Textures\blue.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\Textures\fire.png" />
     <Content Include="Content\Textures\grass.png" />
-    <Content Include="Content\Textures\green.png" />
-    <Content Include="Content\Textures\orange.png" />
+    <Content Include="Content\Textures\green.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Content\Textures\orange.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\Textures\play.png" />
-    <Content Include="Content\Textures\red.png" />
+    <Content Include="Content\Textures\red.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Content\Textures\US_Canyon.png" />
-    <Content Include="Content\Textures\yellow.png" />
+    <Content Include="Content\Textures\yellow.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="Icon.ico" />
   </ItemGroup>
   <ItemGroup>

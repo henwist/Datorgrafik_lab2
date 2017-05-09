@@ -19,13 +19,16 @@ namespace Datorgrafik_lab2.InstanceContainers
         private string nodeName;
         private Matrix nodeTransform;
 
-        public InstanceTree(string nodeName, Matrix nodeTransform)
+        public Texture2D texture { get; private set; }
+
+        public InstanceTree(string nodeName, Matrix nodeTransform, Texture2D texture)
         {
             childNodes = new Dictionary<string, InstanceTree>();
 
             this.parent = null;
             this.nodeName = nodeName;
             this.nodeTransform = nodeTransform;
+            this.texture = texture;
 
         }
 

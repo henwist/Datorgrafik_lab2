@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Datorgrafik_lab2.InstanceContainers;
+using System.IO;
 
 namespace Datorgrafik_lab2.CreateModels
 {
@@ -26,15 +27,30 @@ namespace Datorgrafik_lab2.CreateModels
 
         private Matrix currentWorld;
 
+        private Dictionary<string, Texture2D> textures;
+
         public Figure(GraphicsDevice gd)
         {
             this.gd = gd;
+
+            textures = new Dictionary<string, Texture2D>();
+
+            LoadTextures();
 
             BuildBodyParts();
 
             InitBuffers();
 
             BuildInstanceTree();
+        }
+
+        private void LoadTextures()
+        {
+            textures.Add("blue", Texture2D.FromStream(gd, new StreamReader("Content/Textures/blue.png").BaseStream));
+            textures.Add("green", Texture2D.FromStream(gd, new StreamReader("Content/Textures/green.png").BaseStream));
+            textures.Add("orange", Texture2D.FromStream(gd, new StreamReader("Content/Textures/orange.png").BaseStream));
+            textures.Add("red", Texture2D.FromStream(gd, new StreamReader("Content/Textures/red.png").BaseStream));
+            textures.Add("yellow", Texture2D.FromStream(gd, new StreamReader("Content/Textures/yellow.png").BaseStream));
         }
 
 
@@ -60,6 +76,7 @@ namespace Datorgrafik_lab2.CreateModels
 
                 Matrix parentTransforms = root.GetParentTransforms();
                 effect.Parameters["World"].SetValue(parentTransforms * currentWorld);
+                effect.Parameters["Texture"].SetValue(root.texture);
 
                 gd.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, INDICES_COUNT / 3);
             }
@@ -94,13 +111,13 @@ namespace Datorgrafik_lab2.CreateModels
 
         private void BuildInstanceTree()
         {
-            root = new InstanceTree("root", Matrix.Identity); //parent tree node
+            root = new InstanceTree("root", Matrix.Identity, textures["orange"]); //parent tree node
 
-            InstanceTree torso = new InstanceTree("torso", Matrix.CreateScale(1.5f) * Matrix.CreateTranslation(new Vector3(0, -10, 0))); ;
-            InstanceTree upperArm = new InstanceTree("upperArm",  Matrix.CreateScale(0.8f) * Matrix.CreateTranslation(new Vector3(0, 5, 0)));
-            InstanceTree lowerArm = new InstanceTree("lowerArm", Matrix.CreateScale(0.7f) * Matrix.CreateTranslation(new Vector3(0, 10, 0)));
-            InstanceTree leftHand = new InstanceTree("leftHand", Matrix.CreateScale(0.5f) * Matrix.CreateTranslation(new Vector3(0, 10, 0)));
-            InstanceTree finger = new InstanceTree("finger", Matrix.CreateScale(0.5f) * Matrix.CreateTranslation(new Vector3(0, 5, 0)));
+            InstanceTree torso = new InstanceTree("torso", Matrix.CreateScale(1.5f) * Matrix.CreateTranslation(new Vector3(0, -10, 0)), textures["blue"]); ;
+            InstanceTree upperArm = new InstanceTree("upperArm",  Matrix.CreateScale(0.8f) * Matrix.CreateTranslation(new Vector3(0, 5, 0)), textures["green"]);
+            InstanceTree lowerArm = new InstanceTree("lowerArm", Matrix.CreateScale(0.7f) * Matrix.CreateTranslation(new Vector3(0, 10, 0)), textures["orange"]);
+            InstanceTree leftHand = new InstanceTree("leftHand", Matrix.CreateScale(0.5f) * Matrix.CreateTranslation(new Vector3(0, 10, 0)), textures["red"]);
+            InstanceTree finger = new InstanceTree("finger", Matrix.CreateScale(0.5f) * Matrix.CreateTranslation(new Vector3(0, 5, 0)), textures["yellow"]);
 
             root.AddChild(torso);
             //root.AddChild(lowerArm);
