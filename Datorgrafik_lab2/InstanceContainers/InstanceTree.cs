@@ -17,7 +17,7 @@ namespace Datorgrafik_lab2.InstanceContainers
         private Dictionary<string, InstanceTree> childNodes;
 
         private string nodeName;
-        private Matrix nodeTransform;
+        public Matrix nodeTransform { get; set; }
 
         public Texture2D texture { get; private set; }
 
@@ -30,6 +30,34 @@ namespace Datorgrafik_lab2.InstanceContainers
             this.nodeTransform = nodeTransform;
             this.texture = texture;
 
+        }
+
+
+        public InstanceTree GetInstanceTree(string nodeName)
+        {
+            InstanceTree part = null;
+
+            if (this.nodeName.Equals(nodeName))
+                return this;
+
+            foreach (InstanceTree instance in childNodes.Values)
+            {
+                part = GetInstanceTree(nodeName, instance);
+
+                if (part != null)
+                    return part;
+            }
+
+            return part;
+        }
+
+
+        private InstanceTree GetInstanceTree(string name, InstanceTree instance)
+        {
+            if (this.nodeName.Equals(name))
+                return this;
+
+            return instance.GetInstanceTree(name);
         }
 
 

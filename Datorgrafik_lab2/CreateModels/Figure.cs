@@ -131,7 +131,7 @@ namespace Datorgrafik_lab2.CreateModels
             InstanceTree lowerRightArm = new InstanceTree("lowerRightArm", Matrix.CreateScale(0.7f)
                                                                        * Matrix.CreateTranslation(new Vector3(Cube.LENGTH_X / 4, -Cube.LENGTH_Y / 2f, 0)), textures["orange"]);
 
-            //this bodypart is added as to coverup for a suspect bug. This bodypart will always be drawn in center with identity matrix.
+            //this bodypart is added as to cover-up for a suspect bug. This bodypart will always be drawn in center with identity matrix.
             InstanceTree bug_adder = new InstanceTree("bug_adder", Matrix.CreateScale(0.25f)
                                                            * Matrix.CreateTranslation(new Vector3(Cube.LENGTH_X + 4f, Cube.LENGTH_Y / 2f, 0)), textures["blue"]);
 
@@ -170,26 +170,34 @@ namespace Datorgrafik_lab2.CreateModels
         }
 
 
-        public void RotateUpperRightLeg(float posX)
+        public void RotateUpperRightArm(float posX)
         {
             //Vector3 translation = transforms["UpperRightLeg"].Translation;
             //Matrix translateBackToPos = Matrix.CreateTranslation(translation);
             //Matrix translateToOrigo = Matrix.CreateTranslation(-1 * translation);
-            //;
-            //Quaternion qrot = (transforms["UpperRightLeg"].Rotation
-            //                  + Quaternion.CreateFromRotationMatrix(Matrix.CreateRotationX(posX)));
-            //qrot.Normalize();
 
-            //Matrix rotate = Matrix.CreateFromQuaternion(qrot);
+            InstanceTree bodyPart = root.GetInstanceTree("upperRightArm");
 
-            //VertexPositionNormalTexture vertex;
+            if (bodyPart != null)
+            {
+                Quaternion qrot = (bodyPart.GetParentTransforms().Rotation
+                                  + Quaternion.CreateFromRotationMatrix(Matrix.CreateRotationX(posX)));
+                qrot.Normalize();
 
-            //foreach (int index in Enumerable.Range(RIGHT_LEG_INDEX_START, 36))
-            //{
-            //    vertex = vertices.ElementAt(index);
-            //    vertex.Position = Vector3.Transform(vertices[index].Position, translateToOrigo * rotate * translateBackToPos);
-            //    vertices[index] = vertex;
-            //}
+                Matrix rotate = Matrix.CreateFromQuaternion(qrot);
+
+                bodyPart.nodeTransform *=  rotate * (-1) * Matrix.CreateTranslation(bodyPart.GetParentTransforms().Translation);
+
+
+                //VertexPositionNormalTexture vertex;
+
+                //foreach (int index in Enumerable.Range(RIGHT_LEG_INDEX_START, 36))
+                //{
+                //    vertex = vertices.ElementAt(index);
+                //    vertex.Position = Vector3.Transform(vertices[index].Position, translateToOrigo * rotate * translateBackToPos);
+                //    vertices[index] = vertex;
+                //}
+            }
 
         }
     }

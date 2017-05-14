@@ -105,7 +105,7 @@ namespace Datorgrafik_lab2
             }
 
 
-            angle += 0.005f;
+            angle += 0.000000000000001f;
 
             base.Update(gameTime);
 
@@ -170,6 +170,8 @@ namespace Datorgrafik_lab2
                 transform.position.Z = transform.position.Y = transform.position.X = 0f;
 
             sceneManager.Update(gameTime);
+
+            figure.RotateUpperRightArm(angle);
 
         }
 
