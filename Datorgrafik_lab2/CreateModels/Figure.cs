@@ -172,31 +172,14 @@ namespace Datorgrafik_lab2.CreateModels
 
         public void RotateUpperRightArm(float posX)
         {
-            //Vector3 translation = transforms["UpperRightLeg"].Translation;
-            //Matrix translateBackToPos = Matrix.CreateTranslation(translation);
-            //Matrix translateToOrigo = Matrix.CreateTranslation(-1 * translation);
-
             InstanceTree bodyPart = root.GetInstanceTree("upperRightArm");
 
             if (bodyPart != null)
             {
-                Quaternion qrot = (bodyPart.GetParentTransforms().Rotation
-                                  + Quaternion.CreateFromRotationMatrix(Matrix.CreateRotationX(posX)));
+                Quaternion qrot = bodyPart.GetParentTransforms().Rotation * Quaternion.CreateFromRotationMatrix(Matrix.CreateRotationX(posX));
                 qrot.Normalize();
 
-                Matrix rotate = Matrix.CreateFromQuaternion(qrot);
-
-                bodyPart.nodeTransform *=  rotate * (-1) * Matrix.CreateTranslation(bodyPart.GetParentTransforms().Translation);
-
-
-                //VertexPositionNormalTexture vertex;
-
-                //foreach (int index in Enumerable.Range(RIGHT_LEG_INDEX_START, 36))
-                //{
-                //    vertex = vertices.ElementAt(index);
-                //    vertex.Position = Vector3.Transform(vertices[index].Position, translateToOrigo * rotate * translateBackToPos);
-                //    vertices[index] = vertex;
-                //}
+                bodyPart.nodeTransform = Matrix.CreateFromQuaternion(qrot) * Matrix.CreateTranslation(bodyPart.GetParentTransforms().Translation);
             }
 
         }
