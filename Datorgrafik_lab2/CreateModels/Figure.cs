@@ -131,19 +131,43 @@ namespace Datorgrafik_lab2.CreateModels
             InstanceTree lowerRightArm = new InstanceTree("lowerRightArm", Matrix.CreateScale(0.7f)
                                                                        * Matrix.CreateTranslation(new Vector3(Cube.LENGTH_X / 4, -Cube.LENGTH_Y / 2f, 0)), textures["orange"]);
 
+
+            InstanceTree upperRightLeg = new InstanceTree("upperRightLeg", Matrix.CreateScale(0.5f)
+                                                            * Matrix.CreateTranslation(new Vector3(Cube.LENGTH_X / 2, -Cube.LENGTH_Y / 1.7f, 0)), textures["red"]);
+            InstanceTree lowerRightLeg = new InstanceTree("lowerRightLeg", Matrix.CreateScale(0.7f)
+                                                                       * Matrix.CreateTranslation(new Vector3(Cube.LENGTH_X / 4, -Cube.LENGTH_Y / 2f, 0)), textures["orange"]);
+
+            InstanceTree upperLeftLeg = new InstanceTree("upperLeftLeg", Matrix.CreateScale(0.5f)
+                                                * Matrix.CreateTranslation(new Vector3(-Cube.LENGTH_X / 2, -Cube.LENGTH_Y / 1.7f, 0)), textures["red"]);
+            InstanceTree lowerLeftLeg = new InstanceTree("lowerLeftLeg", Matrix.CreateScale(0.7f)
+                                                                       * Matrix.CreateTranslation(new Vector3(-Cube.LENGTH_X / 4, -Cube.LENGTH_Y / 2f, 0)), textures["orange"]);
+
             //this bodypart is added as to cover-up for a suspect bug. This bodypart will always be drawn in center with identity matrix.
             InstanceTree bug_adder = new InstanceTree("bug_adder", Matrix.CreateScale(0.25f)
                                                            * Matrix.CreateTranslation(new Vector3(Cube.LENGTH_X + 4f, Cube.LENGTH_Y / 2f, 0)), textures["blue"]);
 
+            //Head
             root.AddChild(head);
 
+            //Left Arm
             root.AddChild(upperLeftArm);
             upperLeftArm.AddChild(lowerLeftArm);
 
+            //Right Arm
             root.AddChild(upperRightArm);
             upperRightArm.AddChild(lowerRightArm);
 
+            //Right Leg
+            root.AddChild(upperRightLeg);
+            upperRightLeg.AddChild(lowerRightLeg);
 
+
+            //Left Leg
+            root.AddChild(upperLeftLeg);
+            upperLeftLeg.AddChild(lowerLeftLeg);
+
+
+            //Bug Adder
             root.AddChild(bug_adder);
 
 
