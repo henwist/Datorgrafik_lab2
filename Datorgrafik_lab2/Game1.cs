@@ -105,7 +105,7 @@ namespace Datorgrafik_lab2
             }
 
 
-            angle += 0.000000000000001f;
+            angle += 0.01f;
 
             base.Update(gameTime);
 

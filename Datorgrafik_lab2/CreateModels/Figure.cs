@@ -80,7 +80,7 @@ namespace Datorgrafik_lab2.CreateModels
             { 
                 pass.Apply();
 
-                Matrix finalTransforms = root.GetParentTransforms() * currentWorld;
+                Matrix finalTransforms = root.nodeTransform * root.GetParentTransforms() * currentWorld;
                 effect.Parameters["World"].SetValue(finalTransforms );
                 effect.Parameters["Texture"].SetValue(root.texture);
 
@@ -203,7 +203,9 @@ namespace Datorgrafik_lab2.CreateModels
                 Quaternion qrot = bodyPart.GetParentTransforms().Rotation * Quaternion.CreateFromRotationMatrix(Matrix.CreateRotationX(posX));
                 qrot.Normalize();
 
-                bodyPart.nodeTransform = Matrix.CreateFromQuaternion(qrot) * Matrix.CreateTranslation(bodyPart.GetParentTransforms().Translation);
+                bodyPart.nodeTransform = Matrix.CreateFromQuaternion(qrot)
+                                       * bodyPart.nodeTransform
+                                       * bodyPart.GetParentTransforms();
             }
 
         }
@@ -212,7 +214,7 @@ namespace Datorgrafik_lab2.CreateModels
 
 
 
-//using System;
+//usi§ng System;
 //using System.Collections.Generic;
 //using System.Linq;
 //using System.Text;
