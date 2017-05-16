@@ -29,9 +29,13 @@ namespace Datorgrafik_lab2.CreateModels
 
         private Dictionary<string, Texture2D> textures;
 
+        private float rotation;
+
         public Figure(GraphicsDevice gd)
         {
             this.gd = gd;
+
+            rotation = 0f;
 
             textures = new Dictionary<string, Texture2D>();
 
@@ -194,24 +198,46 @@ namespace Datorgrafik_lab2.CreateModels
         }
 
 
-        public void RotateUpperRightArm(float posX)
+        public void RotateArms(float posX)
         {
-            InstanceTree bodyPart = root.GetInstanceTree("upperRightArm");
-            Matrix currentTransform = Matrix.Identity;
+            InstanceTree rightArm = root.GetInstanceTree("upperRightArm");
+            Matrix currentTransformRightArm = Matrix.Identity;
 
-            if (bodyPart != null)
+            InstanceTree leftArm = root.GetInstanceTree("upperLeftArm");
+            Matrix currentTransformLeftArm = Matrix.Identity;
+
+            rotation += posX;
+
+            if (rotation >= MathHelper.Pi)
             {
-                Quaternion qrot = bodyPart.GetParentTransforms().Rotation * Quaternion.CreateFromRotationMatrix(Matrix.CreateRotationX(posX));
+                posX *= -1;
+                rotation -= 2 * posX;
+            }
+
+
+            if (rightArm != null)
+            {
+                Quaternion qrot = rightArm.GetParentTransforms().Rotation * Quaternion.CreateFromRotationMatrix(Matrix.CreateRotationX(posX));
                 qrot.Normalize();
 
-                currentTransform = bodyPart.nodeTransform
-                                       * bodyPart.GetParentTransforms();
+                //Right arm
+                currentTransformRightArm = rightArm.nodeTransform
+                                       * rightArm.GetParentTransforms();
 
-                bodyPart.nodeTransform = Matrix.CreateTranslation(-1*currentTransform.Translation)
+                rightArm.nodeTransform = Matrix.CreateTranslation(-1*currentTransformRightArm.Translation)
                                        * Matrix.CreateFromQuaternion(qrot)
-                                       * Matrix.CreateTranslation(currentTransform.Translation)
-                                       * currentTransform;
+                                       * Matrix.CreateTranslation(currentTransformRightArm.Translation)
+                                       * currentTransformRightArm;
 
+
+                //Left arm
+                currentTransformLeftArm = leftArm.nodeTransform
+                       * leftArm.GetParentTransforms();
+
+                leftArm.nodeTransform = Matrix.CreateTranslation(-1 * currentTransformLeftArm.Translation)
+                                       * Matrix.CreateFromQuaternion(Quaternion.Inverse(qrot))
+                                       * Matrix.CreateTranslation(currentTransformLeftArm.Translation)
+                                       * currentTransformLeftArm;
 
             }
 
