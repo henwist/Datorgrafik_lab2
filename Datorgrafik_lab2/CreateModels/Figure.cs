@@ -197,15 +197,22 @@ namespace Datorgrafik_lab2.CreateModels
         public void RotateUpperRightArm(float posX)
         {
             InstanceTree bodyPart = root.GetInstanceTree("upperRightArm");
+            Matrix currentTransform = Matrix.Identity;
 
             if (bodyPart != null)
             {
                 Quaternion qrot = bodyPart.GetParentTransforms().Rotation * Quaternion.CreateFromRotationMatrix(Matrix.CreateRotationX(posX));
                 qrot.Normalize();
 
-                bodyPart.nodeTransform = Matrix.CreateFromQuaternion(qrot)
-                                       * bodyPart.nodeTransform
+                currentTransform = bodyPart.nodeTransform
                                        * bodyPart.GetParentTransforms();
+
+                bodyPart.nodeTransform = Matrix.CreateTranslation(-1*currentTransform.Translation)
+                                       * Matrix.CreateFromQuaternion(qrot)
+                                       * Matrix.CreateTranslation(currentTransform.Translation)
+                                       * currentTransform;
+
+
             }
 
         }
