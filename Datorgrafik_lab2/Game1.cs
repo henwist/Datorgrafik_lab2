@@ -141,7 +141,7 @@ namespace Datorgrafik_lab2
             if (Keyboard.GetState().IsKeyDown(Keys.O))
                 radObj += 0.0001f;
 
-
+            figure.Update();
 
 
             TransformComponent transform = ComponentManager.GetComponent<TransformComponent>(sceneManager.cameraID);

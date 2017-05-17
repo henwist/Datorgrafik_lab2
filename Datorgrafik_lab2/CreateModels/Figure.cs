@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Datorgrafik_lab2.InstanceContainers;
 using System.IO;
+using Microsoft.Xna.Framework.Input;
 
 namespace Datorgrafik_lab2.CreateModels
 {
@@ -100,6 +101,35 @@ namespace Datorgrafik_lab2.CreateModels
 
         }
 
+        public void Update()
+        {
+            if (Keyboard.GetState().IsKeyDown(Keys.Up))
+            {
+                var torso = bodyParts.GetBodyPart(TORSO);
+                torso.transform(Matrix.CreateTranslation(new Vector3(0, 0, -1)));
+                bodyParts.ReplaceBodyPart(TORSO, torso);
+            }
+            if (Keyboard.GetState().IsKeyDown(Keys.Down))
+            {
+                var torso = bodyParts.GetBodyPart(TORSO);
+                torso.transform(Matrix.CreateTranslation(new Vector3(0, 0, 1)));
+                bodyParts.ReplaceBodyPart(TORSO, torso);
+            }
+            if (Keyboard.GetState().IsKeyDown(Keys.Right))
+            {
+                var torso = bodyParts.GetBodyPart(TORSO);
+                torso.transform(Matrix.CreateTranslation(new Vector3(1, 0, 0)));
+                bodyParts.ReplaceBodyPart(TORSO, torso);
+            }
+            if (Keyboard.GetState().IsKeyDown(Keys.Left))
+            {
+                var torso = bodyParts.GetBodyPart(TORSO);
+                torso.transform(Matrix.CreateTranslation(new Vector3(-1, 0, 0)));
+                bodyParts.ReplaceBodyPart(TORSO, torso);
+
+            }
+            InitBuffers();
+        }
 
         private void InitBuffers()
         {
@@ -117,7 +147,7 @@ namespace Datorgrafik_lab2.CreateModels
 
         private void BuildInstanceTree()
         {
-            root = new InstanceTree("torso", Matrix.CreateScale(1f) * Matrix.CreateTranslation(new Vector3(0, 0, 0)), textures["orange"]); //parent tree node
+            root = new InstanceTree("torso", Matrix.CreateScale(1f) * Matrix.CreateTranslation(new Vector3(10, 10, -10)), textures["orange"]); //parent tree node
 
             InstanceTree head = new InstanceTree("head", Matrix.CreateScale(0.5f) * Matrix.CreateTranslation(0,Cube.LENGTH_Y/2,0), textures["green"]);
 

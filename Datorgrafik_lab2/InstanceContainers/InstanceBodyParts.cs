@@ -21,7 +21,13 @@ namespace Datorgrafik_lab2.InstanceContainers
             if (!bodyParts.ContainsKey(key))
                 bodyParts.Add(key, bodyPart);
         }
-
+        public void ReplaceBodyPart(string key, Cube bodyPart)
+        {
+            if (bodyParts.ContainsKey(key))
+                bodyParts[key] = bodyPart;
+            else
+                AddBodyPart(key, bodyPart);
+        }
         public Cube GetBodyPart(string key)
         {
             if (bodyParts.ContainsKey(key))

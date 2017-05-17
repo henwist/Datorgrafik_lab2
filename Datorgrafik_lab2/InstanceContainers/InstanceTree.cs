@@ -32,6 +32,10 @@ namespace Datorgrafik_lab2.InstanceContainers
 
         }
 
+        public Dictionary<string, InstanceTree> GetChildren()
+        {
+            return childNodes;
+        }
 
         public InstanceTree GetInstanceTree(string nodeName)
         {
