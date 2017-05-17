@@ -238,7 +238,7 @@ namespace Datorgrafik_lab2
         {
             device.Clear(Color.DarkSlateBlue);
 
-            Window.Title = "Datorgrafik_lab2 av: Rasmus Lundquist(S142465) och Henrik Wistbacka(S142066) - a,s,d,w,e tangenter fungerar.";
+            Window.Title = "Datorgrafik_lab2 av: Rasmus Lundquist(S142465) och Henrik Wistbacka(S142066) - a,s,d,w,e,arrows. Gubbe gömmer sig mitt på mappen bland träden, W zoomar.";
 
 
             setCustomShaderParameters();

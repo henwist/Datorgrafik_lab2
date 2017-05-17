@@ -318,14 +318,6 @@ namespace GameEngine.Systems
             
         }
 
-        //This function is nicked from Thires & Lennart - it should be removed at exam.
-        private BoundingBox ConvertBoundingBoxToWorldCoords(BoundingBox box, Matrix world)
-        {
-            Vector3 pos = Vector3.Transform(Vector3.Zero, Matrix.Invert(world));
-            BoundingBox b = new BoundingBox(box.Min - pos, box.Max - pos);
-            return b;
-        }
-
 
         private void CreateHeightmapComponents()
         {
