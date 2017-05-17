@@ -1,4 +1,4 @@
-﻿using CollisionSample;
+﻿//using CollisionSample;
 using GameEngine.Components;
 using GameEngine.Managers;
 using GameEngine.Objects;
@@ -21,7 +21,7 @@ namespace GameEngine.Systems
         private List<HeightmapObject> hmobjects;
         private GraphicsDevice gd;
 
-        private DebugDraw debugDraw;
+        //private DebugDraw debugDraw;
 
         public struct HeightData
         {
@@ -36,7 +36,7 @@ namespace GameEngine.Systems
             this.gd = gd;
             this.hmobjects = hmobjects;
 
-            debugDraw = new DebugDraw(gd);
+            //debugDraw = new DebugDraw(gd);
 
             heightmapComponents = new List<Component>();
 
@@ -57,7 +57,7 @@ namespace GameEngine.Systems
         {
             CameraComponent camera = ComponentManager.GetComponents<CameraComponent>().Cast<CameraComponent>().Select(x => x).Where(y => y.isActive == true).ElementAt(0);
 
-            debugDraw.Begin(camera.viewMatrix, camera.projectionMatrix);
+            //debugDraw.Begin(camera.viewMatrix, camera.projectionMatrix);
         }
 
         public static HeightData GetHeightData(string terrainFileName)
@@ -292,7 +292,7 @@ namespace GameEngine.Systems
                 //BoundingBox box = ConvertBoundingBoxToWorldCoords(bvCmp.bbox, camera.bFrustum.Matrix);
                 //debugDraw.DrawWireBox(box, Color.White);
 
-                debugDraw.DrawWireBox(bvCmp.bbox, Color.White);
+                //debugDraw.DrawWireBox(bvCmp.bbox, Color.White);
 
                 foreach (EffectPass pass in effect.CurrentTechnique.Passes)
                 {
@@ -313,7 +313,7 @@ namespace GameEngine.Systems
 
             effect.Parameters["World"].SetValue(currentWorldMatrix);
 
-            debugDraw.DrawWireFrustum(camera.bFrustum, Color.White);
+            //debugDraw.DrawWireFrustum(camera.bFrustum, Color.White);
 
             
         }
