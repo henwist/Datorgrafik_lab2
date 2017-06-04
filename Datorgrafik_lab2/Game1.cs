@@ -171,7 +171,7 @@ namespace Datorgrafik_lab2
 
             sceneManager.Update(gameTime);
 
-            figure.RotateArms(0.1f);
+            //figure.RotateBodyPart(0.7f,);
 
         }
 

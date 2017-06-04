@@ -31,12 +31,15 @@ namespace Datorgrafik_lab2.CreateModels
         private Dictionary<string, Texture2D> textures;
 
         private float rotation;
+        private Vector3 position;
 
         public Figure(GraphicsDevice gd)
         {
             this.gd = gd;
 
             rotation = 0f;
+
+            position = Vector3.Zero;
 
             textures = new Dictionary<string, Texture2D>();
 
@@ -46,7 +49,7 @@ namespace Datorgrafik_lab2.CreateModels
 
             InitBuffers();
 
-            BuildInstanceTree();
+            BuildInstanceTree(new Vector3(10, 10, -10));
         }
 
         private void LoadTextures()
@@ -107,33 +110,40 @@ namespace Datorgrafik_lab2.CreateModels
 
         public void Update()
         {
+            
             if (Keyboard.GetState().IsKeyDown(Keys.Up))
             {
                 var torso = bodyParts.GetBodyPart(TORSO);
-                torso.transform(Matrix.CreateTranslation(new Vector3(0, 0, -1)));
-                bodyParts.ReplaceBodyPart(TORSO, torso);
+                //torso.transform(Matrix.CreateTranslation(new Vector3(0, 0, -1)));
+                //bodyParts.ReplaceBodyPart(TORSO, torso);
+                position += new Vector3(0, 0, -1);
             }
             if (Keyboard.GetState().IsKeyDown(Keys.Down))
             {
                 var torso = bodyParts.GetBodyPart(TORSO);
-                torso.transform(Matrix.CreateTranslation(new Vector3(0, 0, 1)));
-                bodyParts.ReplaceBodyPart(TORSO, torso);
+                //torso.transform(Matrix.CreateTranslation(new Vector3(0, 0, 1)));
+                //bodyParts.ReplaceBodyPart(TORSO, torso);
+                position += new Vector3(0, 0, 1);
             }
             if (Keyboard.GetState().IsKeyDown(Keys.Right))
             {
                 var torso = bodyParts.GetBodyPart(TORSO);
-                torso.transform(Matrix.CreateTranslation(new Vector3(1, 0, 0)));
-                bodyParts.ReplaceBodyPart(TORSO, torso);
+                //torso.transform(Matrix.CreateTranslation(new Vector3(1, 0, 0)));
+                //bodyParts.ReplaceBodyPart(TORSO, torso);
+                position += new Vector3(1, 0, 0);
             }
             if (Keyboard.GetState().IsKeyDown(Keys.Left))
             {
                 var torso = bodyParts.GetBodyPart(TORSO);
-                torso.transform(Matrix.CreateTranslation(new Vector3(-1, 0, 0)));
-                bodyParts.ReplaceBodyPart(TORSO, torso);
+                //torso.transform(Matrix.CreateTranslation(new Vector3(-1, 0, 0)));
+                //bodyParts.ReplaceBodyPart(TORSO, torso);
+                position += new Vector3(-1, 0, 0);
 
             }
-            InitBuffers();
+            BuildInstanceTree(position);
         }
+
+
 
         private void InitBuffers()
         {
@@ -149,14 +159,14 @@ namespace Datorgrafik_lab2.CreateModels
         }
 
 
-        private void BuildInstanceTree()
+        private void BuildInstanceTree(Vector3 position)
         {
-            root = new InstanceTree("torso", Matrix.CreateScale(1f) * Matrix.CreateTranslation(new Vector3(10, 10, -10)), textures["orange"]); //parent tree node
+            root = new InstanceTree("torso", Matrix.CreateScale(1f) * Matrix.CreateTranslation(position/*new Vector3(10, 10, -10)*//*new Vector3(10, 10, -10)*/), textures["orange"]); //parent tree node
 
             InstanceTree head = new InstanceTree("head", Matrix.CreateScale(0.5f) * Matrix.CreateTranslation(0,Cube.LENGTH_Y/2,0), textures["green"]);
 
-            InstanceTree upperLeftArm = new InstanceTree("upperLeftArm",  Matrix.CreateScale(0.5f) 
-                                                                        * Matrix.CreateTranslation(new Vector3(-Cube.LENGTH_X/2, Cube.LENGTH_Y/4f, 0)), textures["red"]);
+            InstanceTree upperLeftArm = new InstanceTree("upperLeftArm", Matrix.CreateScale(0.5f)
+                                                                        * Matrix.CreateTranslation(new Vector3(-Cube.LENGTH_X / 2, Cube.LENGTH_Y / 4f, 0)), textures["red"]);
             InstanceTree lowerLeftArm = new InstanceTree("lowerLeftArm", Matrix.CreateScale(0.7f)
                                                                        * Matrix.CreateTranslation(new Vector3(-Cube.LENGTH_X/4, -Cube.LENGTH_Y/2f, 0)), textures["orange"]);
 
@@ -179,6 +189,9 @@ namespace Datorgrafik_lab2.CreateModels
             //this bodypart is added as to cover-up for a suspect bug. This bodypart will always be drawn in center with identity matrix.
             InstanceTree bug_adder = new InstanceTree("bug_adder", Matrix.CreateScale(0.25f)
                                                            * Matrix.CreateTranslation(new Vector3(Cube.LENGTH_X + 4f, Cube.LENGTH_Y / 2f, 0)), textures["blue"]);
+
+
+            RotateBodyPart(0.7f, ref upperRightArm);
 
             //Head
             root.AddChild(head);
@@ -204,7 +217,6 @@ namespace Datorgrafik_lab2.CreateModels
             //Bug Adder
             root.AddChild(bug_adder);
 
-
         }
 
 
@@ -228,13 +240,10 @@ namespace Datorgrafik_lab2.CreateModels
         }
 
 
-        public void RotateArms(float posX)
+        public void RotateBodyPart(float posX, ref InstanceTree bodypart)
         {
-            InstanceTree rightArm = root.GetInstanceTree("upperRightArm");
+            //InstanceTree rightArm = root.GetInstanceTree("upperRightArm");
             Matrix currentTransformRightArm = Matrix.Identity;
-
-            InstanceTree leftArm = root.GetInstanceTree("upperLeftArm");
-            Matrix currentTransformLeftArm = Matrix.Identity;
 
             rotation += posX;
 
@@ -244,34 +253,66 @@ namespace Datorgrafik_lab2.CreateModels
                 rotation -= 2 * posX;
             }
 
+            Quaternion qrot = bodypart.GetParentTransforms().Rotation * Quaternion.CreateFromRotationMatrix(Matrix.CreateRotationX(posX));
+            qrot.Normalize();
 
-            if (rightArm != null)
-            {
-                Quaternion qrot = rightArm.GetParentTransforms().Rotation * Quaternion.CreateFromRotationMatrix(Matrix.CreateRotationX(posX));
-                qrot.Normalize();
+            //Right arm
+            currentTransformRightArm = bodypart.nodeTransform
+                                    * bodypart.GetParentTransforms();
 
-                //Right arm
-                currentTransformRightArm = rightArm.nodeTransform
-                                       * rightArm.GetParentTransforms();
-
-                rightArm.nodeTransform = Matrix.CreateTranslation(-1*currentTransformRightArm.Translation)
-                                       * Matrix.CreateFromQuaternion(qrot)
-                                       * Matrix.CreateTranslation(currentTransformRightArm.Translation)
-                                       * currentTransformRightArm;
+            bodypart.nodeTransform = Matrix.CreateTranslation(-1 * currentTransformRightArm.Translation)
+                                    * Matrix.CreateFromQuaternion(qrot)
+                                    * Matrix.CreateTranslation(currentTransformRightArm.Translation)
+                                    * currentTransformRightArm;
 
 
-                //Left arm
-                currentTransformLeftArm = leftArm.nodeTransform
-                       * leftArm.GetParentTransforms();
-
-                leftArm.nodeTransform = Matrix.CreateTranslation(-1 * currentTransformLeftArm.Translation)
-                                       * Matrix.CreateFromQuaternion(Quaternion.Inverse(qrot))
-                                       * Matrix.CreateTranslation(currentTransformLeftArm.Translation)
-                                       * currentTransformLeftArm;
-
-            }
 
         }
+
+        //public void RotateArms(float posX)
+        //{
+        //    InstanceTree rightArm = root.GetInstanceTree("upperRightArm");
+        //    Matrix currentTransformRightArm = Matrix.Identity;
+
+        //    InstanceTree leftArm = root.GetInstanceTree("upperLeftArm");
+        //    Matrix currentTransformLeftArm = Matrix.Identity;
+
+        //    rotation += posX;
+
+        //    if (rotation >= MathHelper.Pi)
+        //    {
+        //        posX *= -1;
+        //        rotation -= 2 * posX;
+        //    }
+
+
+        //    if (rightArm != null)
+        //    {
+        //        Quaternion qrot = rightArm.GetParentTransforms().Rotation * Quaternion.CreateFromRotationMatrix(Matrix.CreateRotationX(posX));
+        //        qrot.Normalize();
+
+        //        //Right arm
+        //        currentTransformRightArm = rightArm.nodeTransform
+        //                               * rightArm.GetParentTransforms();
+
+        //        rightArm.nodeTransform = Matrix.CreateTranslation(-1*currentTransformRightArm.Translation)
+        //                               * Matrix.CreateFromQuaternion(qrot)
+        //                               * Matrix.CreateTranslation(currentTransformRightArm.Translation)
+        //                               * currentTransformRightArm;
+
+
+        //        //Left arm
+        //        currentTransformLeftArm = leftArm.nodeTransform
+        //               * leftArm.GetParentTransforms();
+
+        //        leftArm.nodeTransform = Matrix.CreateTranslation(-1 * currentTransformLeftArm.Translation)
+        //                               * Matrix.CreateFromQuaternion(Quaternion.Inverse(qrot))
+        //                               * Matrix.CreateTranslation(currentTransformLeftArm.Translation)
+        //                               * currentTransformLeftArm;
+
+        //    }
+
+        //}
     }
 }
 

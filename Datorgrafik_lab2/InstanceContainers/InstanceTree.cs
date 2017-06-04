@@ -87,6 +87,15 @@ namespace Datorgrafik_lab2.InstanceContainers
         }
 
 
+        public Vector3 GetParentScales()
+        {
+            if (this.parent != null)
+                return this.parent.nodeTransform.Scale * this.parent.GetParentScales();
+
+            else
+                return this.nodeTransform.Scale;
+        }
+
         public IEnumerator<InstanceTree> GetEnumerator()
         {
             return childNodes.Values.GetEnumerator();
