@@ -32,6 +32,7 @@ namespace Datorgrafik_lab2.CreateModels
 
         private float rotation;
         private Vector3 position;
+        private float bodypartRotation;
 
         public Figure(GraphicsDevice gd)
         {
@@ -191,7 +192,10 @@ namespace Datorgrafik_lab2.CreateModels
                                                            * Matrix.CreateTranslation(new Vector3(Cube.LENGTH_X + 4f, Cube.LENGTH_Y / 2f, 0)), textures["blue"]);
 
 
-            RotateBodyPart(0.7f, ref upperRightArm);
+            RotateBodyPart(bodypartRotation += 0.01f, ref upperRightArm, 1);
+            //RotateBodyPart(bodypartRotation * -1, ref upperLeftArm);
+            bodypartRotation += 0.1f;
+            RotateBodyPart(bodypartRotation * -1 * 0.1f, ref lowerLeftArm, -1);
 
             //Head
             root.AddChild(head);
@@ -240,7 +244,7 @@ namespace Datorgrafik_lab2.CreateModels
         }
 
 
-        public void RotateBodyPart(float posX, ref InstanceTree bodypart)
+        private void RotateBodyPart(float posX, ref InstanceTree bodypart, int translationSign)
         {
             //InstanceTree rightArm = root.GetInstanceTree("upperRightArm");
             Matrix currentTransformRightArm = Matrix.Identity;
@@ -257,12 +261,12 @@ namespace Datorgrafik_lab2.CreateModels
             qrot.Normalize();
 
             //Right arm
-            currentTransformRightArm = bodypart.nodeTransform
-                                    * bodypart.GetParentTransforms();
+            currentTransformRightArm = /*bodypart.nodeTransform
+*/                                    bodypart.GetParentTransforms();
 
-            bodypart.nodeTransform = Matrix.CreateTranslation(-1 * currentTransformRightArm.Translation)
+            bodypart.nodeTransform = Matrix.CreateTranslation(translationSign  * - 1 * currentTransformRightArm.Translation)
                                     * Matrix.CreateFromQuaternion(qrot)
-                                    * Matrix.CreateTranslation(currentTransformRightArm.Translation)
+                                    * Matrix.CreateTranslation(translationSign * 1 * currentTransformRightArm.Translation)
                                     * currentTransformRightArm;
 
 
