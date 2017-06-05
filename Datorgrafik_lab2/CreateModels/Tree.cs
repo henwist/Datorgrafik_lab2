@@ -34,8 +34,8 @@ namespace Datorgrafik_lab2.CreateModels
         private string[] recursiveStrings;
         private int countVertices;
 
-        private VertexPositionNormalTexture[] vertices;
-        private int[] indices;
+        public VertexPositionNormalTexture[] vertices { get; set; }
+        public int[] indices { get; set; }
         public VertexBuffer vertexBuffer { get; private set; }
         public IndexBuffer indexBuffer { get; private set; }
 

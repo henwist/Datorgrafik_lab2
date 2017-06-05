@@ -294,16 +294,14 @@ namespace GameEngine.Systems
 
                 //debugDraw.DrawWireBox(bvCmp.bbox, Color.White);
 
+                gd.SetVertexBuffer(cmp.vertexBuffer);
+
+                //cmp.indexBuffer.SetData<int>(cmp.indices, 0, cmp.indexCount);
+                gd.Indices = cmp.indexBuffer;
+
                 foreach (EffectPass pass in effect.CurrentTechnique.Passes)
                 {
                     pass.Apply();
-
-                    gd.SetVertexBuffer(cmp.vertexBuffer);
-
-                    //cmp.indexBuffer.SetData<int>(cmp.indices, 0, cmp.indexCount);
-                    gd.Indices = cmp.indexBuffer;
-
-                    
 
                     if (bvCmp.bbox.Intersects(camera.bFrustum)) //Just draw all parts of heightmap that is anyhow inside the camera frustum.
                         gd.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, cmp.indexCount / 3);

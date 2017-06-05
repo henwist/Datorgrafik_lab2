@@ -41,8 +41,8 @@ namespace GameEngine.Systems
 
                 if (curCam.isActive)
                 {
-                    Matrix rotation = Matrix.CreateRotationY(transform.rotation);
-                    curCam.viewMatrix = Matrix.CreateLookAt(transform.position, curCam.target, Vector3.Up);
+                    Matrix rotation = Matrix.CreateRotationY(transform.Pitch);
+                    curCam.viewMatrix = Matrix.CreateLookAt(transform.Position, curCam.target, Vector3.Up);
 
                     effect.Parameters["View"].SetValue(curCam.viewMatrix * rotation);
                     effect.Parameters["Projection"].SetValue(curCam.projectionMatrix);

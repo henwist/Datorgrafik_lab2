@@ -3,6 +3,7 @@ using GameEngine.Components;
 using GameEngine.Managers;
 
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
@@ -48,6 +49,8 @@ namespace Datorgrafik_lab2
         public CameraComponent camera { get; protected set; }
         private int CAMERA_MOVE_SCALE = 10;
 
+        public static ContentManager ContentManager;
+
         public Game1()
         {
             graphics = new GraphicsDeviceManager(this);
@@ -68,7 +71,8 @@ namespace Datorgrafik_lab2
 
         protected override void LoadContent()
         {
-            spriteBatch = new SpriteBatch(GraphicsDevice);
+            //spriteBatch = new SpriteBatch(GraphicsDevice);
+            Game1.ContentManager = Content;
 
             device = graphics.GraphicsDevice;
 
@@ -144,30 +148,30 @@ namespace Datorgrafik_lab2
             figure.Update();
 
 
-            TransformComponent transform = ComponentManager.GetComponent<TransformComponent>(sceneManager.cameraID);
+            //TransformComponent transform = ComponentManager.GetComponent<TransformComponent>(sceneManager.cameraID);
             //CameraComponent curCam = ComponentManager.GetComponent<CameraComponent>();
 
-            if (Keyboard.GetState().IsKeyDown(Keys.Z))
-                transform.position.X += 1f * CAMERA_MOVE_SCALE;
+            //if (Keyboard.GetState().IsKeyDown(Keys.Z))
+            //    transform.position.X += 1f * CAMERA_MOVE_SCALE;
 
-            if (Keyboard.GetState().IsKeyDown(Keys.X))
-                transform.position.Y += 1f * CAMERA_MOVE_SCALE;
+            //if (Keyboard.GetState().IsKeyDown(Keys.X))
+            //    transform.position.Y += 1f * CAMERA_MOVE_SCALE;
 
-            if (Keyboard.GetState().IsKeyDown(Keys.C))
-                transform.position.Z += 1f * CAMERA_MOVE_SCALE;
+            //if (Keyboard.GetState().IsKeyDown(Keys.C))
+            //    transform.position.Z += 1f * CAMERA_MOVE_SCALE;
 
 
-            if (Keyboard.GetState().IsKeyDown(Keys.V))
-                transform.position.X -= 1f * CAMERA_MOVE_SCALE;
+            //if (Keyboard.GetState().IsKeyDown(Keys.V))
+            //    transform.position.X -= 1f * CAMERA_MOVE_SCALE;
 
-            if (Keyboard.GetState().IsKeyDown(Keys.B))
-                transform.position.Y -= 1f * CAMERA_MOVE_SCALE;
+            //if (Keyboard.GetState().IsKeyDown(Keys.B))
+            //    transform.position.Y -= 1f * CAMERA_MOVE_SCALE;
 
-            if (Keyboard.GetState().IsKeyDown(Keys.N))
-                transform.position.Z -= 1f * CAMERA_MOVE_SCALE;
+            //if (Keyboard.GetState().IsKeyDown(Keys.N))
+            //    transform.position.Z -= 1f * CAMERA_MOVE_SCALE;
 
-            if (Keyboard.GetState().IsKeyDown(Keys.M))
-                transform.position.Z = transform.position.Y = transform.position.X = 0f;
+            //if (Keyboard.GetState().IsKeyDown(Keys.M))
+            //    transform.position.Z = transform.position.Y = transform.position.X = 0f;
 
             sceneManager.Update(gameTime);
 
@@ -245,22 +249,26 @@ namespace Datorgrafik_lab2
 
             figure.Draw(myeffect);
 
-            foreach (EffectPass pass in myeffect.Techniques[(int)EnumTechnique.CurrentTechnique].Passes)
-            {
-                pass.Apply();
+            //graphics.GraphicsDevice.SetVertexBuffer(figureBuffer);
+            //graphics.GraphicsDevice.Indices = figureIndices;
 
-                figureBuffer.SetData(figure.vertices.ToArray());
-                figureIndices.SetData(figure.indices);
+            sceneManager.Draw(myeffect, gameTime);
 
-                graphics.GraphicsDevice.SetVertexBuffer(figureBuffer);
-                graphics.GraphicsDevice.Indices = figureIndices;
+            //foreach (EffectPass pass in myeffect.Techniques[(int)EnumTechnique.CurrentTechnique].Passes)
+            //{
+            //    pass.Apply();
 
-                graphics.GraphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, figure.vertices.Count / 3);
+            //    //figureBuffer.SetData(figure.vertices.ToArray());
+            //    //figureIndices.SetData(figure.indices);
 
 
-                sceneManager.Draw(myeffect, gameTime);
 
-            }
+            //    //graphics.GraphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, figure.vertices.Count / 3);
+
+
+
+
+            //}
 
             base.Draw(gameTime);
         }
