@@ -10,6 +10,7 @@ using Datorgrafik_lab2.CreateModels;
 using static Datorgrafik_lab2.Enums.Enums;
 using GameEngine.Managers;
 using Microsoft.Xna.Framework.Input;
+using System.Linq;
 
 namespace Datorgrafik_lab2.Managers
 {
@@ -26,7 +27,7 @@ namespace Datorgrafik_lab2.Managers
         private Microsoft.Xna.Framework.Matrix world;
 
         private Matrix[] objectWorldMatrices;
-        private static readonly int INSTANCECOUNT = 100;
+        private static readonly int INSTANCECOUNT = 10;
         private VertexBufferBinding[] bindings;
         private VertexBuffer matriceIVB;
         private VertexDeclaration matriceVD;
@@ -44,18 +45,15 @@ namespace Datorgrafik_lab2.Managers
         private Vector3 cameraTarget = new Vector3(0, 0, 0);
         private Vector3 cameraUp = Vector3.Up;
         public static ulong cameraID { get; private set; }
-        
 
-        //struct Matrix
-        //{
-        //    public Microsoft.Xna.Framework.Matrix matrice;
-        //}
 
         public SceneManager(Game game, Microsoft.Xna.Framework.Matrix world)
         {
             this.game = game;
             this.gd = game.GraphicsDevice;
             this.world = world;
+
+            createWorldMatrix();
 
             textures = new Texture2D[INSTANCECOUNT];
 
@@ -66,8 +64,15 @@ namespace Datorgrafik_lab2.Managers
             createTreeStructures();
 
             bufferSystem = new BufferSystem(game.GraphicsDevice);
-
         }
+
+
+
+        private void createWorldMatrix()
+        {
+            ComponentManager.StoreComponent(ComponentManager.GetNewId(), new WorldMatrixComponent() {  WorldMatrix = Matrix.Identity});
+        }
+
 
         private void createCameraStructures()
         {
@@ -79,6 +84,7 @@ namespace Datorgrafik_lab2.Managers
             ComponentManager.StoreComponent(cameraID, transform);
             ComponentManager.StoreComponent(cameraID, cameraCmp);
         }
+
 
         private void createHeightmap()
         {
@@ -116,6 +122,8 @@ namespace Datorgrafik_lab2.Managers
             sendToCompManager(buffer, transforms);
         }
 
+
+
         private void initTextures()
         {
             Texture2D red = Game1.ContentManager.Load<Texture2D>(@"Textures/red");
@@ -124,6 +132,7 @@ namespace Datorgrafik_lab2.Managers
             for (int i = 0; i < textures.Length; i++)
                 textures[i] = i % 2 == 0 ? red : blue;
         }
+
 
         private void sendToCompManager(BufferComponent buffer, TransformComponent[] transforms)
         {
@@ -135,32 +144,18 @@ namespace Datorgrafik_lab2.Managers
 
                 ComponentManager.StoreComponent(id, buffer);
                 ComponentManager.StoreComponent(id, transforms[i]);
+                ComponentManager.StoreComponent(id, getBoundingVolume(buffer, transforms[i]));
 
             }
         }
 
-        //private void initStructures()
-        //{
-        //    matriceVD = new VertexDeclaration(
-        //                         new VertexElement(0, VertexElementFormat.Vector4, VertexElementUsage.TextureCoordinate, 0),
-        //                         new VertexElement(16, VertexElementFormat.Vector4, VertexElementUsage.TextureCoordinate, 1),
-        //                         new VertexElement(32, VertexElementFormat.Vector4, VertexElementUsage.TextureCoordinate, 2),
-        //                         new VertexElement(48, VertexElementFormat.Vector4, VertexElementUsage.TextureCoordinate, 3)
-        //                         );
+        private BoundingVolumeComponent getBoundingVolume(BufferComponent buffer, TransformComponent transform)
+        {
+            BoundingVolumeComponent bvCmp = new BoundingVolumeComponent();
+            bvCmp.bbox = BoundingBox.CreateFromPoints(buffer.Vertices.Select(x => x.Position));
 
-        //    initMatrices();
-
-        //    matriceIVB = new VertexBuffer(gd, matriceVD, INSTANCECOUNT, BufferUsage.None);
-        //    matriceIVB.SetData<Matrix>(objectWorldMatrices);
-
-        //    bindings = new VertexBufferBinding[2];
-        //    bindings[0] = new VertexBufferBinding(tree.vertexBuffer);
-        //    bindings[1] = new VertexBufferBinding(matriceIVB, 0, 1);
-        //    //bindings[2] = new VertexBufferBinding(posIVB, 0, OBJECTPOS_CHANGE_EVERY_X_INSTANCES_FREQUENCY);
-
-
-        //}
-
+            return bvCmp;
+        }
 
 
         private void initTransforms(TransformComponent[] transforms)
@@ -197,53 +192,20 @@ namespace Datorgrafik_lab2.Managers
             
             heightmapSystem.Draw(effect);
 
-            ////Trying rotation of object's world for all objects.
-            ////objRotation = Matrix.CreateRotationY(radObj) * Matrix.CreateRotationZ(0.0001f);
-            //bindings[1].VertexBuffer.GetData<Matrix>(objectWorldMatrices);
 
-            //int i = 0;
-            //foreach (Matrix m in objectWorldMatrices)
-            //{
-            //    //Vector3 translate = m.matrice.Translation;
-            //    ////translate.Normalize()<
-            //    objectWorldMatrices[i++] = heightmapSystem.objWorld; /*m.matrice * Matrix.CreateTranslation(-1 * translate) * objRotation * Matrix.CreateTranslation(translate);*/
-
-            //}
-
-            //bindings[1].VertexBuffer.SetData<Matrix>(objectWorldMatrices);
-            ////end trying rotation.
 
             CameraSystem.Instance.Update(effect, gameTime);
 
-            bufferSystem.Draw(effect, gameTime);
-
-            //Matrix viewMatrix = ComponentManager.GetComponent<CameraComponent>(cameraID).viewMatrix;
-            //Matrix projMatrix = ComponentManager.GetComponent<CameraComponent>(cameraID).projectionMatrix;
-            //effect.Parameters["View"].SetValue(viewMatrix);
-            //effect.Parameters["Projection"].SetValue(projMatrix);
+            bufferSystem.Draw(gameTime);
 
             foreach (EffectPass pass in effect.Techniques[(int)EnumTechnique.InstancedTechnique].Passes)
             {
                 pass.Apply();
-
-                //gd.Indices = tree.indexBuffer;
-
-                //gd.SetVertexBuffers(bindings);
-
-                //////tree
-                //gd.DrawInstancedPrimitives(PrimitiveType.LineList, 0, 0, tree.vertexBuffer.VertexCount, 0, tree.indexBuffer.IndexCount / 2, INSTANCECOUNT);
-
-                //boxes
-                //graphics.GraphicsDevice.DrawInstancedPrimitives(PrimitiveType.TriangleList, 0, 0, tree.vertexBuffer.VertexCount, 0, tree.indexBuffer.IndexCount / 3, INSTANCECOUNT);
             }
 
         }
 
-        private void LoadComponents()
-        {
-            //Terrain component
 
-        }
 
         private void createHeightmapObjects()
         {

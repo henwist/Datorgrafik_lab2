@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
+using System.Linq;
 using static Datorgrafik_lab2.Enums.Enums;
 
 namespace Datorgrafik_lab2
@@ -17,7 +18,7 @@ namespace Datorgrafik_lab2
     public class Game1 : Game
     {
         GraphicsDeviceManager graphics;
-        SpriteBatch spriteBatch;
+
         GraphicsDevice device;
 
         BasicEffect effect;
@@ -71,7 +72,6 @@ namespace Datorgrafik_lab2
 
         protected override void LoadContent()
         {
-            //spriteBatch = new SpriteBatch(GraphicsDevice);
             Game1.ContentManager = Content;
 
             device = graphics.GraphicsDevice;
@@ -95,9 +95,11 @@ namespace Datorgrafik_lab2
 
         }
 
+
         protected override void UnloadContent()
         {
         }
+
 
 
         protected override void Update(GameTime gameTime)
@@ -127,13 +129,13 @@ namespace Datorgrafik_lab2
             //    cameraPosition.Y -= 1.0f;
 
             if (Keyboard.GetState().IsKeyDown(Keys.A))
-                radx += 0.1f;
+                radx += 0.02f;
 
             if (Keyboard.GetState().IsKeyDown(Keys.S))
-                rady += 0.1f;
+                rady += 0.02f;
 
             if (Keyboard.GetState().IsKeyDown(Keys.D))
-                radz += 0.1f;
+                radz += 0.02f;
 
             if (Keyboard.GetState().IsKeyDown(Keys.W))
                 scale += 0.01f;
@@ -179,7 +181,6 @@ namespace Datorgrafik_lab2
 
         }
 
-        float posX = 0.01f;
 
         private void setBasiceffectParameters()
         {
@@ -216,6 +217,7 @@ namespace Datorgrafik_lab2
             * Matrix.CreateScale(scale);
         }
 
+
         private void setCustomShaderParameters()
         {
             myeffect.Parameters["World"].SetValue(
@@ -226,13 +228,13 @@ namespace Datorgrafik_lab2
                             * Matrix.CreateTranslation(translatex, translatey, translatez));
 
 
-            //myeffect.Parameters["View"].SetValue(_view);
-            //myeffect.Parameters["Projection"].SetValue(_projection);
+            ComponentManager.GetComponents<WorldMatrixComponent>().Cast<WorldMatrixComponent>().Select(x => x).ElementAt(0).WorldMatrix =
+                                            Matrix.CreateRotationX(radx)
+                            * Matrix.CreateRotationY(rady)
+                            * Matrix.CreateRotationZ(radz)
+                            * Matrix.CreateScale(scale)
+                            * Matrix.CreateTranslation(translatex, translatey, translatez);
 
-            //Matrix viewMatrix = ComponentManager.GetComponent<CameraComponent>(sceneManager.cameraID).viewMatrix;
-            //Matrix projMatrix = ComponentManager.GetComponent<CameraComponent>(sceneManager.cameraID).projectionMatrix;
-            //myeffect.Parameters["View"].SetValue(viewMatrix);
-            //myeffect.Parameters["Projection"].SetValue(projMatrix);
 
             myeffect.Parameters["Texture"].SetValue(grass);
         }
@@ -249,26 +251,8 @@ namespace Datorgrafik_lab2
 
             figure.Draw(myeffect);
 
-            //graphics.GraphicsDevice.SetVertexBuffer(figureBuffer);
-            //graphics.GraphicsDevice.Indices = figureIndices;
-
             sceneManager.Draw(myeffect, gameTime);
 
-            //foreach (EffectPass pass in myeffect.Techniques[(int)EnumTechnique.CurrentTechnique].Passes)
-            //{
-            //    pass.Apply();
-
-            //    //figureBuffer.SetData(figure.vertices.ToArray());
-            //    //figureIndices.SetData(figure.indices);
-
-
-
-            //    //graphics.GraphicsDevice.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, figure.vertices.Count / 3);
-
-
-
-
-            //}
 
             base.Draw(gameTime);
         }

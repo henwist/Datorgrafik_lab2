@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using GameEngine.Managers;
 using GameEngine.Components;
+using CollisionSample;
 
 namespace GameEngine.Systems
 {
@@ -14,6 +15,8 @@ namespace GameEngine.Systems
     {
         private BasicEffect effect;
         private GraphicsDevice gd;
+
+        private DebugDraw debugDraw;
 
         public BufferSystem(GraphicsDevice gd)
         {
@@ -27,6 +30,8 @@ namespace GameEngine.Systems
             gd.RasterizerState = rs;
 
             initBasicEffect();
+
+            debugDraw = new DebugDraw(gd);
         }
 
         private void initBasicEffect()
@@ -54,39 +59,54 @@ namespace GameEngine.Systems
         }
 
 
-        public void Draw(Effect effect, GameTime gametime)
+        public void Draw(GameTime gametime)
         {
             TransformComponent transform;
             BufferComponent buffer;
+            BoundingVolumeComponent boundingVolume;
+
+            CameraComponent camera = ComponentManager.GetComponents<CameraComponent>().Cast<CameraComponent>().Select(x => x).Where(y => y.isActive == true).ElementAt(0);
+
+            Matrix world = ComponentManager.GetComponents<WorldMatrixComponent>().Cast<WorldMatrixComponent>().Select(x => x).ElementAt(0).WorldMatrix;
 
             int i = 0;
             foreach(ulong id in ComponentManager.GetAllIds<BufferComponent>())
             {
                 transform = ComponentManager.GetComponent<TransformComponent>(id);
                 buffer = ComponentManager.GetComponent<BufferComponent>(id);
+                boundingVolume = ComponentManager.GetComponent<BoundingVolumeComponent>(id);
 
-                CameraComponent camera = ComponentManager.GetComponents<CameraComponent>().Cast<CameraComponent>().Select(x => x).Where(y => y.isActive == true).ElementAt(0);
+                effect.World = transform.ObjectWorld * world;
 
-                //effect.World = transform.ObjectWorld;
-                //effect.View = camera.viewMatrix;
-                //effect.Projection = camera.projectionMatrix;
-                //effect.Texture = buffer.Texture[1];
+                effect.View = camera.viewMatrix;
+                effect.Projection = camera.projectionMatrix;
+                effect.Texture = buffer.Texture[i++];
 
-                effect.Parameters["World"].SetValue(transform.ObjectWorld);
-                effect.Parameters["View"].SetValue(camera.viewMatrix);
-                effect.Parameters["Projection"].SetValue(camera.projectionMatrix);
-                effect.Parameters["Texture"].SetValue(buffer.Texture[i++]);
+                //effect.Parameters["World"].SetValue(transform.ObjectWorld);
+                //effect.Parameters["View"].SetValue(camera.viewMatrix);
+                //effect.Parameters["Projection"].SetValue(camera.projectionMatrix);
+                //effect.Parameters["Texture"].SetValue(buffer.Texture[i++]);
 
                 gd.SetVertexBuffer(buffer.VertexBuffer);
                 gd.Indices = buffer.IndexBuffer;
-                
+
+
                 foreach (EffectPass pass in effect.CurrentTechnique.Passes)
                 {
-                    pass.Apply();
+                    pass.Apply(); 
 
                     gd.DrawIndexedPrimitives(PrimitiveType.LineList, 0, 0, buffer.PrimitiveCount);
                 }
-            }    
+
+                drawBoundingVolume(boundingVolume, camera, transform.ObjectWorld * world);
+             }    
+        }
+
+        private void drawBoundingVolume(BoundingVolumeComponent boundingVolume, CameraComponent camera, Matrix objWorld)
+        {
+            debugDraw.Begin(objWorld, camera.viewMatrix, camera.projectionMatrix);
+            debugDraw.DrawWireBox(boundingVolume.bbox, Color.White);
+            debugDraw.End();
         }
     }
 }
