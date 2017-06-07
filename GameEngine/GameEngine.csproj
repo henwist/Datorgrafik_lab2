@@ -45,6 +45,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Components\EffectComponent.cs" />
+    <Compile Include="Helpers\BoundingVolume.cs" />
     <Compile Include="Components\BoundingVolumeComponent.cs" />
     <Compile Include="Components\BufferComponent.cs" />
     <Compile Include="Components\CameraComponent.cs" />

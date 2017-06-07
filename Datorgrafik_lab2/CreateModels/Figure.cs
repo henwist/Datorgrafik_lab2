@@ -8,6 +8,8 @@ using Microsoft.Xna.Framework.Graphics;
 using Datorgrafik_lab2.InstanceContainers;
 using System.IO;
 using Microsoft.Xna.Framework.Input;
+using GameEngine.Components;
+using GameEngine.Managers;
 
 namespace Datorgrafik_lab2.CreateModels
 {
@@ -38,7 +40,7 @@ namespace Datorgrafik_lab2.CreateModels
 
         private GraphicsDevice gd;
 
-        private Matrix currentWorld;
+        //private Matrix currentWorld;
 
         private Dictionary<string, Texture2D> textures;
 
@@ -169,35 +171,40 @@ namespace Datorgrafik_lab2.CreateModels
         }
 
 
-        public void Draw(Effect effect)
+        public void Draw(GameTime gameTime)
         {
-            currentWorld = effect.Parameters["World"].GetValueMatrix();
+            //currentWorld = effect.Parameters["World"].GetValueMatrix();
+            EffectComponent effectCmp = ComponentManager.GetComponents<EffectComponent>().Cast<EffectComponent>().Select(x => x).ElementAt(0);
+            BasicEffect effect = effectCmp.effect;
+
+            Matrix world = ComponentManager.GetComponents<WorldMatrixComponent>().Cast<WorldMatrixComponent>().Select(x => x).ElementAt(0).WorldMatrix;
 
             gd.SetVertexBuffer(vertexBuffer);
             gd.Indices = indexBuffer;
 
-            Draw(effect, root);
+            Draw(world, effect, root);
 
-            effect.Parameters["World"].SetValue(currentWorld);
+            //effect.Parameters["World"].SetValue(currentWorld);
         }
 
 
-        private void Draw(Effect effect, InstanceTree root)
+        private void Draw(Matrix world, BasicEffect effect, InstanceTree root)
         {
+
 
             foreach (EffectPass pass in effect.CurrentTechnique.Passes)
             {
                 pass.Apply();
 
-                Matrix finalTransforms = root.nodeTransform * root.GetParentTransforms() * currentWorld;
-                effect.Parameters["World"].SetValue(finalTransforms);
-                effect.Parameters["Texture"].SetValue(root.texture);
+                Matrix finalTransforms = root.nodeTransform * root.GetParentTransforms() * world;
+                effect.World = finalTransforms;
+                effect.Texture = root.texture;
 
                 gd.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, INDICES_COUNT / 3);
             }
 
             foreach (InstanceTree instance in root)
-                Draw(effect, instance);
+                Draw(world, effect, instance);
         }
 
 

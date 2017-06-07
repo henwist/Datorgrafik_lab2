@@ -21,18 +21,12 @@ namespace Datorgrafik_lab2
 
         GraphicsDevice device;
 
-        BasicEffect effect;
-        Effect myeffect;
         Figure figure;
 
         VertexBuffer figureBuffer;
         IndexBuffer figureIndices;
 
         private float angle = 0f;
-
-        private Matrix _view, _projection;
-
-        private Vector3 cameraPosition = new Vector3(0.0f, 40.0f, 1.0f);
 
         float radx = 0f;
         float rady = 0f;
@@ -43,11 +37,8 @@ namespace Datorgrafik_lab2
         float translatey = 1f;
         float translatez = 1f;
 
-        Texture2D grass;
-
         private Managers.SceneManager sceneManager;
 
-        public CameraComponent camera { get; protected set; }
         private int CAMERA_MOVE_SCALE = 10;
 
         public static ContentManager ContentManager;
@@ -80,18 +71,7 @@ namespace Datorgrafik_lab2
             figureBuffer = new VertexBuffer(GraphicsDevice, typeof(VertexPositionNormalTexture), figure.vertices.Count, BufferUsage.None);
             figureIndices = new IndexBuffer(GraphicsDevice, IndexElementSize.ThirtyTwoBits, figure.indices.Length, BufferUsage.None);
 
-            grass = Content.Load<Texture2D>("Textures/grass");
-
-            _view = Matrix.CreateLookAt(cameraPosition, Vector3.Zero, Vector3.Up);
-            _projection = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, 4.0f / 3.0f, 1, 3000);
-
-            myeffect = Content.Load<Effect>("Effects/myeffect");
             sceneManager = new Managers.SceneManager(this, Matrix.Identity);
-
-            RasterizerState rs = new RasterizerState();
-            rs.CullMode = CullMode.None;
-            rs.FillMode = FillMode.Solid;
-            device.RasterizerState = rs;
 
         }
 
@@ -182,61 +162,14 @@ namespace Datorgrafik_lab2
         }
 
 
-        private void setBasiceffectParameters()
+        private void setShaderParameters()
         {
-
-
-            effect.World = Matrix.Identity;
-            effect.View = _view;
-            effect.Projection = _projection;
-            effect.PreferPerPixelLighting = true;
-
-            effect.EnableDefaultLighting();
-            effect.TextureEnabled = true;
-            effect.Texture = grass;
-            effect.EmissiveColor = new Vector3(0.5f, 0.5f, 0f);
-
-            effect.EnableDefaultLighting();
-            effect.LightingEnabled = true;
-
-            effect.DirectionalLight0.DiffuseColor = new Vector3(0.5f, 0.5f, 0.5f);
-            effect.DirectionalLight0.Direction = new Vector3(0.5f, -1, 0);
-            effect.DirectionalLight0.SpecularColor = new Vector3(1, 1, 1);
-            effect.DirectionalLight0.Enabled = true;
-
-            effect.AmbientLightColor = new Vector3(0.5f, 0.5f, 0.5f);
-            effect.PreferPerPixelLighting = true;
-            effect.SpecularPower = 100;
-            effect.DiffuseColor = new Vector3(0.4f, 0.4f, 0.7f);
-            effect.EmissiveColor = new Vector3(1.0f, 1.0f, 1.0f);
-
-            effect.World =
-            Matrix.CreateRotationX(radx)
-            * Matrix.CreateRotationY(rady)
-            * Matrix.CreateRotationZ(radz)
-            * Matrix.CreateScale(scale);
-        }
-
-
-        private void setCustomShaderParameters()
-        {
-            myeffect.Parameters["World"].SetValue(
-                            Matrix.CreateRotationX(radx)
-                            * Matrix.CreateRotationY(rady)
-                            * Matrix.CreateRotationZ(radz)
-                            * Matrix.CreateScale(scale)
-                            * Matrix.CreateTranslation(translatex, translatey, translatez));
-
-
             ComponentManager.GetComponents<WorldMatrixComponent>().Cast<WorldMatrixComponent>().Select(x => x).ElementAt(0).WorldMatrix =
                                             Matrix.CreateRotationX(radx)
                             * Matrix.CreateRotationY(rady)
                             * Matrix.CreateRotationZ(radz)
                             * Matrix.CreateScale(scale)
                             * Matrix.CreateTranslation(translatex, translatey, translatez);
-
-
-            myeffect.Parameters["Texture"].SetValue(grass);
         }
 
 
@@ -247,11 +180,11 @@ namespace Datorgrafik_lab2
             Window.Title = "Datorgrafik_lab2 av: Rasmus Lundquist(S142465) och Henrik Wistbacka(S142066) - a,s,d,w,e,arrows. Gubbe gömmer sig mitt på mappen bland träden, W zoomar.";
 
 
-            setCustomShaderParameters();
+            setShaderParameters();
 
-            figure.Draw(myeffect);
+            figure.Draw(gameTime);
 
-            sceneManager.Draw(myeffect, gameTime);
+            sceneManager.Draw(gameTime);
 
 
             base.Draw(gameTime);

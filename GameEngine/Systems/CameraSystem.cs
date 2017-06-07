@@ -30,9 +30,12 @@ namespace GameEngine.Systems
         }
 
 
-        public void Update(Effect effect, GameTime gameTime)
+        public void Update(GameTime gameTime)
         {
             List<ulong> compIds = ComponentManager.GetAllEntitiesWithComp<CameraComponent>();
+
+            EffectComponent effectCmp = ComponentManager.GetComponents<EffectComponent>().Cast<EffectComponent>().Select(x => x).ElementAt(0);
+            BasicEffect effect = effectCmp.effect;
 
             foreach (ulong c in compIds)
             {
@@ -44,8 +47,8 @@ namespace GameEngine.Systems
                     Matrix rotation = Matrix.CreateRotationY(transform.Pitch);
                     curCam.viewMatrix = Matrix.CreateLookAt(transform.Position, curCam.target, Vector3.Up);
 
-                    effect.Parameters["View"].SetValue(curCam.viewMatrix * rotation);
-                    effect.Parameters["Projection"].SetValue(curCam.projectionMatrix);
+                    effect.View = curCam.viewMatrix * rotation;
+                    effect.Projection = curCam.projectionMatrix;
 
                     curCam.bFrustum = new BoundingFrustum(curCam.viewMatrix * curCam.projectionMatrix);
                 }

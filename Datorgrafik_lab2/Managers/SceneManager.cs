@@ -11,6 +11,7 @@ using static Datorgrafik_lab2.Enums.Enums;
 using GameEngine.Managers;
 using Microsoft.Xna.Framework.Input;
 using System.Linq;
+using GameEngine.Helpers;
 
 namespace Datorgrafik_lab2.Managers
 {
@@ -26,11 +27,7 @@ namespace Datorgrafik_lab2.Managers
 
         private Microsoft.Xna.Framework.Matrix world;
 
-        private Matrix[] objectWorldMatrices;
         private static readonly int INSTANCECOUNT = 10;
-        private VertexBufferBinding[] bindings;
-        private VertexBuffer matriceIVB;
-        private VertexDeclaration matriceVD;
         private Tree tree;
         private int TREE_SCALE_MIN = 5;
         private int TREE_SCALE_MAX = 50;
@@ -46,12 +43,20 @@ namespace Datorgrafik_lab2.Managers
         private Vector3 cameraUp = Vector3.Up;
         public static ulong cameraID { get; private set; }
 
+        private BasicEffect effect;
+
+
 
         public SceneManager(Game game, Microsoft.Xna.Framework.Matrix world)
         {
             this.game = game;
             this.gd = game.GraphicsDevice;
             this.world = world;
+
+            effect = new BasicEffect(gd);
+            initBasicEffect();
+            initRasterizerState();
+
 
             createWorldMatrix();
 
@@ -64,6 +69,46 @@ namespace Datorgrafik_lab2.Managers
             createTreeStructures();
 
             bufferSystem = new BufferSystem(game.GraphicsDevice);
+        }
+
+        private void initRasterizerState()
+        {
+            RasterizerState rs = new RasterizerState();
+            rs.CullMode = CullMode.None;
+            rs.FillMode = FillMode.Solid;
+            gd.RasterizerState = rs;
+        }
+
+
+        private void initBasicEffect()
+        {
+            effect.World = Matrix.Identity;
+            effect.PreferPerPixelLighting = true;
+
+            effect.EnableDefaultLighting();
+            effect.TextureEnabled = true;
+            effect.EmissiveColor = new Vector3(0.5f, 0.5f, 0f);
+
+            effect.EnableDefaultLighting();
+            effect.LightingEnabled = true;
+
+            effect.DirectionalLight0.DiffuseColor = new Vector3(0.5f, 0.5f, 0.5f);
+            effect.DirectionalLight0.Direction = new Vector3(0.5f, -1, 0);
+            effect.DirectionalLight0.SpecularColor = new Vector3(1, 1, 1);
+            effect.DirectionalLight0.Enabled = true;
+
+            effect.AmbientLightColor = new Vector3(0.5f, 0.5f, 0.5f);
+            effect.PreferPerPixelLighting = true;
+            effect.SpecularPower = 100;
+            effect.DiffuseColor = new Vector3(0.4f, 0.4f, 0.7f);
+            effect.EmissiveColor = new Vector3(1.0f, 1.0f, 1.0f);
+
+            EffectComponent effectCmp = new EffectComponent()
+            {
+                effect = effect,
+            };
+
+            ComponentManager.StoreComponent(ComponentManager.GetNewId(), effectCmp);
         }
 
 
@@ -144,18 +189,11 @@ namespace Datorgrafik_lab2.Managers
 
                 ComponentManager.StoreComponent(id, buffer);
                 ComponentManager.StoreComponent(id, transforms[i]);
-                ComponentManager.StoreComponent(id, getBoundingVolume(buffer, transforms[i]));
+                ComponentManager.StoreComponent(id, BoundingVolume.GetBoundingBoxVolume(buffer.Vertices));
 
             }
         }
 
-        private BoundingVolumeComponent getBoundingVolume(BufferComponent buffer, TransformComponent transform)
-        {
-            BoundingVolumeComponent bvCmp = new BoundingVolumeComponent();
-            bvCmp.bbox = BoundingBox.CreateFromPoints(buffer.Vertices.Select(x => x.Position));
-
-            return bvCmp;
-        }
 
 
         private void initTransforms(TransformComponent[] transforms)
@@ -187,21 +225,14 @@ namespace Datorgrafik_lab2.Managers
 
         }
 
-        public void Draw(Effect effect, GameTime gameTime)
+        public void Draw(GameTime gameTime)
         {
             
-            heightmapSystem.Draw(effect);
+            heightmapSystem.Draw(gameTime);
 
-
-
-            CameraSystem.Instance.Update(effect, gameTime);
+            CameraSystem.Instance.Update(gameTime);
 
             bufferSystem.Draw(gameTime);
-
-            foreach (EffectPass pass in effect.Techniques[(int)EnumTechnique.InstancedTechnique].Passes)
-            {
-                pass.Apply();
-            }
 
         }
 
@@ -216,8 +247,8 @@ namespace Datorgrafik_lab2.Managers
             hmobj.textureFileNames = new string[] {
                                             "..\\..\\..\\..\\Content\\Textures\\grass.png",
                                             "..\\..\\..\\..\\Content\\Textures\\fire.png",
-                                            //"..\\..\\..\\..\\Content\\Textures\\grass.png",
-                                            //"..\\..\\..\\..\\Content\\Textures\\fire.png",
+                                            "..\\..\\..\\..\\Content\\Textures\\grass.png",
+                                            "..\\..\\..\\..\\Content\\Textures\\fire.png",
                                             //"..\\..\\..\\..\\Content\\Textures\\grass.png",
                                             //"..\\..\\..\\..\\Content\\Textures\\fire.png",
                                             //"..\\..\\..\\..\\Content\\Textures\\grass.png",
@@ -249,7 +280,7 @@ namespace Datorgrafik_lab2.Managers
             };
             hmobj.objectWorld = Microsoft.Xna.Framework.Matrix.Identity;
             hmobj.world = Microsoft.Xna.Framework.Matrix.Identity;
-            hmobj.breakUpInNumParts =2; //16 //match with count of textureNames above
+            hmobj.breakUpInNumParts =4; //16 //match with count of textureNames above
             hmobj.spacingBetweenParts = new Vector3(0f,0f,0f);
             heightmapObjects.Add(hmobj);
 

@@ -1,5 +1,6 @@
 ﻿//using CollisionSample;
 using GameEngine.Components;
+using GameEngine.Helpers;
 using GameEngine.Managers;
 using GameEngine.Objects;
 using Microsoft.Xna.Framework;
@@ -21,8 +22,6 @@ namespace GameEngine.Systems
         private List<HeightmapObject> hmobjects;
         private GraphicsDevice gd;
 
-        //private DebugDraw debugDraw;
-
         public struct HeightData
         {
             public float[,] heightData;
@@ -36,8 +35,6 @@ namespace GameEngine.Systems
             this.gd = gd;
             this.hmobjects = hmobjects;
 
-            //debugDraw = new DebugDraw(gd);
-
             heightmapComponents = new List<Component>();
 
             CreateHeightmapComponents();
@@ -50,15 +47,8 @@ namespace GameEngine.Systems
 
             SplitHeightmap();
 
-            SetupDebugDraw();
         }
 
-        private void SetupDebugDraw()
-        {
-            CameraComponent camera = ComponentManager.GetComponents<CameraComponent>().Cast<CameraComponent>().Select(x => x).Where(y => y.isActive == true).ElementAt(0);
-
-            //debugDraw.Begin(camera.viewMatrix, camera.projectionMatrix);
-        }
 
         public static HeightData GetHeightData(string terrainFileName)
         {
@@ -194,63 +184,23 @@ namespace GameEngine.Systems
                 }
             }
 
-            //saveIndicesToDisc();
         }
 
 
         private void createComponents(HeightmapComponent partCmp)
         {
-            ComponentManager.StoreComponent(ComponentManager.GetNewId(), createBoundingBox(partCmp));
+            ComponentManager.StoreComponent(ComponentManager.GetNewId(), BoundingVolume.GetBoundingBoxVolume(partCmp.vertices));
             ComponentManager.StoreComponent(ComponentManager.GetCurrentId(), partCmp);
         }
 
 
-        private BoundingVolumeComponent createBoundingBox(HeightmapComponent partCmp)
+        public void Draw(GameTime gameTime)
         {
-            BoundingVolumeComponent bvCmp = new BoundingVolumeComponent();
-            bvCmp.bbox = BoundingBox.CreateFromPoints(partCmp.vertices.Select(x => x.Position));
+            EffectComponent effectCmp = ComponentManager.GetComponents<EffectComponent>().Cast<EffectComponent>().Select(x => x).ElementAt(0);
+            BasicEffect effect = effectCmp.effect;
 
-            Vector3 max = bvCmp.bbox.Max;
-            Vector3 min = bvCmp.bbox.Min;
-
-            bvCmp.bbox = new BoundingBox(partCmp.scaleFactor * min, partCmp.scaleFactor * max);
-
-            return bvCmp;
-        }
-
-
-        //void saveIndicesToDisc()
-        //{
-        //    int counter = 1;
-        //    using (StreamWriter outstream = new StreamWriter("./indices.txt"))
-        //    {
-        //        foreach(HeightmapComponent cmp in ComponentManager.GetComponents<HeightmapComponent>())
-        //        {
-        //            foreach (int num in cmp.indices)
-        //            {
-        //                outstream.Write(num.ToString());
-        //                outstream.Write(",");
-
-        //                if(counter++ >= 40 )
-        //                {
-        //                    outstream.Write('\n');
-        //                    counter = 1;
-        //                }
-
-        //            }
-
-        //            outstream.Write('\n');
-        //            outstream.Write('\n');
-        //        }
-        //    }
-
-        //}
-
-
-        float rot = 0.001f;
-        public void Draw(Effect effect)
-        {
-            Matrix currentWorldMatrix = effect.Parameters["World"].GetValueMatrix();
+            //Matrix currentWorldMatrix = effect.Parameters["World"].GetValueMatrix();
+            Matrix currentWorldMatrix= ComponentManager.GetComponents<WorldMatrixComponent>().Cast<WorldMatrixComponent>().Select(x => x).ElementAt(0).WorldMatrix;
 
             CameraComponent camera = ComponentManager.GetComponents<CameraComponent>() //it should be just one camera that is actice.
                                                                    .Cast<CameraComponent>().Select(x => x).Where(y => y.isActive == true).ElementAt(0);
@@ -261,42 +211,18 @@ namespace GameEngine.Systems
                 HeightmapComponent cmp = ComponentManager.GetComponent<HeightmapComponent>(entId);
                 BoundingVolumeComponent bvCmp = ComponentManager.GetComponent<BoundingVolumeComponent>(entId);
 
-                effect.Parameters["Texture"].SetValue(cmp.texture);
-
-                //cmp.vertexBuffer.SetData<VertexPositionNormalTexture>(cmp.vertices, 0, cmp.vertexCount);
-                //gd.SetVertexBuffer(cmp.vertexBuffer);
-
-                ////cmp.indexBuffer.SetData<int>(cmp.indices, 0, cmp.indexCount);
-                //gd.Indices = cmp.indexBuffer;
-
-                //if (cmp.texture.Name.Contains("fire"))
-                //{
-                //    cmp.objectWorld = Matrix.CreateScale(cmp.scaleFactor)
-                //                    * Matrix.CreateTranslation(cmp.position + (float)System.Math.Sin(rot) *100*  new Vector3(rot, rot, rot));
-                //}
-                //else
-                //{
-                //    cmp.objectWorld = Matrix.CreateScale(cmp.scaleFactor)
-                //                     * Matrix.CreateTranslation(cmp.position);
-                //}
-                //rot += 0.002f;
-
+                effect.Texture = cmp.texture;
 
                 cmp.objectWorld = Matrix.CreateTranslation(cmp.position + cmp.spacingBetweenParts)
                                 * Matrix.CreateScale(cmp.scaleFactor);
 
 
 
-                effect.Parameters["World"].SetValue(currentWorldMatrix * cmp.objectWorld);
-
-                //BoundingBox box = ConvertBoundingBoxToWorldCoords(bvCmp.bbox, camera.bFrustum.Matrix);
-                //debugDraw.DrawWireBox(box, Color.White);
-
-                //debugDraw.DrawWireBox(bvCmp.bbox, Color.White);
-
+                effect.World = cmp.objectWorld * currentWorldMatrix;
+                 
                 gd.SetVertexBuffer(cmp.vertexBuffer);
 
-                //cmp.indexBuffer.SetData<int>(cmp.indices, 0, cmp.indexCount);
+
                 gd.Indices = cmp.indexBuffer;
 
                 foreach (EffectPass pass in effect.CurrentTechnique.Passes)
@@ -306,14 +232,10 @@ namespace GameEngine.Systems
                     if (bvCmp.bbox.Intersects(camera.bFrustum)) //Just draw all parts of heightmap that is anyhow inside the camera frustum.
                         gd.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, cmp.indexCount / 3);
                 }
+
+                BoundingVolume.DrawBoundingVolume(gd, bvCmp, camera, cmp.objectWorld * currentWorldMatrix);
             }
-           
 
-            effect.Parameters["World"].SetValue(currentWorldMatrix);
-
-            //debugDraw.DrawWireFrustum(camera.bFrustum, Color.White);
-
-            
         }
 
 
