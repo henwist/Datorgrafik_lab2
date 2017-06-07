@@ -17,15 +17,15 @@ namespace GameEngine.Components
         public Vector3 target { get; set; }
 
 
-        public CameraComponent(Vector3 target, Vector3 up, float aspectRatio, Vector3 perspectiveOffset, bool isActive = false)
+        public CameraComponent(Vector3 position, Vector3 target, Vector3 up, float aspectRatio, Vector3 perspectiveOffset, bool isActive = false)
         {
             this.target = target;
             cameraUp = up;
 
             this.perspectiveOffset = perspectiveOffset;
 
-            projectionMatrix = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, aspectRatio, 1.0f, 50000.0f);
-            viewMatrix = Matrix.CreateLookAt(new Vector3(0,0,-1), target, up);
+            projectionMatrix = Matrix.CreatePerspectiveFieldOfView(MathHelper.PiOver4, aspectRatio, 0.1f, 5000.0f);
+            viewMatrix = Matrix.CreateLookAt(position, target, up);
 
             bFrustum = new BoundingFrustum(viewMatrix * projectionMatrix);
 

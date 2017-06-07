@@ -2,15 +2,30 @@
 using GameEngine.Components;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace GameEngine.Helpers
 {
     public static class BoundingVolume
     {
-        public static BoundingVolumeComponent GetBoundingBoxVolume(VertexPositionNormalTexture[] vertices)
+        public static BoundingVolumeComponent GetBoundingBoxVolume(VertexPositionNormalTexture[] vertices, Matrix objWorld)
         {
             BoundingVolumeComponent bvCmp = new BoundingVolumeComponent();
+
+            for (int i = 0; i < vertices.Length; i++)
+                vertices[i].Position = Vector3.Transform(vertices[i].Position, objWorld);
+
+            //List<VertexPositionNormalTexture> verts = vertices.ToList();
+            //VertexPositionNormalTexture[] verts = vertices.ToArray();
+            //Array.ForEach(verts, new Action<VertexPositionNormalTexture>(x =>   Vector3.Transform(x.Position, objWorld)));
+
+                //verts.ForEach( x =>  x.Position = Vector3.Transform(x.Position, objWorld));
+
+
+                //vertices.ToList().ForEach(x => x.Position = Vector3.Transform(x.Position, objWorld));
+
             bvCmp.bbox = BoundingBox.CreateFromPoints(vertices.Select(x => x.Position));
 
             return bvCmp;

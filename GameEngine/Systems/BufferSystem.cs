@@ -64,7 +64,7 @@ namespace GameEngine.Systems
                         gd.DrawIndexedPrimitives(buffer.PrimitiveType, 0, 0, buffer.PrimitiveCount);
                 }
 
-                BoundingVolume.DrawBoundingVolume(gd, boundingVolume, camera, transform.ObjectWorld * world);
+                BoundingVolume.DrawBoundingVolume(gd, boundingVolume, camera, /*transform.ObjectWorld **/ world);
              }    
         }
 

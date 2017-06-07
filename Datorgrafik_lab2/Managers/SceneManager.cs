@@ -121,9 +121,10 @@ namespace Datorgrafik_lab2.Managers
 
         private void createCameraStructures()
         {
-            CameraComponent cameraCmp = new CameraComponent(cameraTarget, cameraUp, game.GraphicsDevice.DisplayMode.AspectRatio, new Vector3(0, -200, -200), true);
+            Vector3 position = new Vector3(100, 100, 100);
+            TransformComponent transform = new TransformComponent(position, 0f, 0f, 0f, 1f);
 
-            TransformComponent transform = new TransformComponent(new Vector3(100, 100, 100), 0f, 0f, 0f, 1f);
+            CameraComponent cameraCmp = new CameraComponent(position, cameraTarget, cameraUp, game.GraphicsDevice.DisplayMode.AspectRatio, new Vector3(0, -200, -200), true);
 
             cameraID = ComponentManager.GetNewId();
             ComponentManager.StoreComponent(cameraID, transform);
@@ -190,7 +191,7 @@ namespace Datorgrafik_lab2.Managers
 
                 ComponentManager.StoreComponent(id, buffer);
                 ComponentManager.StoreComponent(id, transforms[i]);
-                ComponentManager.StoreComponent(id, BoundingVolume.GetBoundingBoxVolume(buffer.Vertices));
+                ComponentManager.StoreComponent(id, BoundingVolume.GetBoundingBoxVolume(buffer.Vertices, transforms[i].ObjectWorld));
 
             }
         }
@@ -243,7 +244,7 @@ namespace Datorgrafik_lab2.Managers
         {
             HeightmapObject hmobj = new HeightmapObject();
             hmobj.scaleFactor = HEIGHTMAP_SCALE*Vector3.One;
-            hmobj.position = new Vector3(0, 0, 0);  /* Vector3.Zero;*/
+            hmobj.position = new Vector3(0f, 0f, 0f);  /* Vector3.Zero;*/
             hmobj.terrainFileName = "..\\..\\..\\..\\Content\\Textures\\fire.png";
             hmobj.textureFileNames = new string[] {
                                             "..\\..\\..\\..\\Content\\Textures\\grass.png",
@@ -262,26 +263,62 @@ namespace Datorgrafik_lab2.Managers
                                             "..\\..\\..\\..\\Content\\Textures\\fire.png",
                                             "..\\..\\..\\..\\Content\\Textures\\grass.png",
                                             "..\\..\\..\\..\\Content\\Textures\\fire.png",
-                                            //                                            "..\\..\\..\\..\\Content\\Textures\\grass.png",
-                                            //"..\\..\\..\\..\\Content\\Textures\\fire.png",
-                                            //"..\\..\\..\\..\\Content\\Textures\\grass.png",
-                                            //"..\\..\\..\\..\\Content\\Textures\\fire.png",
-                                            //"..\\..\\..\\..\\Content\\Textures\\grass.png",
-                                            //"..\\..\\..\\..\\Content\\Textures\\fire.png",
-                                            //"..\\..\\..\\..\\Content\\Textures\\grass.png",
-                                            //"..\\..\\..\\..\\Content\\Textures\\fire.png",
-                                            //"..\\..\\..\\..\\Content\\Textures\\grass.png",
-                                            //"..\\..\\..\\..\\Content\\Textures\\fire.png",
-                                            //"..\\..\\..\\..\\Content\\Textures\\grass.png",
-                                            //"..\\..\\..\\..\\Content\\Textures\\fire.png",
-                                            //"..\\..\\..\\..\\Content\\Textures\\grass.png",
-                                            //"..\\..\\..\\..\\Content\\Textures\\fire.png",
-                                            //"..\\..\\..\\..\\Content\\Textures\\grass.png",
-                                            //"..\\..\\..\\..\\Content\\Textures\\fire.png",
+                                                                                        "..\\..\\..\\..\\Content\\Textures\\grass.png",
+                                            "..\\..\\..\\..\\Content\\Textures\\fire.png",
+                                            "..\\..\\..\\..\\Content\\Textures\\grass.png",
+                                            "..\\..\\..\\..\\Content\\Textures\\fire.png",
+                                            "..\\..\\..\\..\\Content\\Textures\\grass.png",
+                                            "..\\..\\..\\..\\Content\\Textures\\fire.png",
+                                            "..\\..\\..\\..\\Content\\Textures\\grass.png",
+                                            "..\\..\\..\\..\\Content\\Textures\\fire.png",
+                                            "..\\..\\..\\..\\Content\\Textures\\grass.png",
+                                            "..\\..\\..\\..\\Content\\Textures\\fire.png",
+                                            "..\\..\\..\\..\\Content\\Textures\\grass.png",
+                                            "..\\..\\..\\..\\Content\\Textures\\fire.png",
+                                            "..\\..\\..\\..\\Content\\Textures\\grass.png",
+                                            "..\\..\\..\\..\\Content\\Textures\\fire.png",
+                                            "..\\..\\..\\..\\Content\\Textures\\grass.png",
+                                            "..\\..\\..\\..\\Content\\Textures\\fire.png",
+
+
+
+
+                                                                                        "..\\..\\..\\..\\Content\\Textures\\grass.png",
+                                            "..\\..\\..\\..\\Content\\Textures\\fire.png",
+                                            "..\\..\\..\\..\\Content\\Textures\\grass.png",
+                                            "..\\..\\..\\..\\Content\\Textures\\fire.png",
+                                            "..\\..\\..\\..\\Content\\Textures\\grass.png",
+                                            "..\\..\\..\\..\\Content\\Textures\\fire.png",
+                                            "..\\..\\..\\..\\Content\\Textures\\grass.png",
+                                            "..\\..\\..\\..\\Content\\Textures\\fire.png",
+                                            "..\\..\\..\\..\\Content\\Textures\\grass.png",
+                                            "..\\..\\..\\..\\Content\\Textures\\fire.png",
+                                            "..\\..\\..\\..\\Content\\Textures\\grass.png",
+                                            "..\\..\\..\\..\\Content\\Textures\\fire.png",
+                                            "..\\..\\..\\..\\Content\\Textures\\grass.png",
+                                            "..\\..\\..\\..\\Content\\Textures\\fire.png",
+                                            "..\\..\\..\\..\\Content\\Textures\\grass.png",
+                                            "..\\..\\..\\..\\Content\\Textures\\fire.png",
+                                                                                        "..\\..\\..\\..\\Content\\Textures\\grass.png",
+                                            "..\\..\\..\\..\\Content\\Textures\\fire.png",
+                                            "..\\..\\..\\..\\Content\\Textures\\grass.png",
+                                            "..\\..\\..\\..\\Content\\Textures\\fire.png",
+                                            "..\\..\\..\\..\\Content\\Textures\\grass.png",
+                                            "..\\..\\..\\..\\Content\\Textures\\fire.png",
+                                            "..\\..\\..\\..\\Content\\Textures\\grass.png",
+                                            "..\\..\\..\\..\\Content\\Textures\\fire.png",
+                                            "..\\..\\..\\..\\Content\\Textures\\grass.png",
+                                            "..\\..\\..\\..\\Content\\Textures\\fire.png",
+                                            "..\\..\\..\\..\\Content\\Textures\\grass.png",
+                                            "..\\..\\..\\..\\Content\\Textures\\fire.png",
+                                            "..\\..\\..\\..\\Content\\Textures\\grass.png",
+                                            "..\\..\\..\\..\\Content\\Textures\\fire.png",
+                                            "..\\..\\..\\..\\Content\\Textures\\grass.png",
+                                            "..\\..\\..\\..\\Content\\Textures\\fire.png",
             };
             //hmobj.objectWorld = Microsoft.Xna.Framework.Matrix.Identity;
             //hmobj.world = Microsoft.Xna.Framework.Matrix.Identity;
-            hmobj.breakUpInNumParts =16; //16 //match with count of textureNames above
+            hmobj.breakUpInNumParts =64; //16 //match with count of textureNames above
             hmobj.spacingBetweenParts = new Vector3(0f,0f,0f);
             heightmapObjects.Add(hmobj);
 

@@ -199,7 +199,7 @@ namespace GameEngine.Systems
         {
             TransformComponent transform = new TransformComponent(partCmp.position, 0f, 0f, 0f, partCmp.scaleFactor.X);
 
-            ComponentManager.StoreComponent(ComponentManager.GetNewId(), BoundingVolume.GetBoundingBoxVolume(buffer.Vertices));
+            ComponentManager.StoreComponent(ComponentManager.GetNewId(), BoundingVolume.GetBoundingBoxVolume(buffer.Vertices, transform.ObjectWorld));
             ComponentManager.StoreComponent(ComponentManager.GetCurrentId(), partCmp);
             ComponentManager.StoreComponent(ComponentManager.GetCurrentId(), buffer);
             ComponentManager.StoreComponent(ComponentManager.GetCurrentId(), transform);
