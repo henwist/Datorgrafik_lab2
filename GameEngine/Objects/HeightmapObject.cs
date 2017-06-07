@@ -14,8 +14,8 @@ namespace GameEngine.Objects
         public Vector3 position { get; set; }
         public string terrainFileName { get; set; }
         public string[] textureFileNames { get; set; }
-        public Matrix objectWorld { get; set; }
-        public Matrix world { get; set; }
+        //public Matrix objectWorld { get; set; }
+        //public Matrix world { get; set; }
         public int breakUpInNumParts { get; set; }
         public Vector3 spacingBetweenParts { get; set; }
     }

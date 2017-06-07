@@ -74,33 +74,38 @@ namespace GameEngine.Systems
         }
 
 
-        private HeightmapComponent CreateHeightmapComponent(HeightmapComponent cmp)
+        private void CreateHeightmapComponent(HeightmapComponent cmp, out HeightmapComponent hmComponent, out BufferComponent buffer)
         {
             int vCount = (cmp.terrainWidth * cmp.terrainHeight) / cmp.breakUpInNumParts;
             int iCount = (cmp.terrainWidth-1) * (cmp.terrainHeight - 1) * 6 / cmp.breakUpInNumParts;
+
+            BufferComponent bufCmp = new BufferComponent()
+            {
+                IndexBuffer = new IndexBuffer(gd, typeof(int), iCount, BufferUsage.None),
+                Indices = new int[iCount],
+                Texture = new Texture2D[1],
+                PrimitiveType = PrimitiveType.TriangleList,
+                PrimitiveCount = iCount / 3,
+                
+            };
+
 
             HeightmapComponent partCmp = new HeightmapComponent()
             {
                 breakUpInNumParts = 1,
                 spacingBetweenParts = cmp.spacingBetweenParts,
-                world = cmp.world,
-                objectWorld = cmp.objectWorld,
-
-                indexBuffer = new IndexBuffer(gd, typeof(int), iCount, BufferUsage.None),
-
-                indices = new int[iCount],
 
                 indexCount = iCount,
-
-                texture = cmp.texture,
+                position = cmp.position,
                 scaleFactor = cmp.scaleFactor,
 
-                 terrainWidth = cmp.terrainWidth,
-                 terrainHeight = cmp.terrainHeight,
-                 heightData = cmp.heightData,
+                terrainWidth = cmp.terrainWidth,
+                terrainHeight = cmp.terrainHeight,
+                heightData = cmp.heightData,
             };
 
-            return partCmp;
+            hmComponent = partCmp;
+            buffer = bufCmp;
         }
 
 
@@ -157,84 +162,92 @@ namespace GameEngine.Systems
                     if (cmp.textureFileNames.Count() == cmp.breakUpInNumParts) //use a new texture for every minor heightmap
                         textureName = cmp.textureFileNames[textureIndex++];    //- if provided, else use the first.
 
-                    HeightmapComponent partCmp = CreateHeightmapComponent(cmp);
+                    HeightmapComponent partCmp;
+                    BufferComponent buffer;
+
+                    CreateHeightmapComponent(cmp, out partCmp, out buffer);
 
                     takeIndices = partCmp.indexCount;
 
-                    Array.Copy(cmp.indices, skipIndices++ * takeIndices, partCmp.indices, 0, takeIndices);
+                    Array.Copy(cmp.indices, skipIndices++ * takeIndices, buffer.Indices, 0, takeIndices);
 
-                    RebuildArray(partCmp.indices, cmp.vertices, out indices, out vertices);
+                    RebuildArray(buffer.Indices, cmp.vertices, out indices, out vertices);
 
-                    partCmp.indices = indices;
-                    partCmp.vertices = vertices;
-                    partCmp.vertexBuffer = new VertexBuffer(gd, typeof(VertexPositionNormalTexture), vertices.Count(), BufferUsage.None);
+                    buffer.Indices = indices;
+                    buffer.Vertices = vertices;
+                    buffer.VertexBuffer = new VertexBuffer(gd, typeof(VertexPositionNormalTexture), vertices.Count(), BufferUsage.None);
                     partCmp.vertexCount = vertices.Count();
 
-                    partCmp.vertexBuffer.SetData(partCmp.vertices);
-                    partCmp.indexBuffer.SetData(partCmp.indices);
+                    buffer.VertexBuffer.SetData(buffer.Vertices);
+                    buffer.IndexBuffer.SetData(buffer.Indices);
 
-                    partCmp.texture = Texture2D.FromStream(gd, new StreamReader(textureName).BaseStream);
-                    partCmp.texture.Name = textureName;
+                    buffer.Texture[0] = Texture2D.FromStream(gd, new StreamReader(textureName).BaseStream);
+                    buffer.Texture[0].Name = textureName;
 
                     partCmp.spacingBetweenParts = counter++ * cmp.spacingBetweenParts;
 
                     partCmp.terrainFileName = cmp.terrainFileName;
 
-                    createComponents(partCmp);
+                    createComponents(partCmp, buffer);
                 }
             }
 
         }
 
 
-        private void createComponents(HeightmapComponent partCmp)
+        private void createComponents(HeightmapComponent partCmp, BufferComponent buffer)
         {
-            ComponentManager.StoreComponent(ComponentManager.GetNewId(), BoundingVolume.GetBoundingBoxVolume(partCmp.vertices));
+            TransformComponent transform = new TransformComponent(partCmp.position, 0f, 0f, 0f, partCmp.scaleFactor.X);
+
+            ComponentManager.StoreComponent(ComponentManager.GetNewId(), BoundingVolume.GetBoundingBoxVolume(buffer.Vertices));
             ComponentManager.StoreComponent(ComponentManager.GetCurrentId(), partCmp);
+            ComponentManager.StoreComponent(ComponentManager.GetCurrentId(), buffer);
+            ComponentManager.StoreComponent(ComponentManager.GetCurrentId(), transform);
         }
 
 
         public void Draw(GameTime gameTime)
         {
-            EffectComponent effectCmp = ComponentManager.GetComponents<EffectComponent>().Cast<EffectComponent>().Select(x => x).ElementAt(0);
-            BasicEffect effect = effectCmp.effect;
+            //EffectComponent effectCmp = ComponentManager.GetComponents<EffectComponent>().Cast<EffectComponent>().Select(x => x).ElementAt(0);
+            //BasicEffect effect = effectCmp.effect;
 
-            //Matrix currentWorldMatrix = effect.Parameters["World"].GetValueMatrix();
-            Matrix currentWorldMatrix= ComponentManager.GetComponents<WorldMatrixComponent>().Cast<WorldMatrixComponent>().Select(x => x).ElementAt(0).WorldMatrix;
+            //Matrix currentWorldMatrix= ComponentManager.GetComponents<WorldMatrixComponent>().Cast<WorldMatrixComponent>().Select(x => x).ElementAt(0).WorldMatrix;
 
-            CameraComponent camera = ComponentManager.GetComponents<CameraComponent>() //it should be just one camera that is actice.
-                                                                   .Cast<CameraComponent>().Select(x => x).Where(y => y.isActive == true).ElementAt(0);
-
-
-            foreach (ulong entId in ComponentManager.GetAllIds<HeightmapComponent>() )
-            {
-                HeightmapComponent cmp = ComponentManager.GetComponent<HeightmapComponent>(entId);
-                BoundingVolumeComponent bvCmp = ComponentManager.GetComponent<BoundingVolumeComponent>(entId);
-
-                effect.Texture = cmp.texture;
-
-                cmp.objectWorld = Matrix.CreateTranslation(cmp.position + cmp.spacingBetweenParts)
-                                * Matrix.CreateScale(cmp.scaleFactor);
+            //CameraComponent camera = ComponentManager.GetComponents<CameraComponent>() //it should be just one camera that is actice.
+            //                                                       .Cast<CameraComponent>().Select(x => x).Where(y => y.isActive == true).ElementAt(0);
 
 
+            //foreach (ulong entId in ComponentManager.GetAllIds<HeightmapComponent>() )
+            //{
+            //    HeightmapComponent cmp = ComponentManager.GetComponent<HeightmapComponent>(entId);
+            //    BoundingVolumeComponent bvCmp = ComponentManager.GetComponent<BoundingVolumeComponent>(entId);
+            //    BufferComponent buffer = ComponentManager.GetComponent<BufferComponent>(entId);
+            //    TransformComponent transform = ComponentManager.GetComponent<TransformComponent>(entId);
 
-                effect.World = cmp.objectWorld * currentWorldMatrix;
+            //    effect.Texture = buffer.Texture[0];
+
+            //    //cmp.objectWorld = Matrix.CreateTranslation(cmp.position + cmp.spacingBetweenParts)
+            //    //                * Matrix.CreateScale(cmp.scaleFactor);
+
+
+
+            //    effect.World = transform.ObjectWorld * currentWorldMatrix;
                  
-                gd.SetVertexBuffer(cmp.vertexBuffer);
+            //    gd.SetVertexBuffer(buffer.VertexBuffer);
 
 
-                gd.Indices = cmp.indexBuffer;
+            //    gd.Indices = buffer.IndexBuffer;
 
-                foreach (EffectPass pass in effect.CurrentTechnique.Passes)
-                {
-                    pass.Apply();
+            //    foreach (EffectPass pass in effect.CurrentTechnique.Passes)
+            //    {
+            //        pass.Apply();
 
-                    if (bvCmp.bbox.Intersects(camera.bFrustum)) //Just draw all parts of heightmap that is anyhow inside the camera frustum.
-                        gd.DrawIndexedPrimitives(PrimitiveType.TriangleList, 0, 0, cmp.indexCount / 3);
-                }
+            //        if (bvCmp.bbox.Intersects(camera.bFrustum)) //Just draw all parts of heightmap that is anyhow inside the camera frustum.
+            //            gd.DrawIndexedPrimitives(buffer.PrimitiveType, 0, 0, buffer.PrimitiveCount);
+            //    }
 
-                BoundingVolume.DrawBoundingVolume(gd, bvCmp, camera, cmp.objectWorld * currentWorldMatrix);
-            }
+            //    BoundingVolume.DrawBoundingVolume(gd, bvCmp, camera, transform.ObjectWorld * currentWorldMatrix);
+            //}
 
         }
 
@@ -243,9 +256,11 @@ namespace GameEngine.Systems
         {
             foreach (HeightmapObject hmobj in hmobjects)
             {
-                HeightmapComponent cmp = new HeightmapComponent(gd, hmobj.scaleFactor, hmobj.terrainFileName, hmobj.textureFileNames, hmobj.world);
+                HeightmapComponent cmp = new HeightmapComponent(gd, hmobj.scaleFactor, hmobj.terrainFileName, hmobj.textureFileNames/*, hmobj.world*/);
                 cmp.breakUpInNumParts = hmobj.breakUpInNumParts;
                 cmp.spacingBetweenParts = hmobj.spacingBetweenParts;
+                cmp.position = hmobj.position;
+                cmp.scaleFactor = hmobj.scaleFactor;
 
                 heightmapComponents.Add(cmp);
             }

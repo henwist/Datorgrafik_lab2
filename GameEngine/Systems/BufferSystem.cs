@@ -35,7 +35,7 @@ namespace GameEngine.Systems
 
             Matrix world = ComponentManager.GetComponents<WorldMatrixComponent>().Cast<WorldMatrixComponent>().Select(x => x).ElementAt(0).WorldMatrix;
 
-            int i = 0;
+            int textureIndex = 0;
             foreach(ulong id in ComponentManager.GetAllIds<BufferComponent>())
             {
                 transform = ComponentManager.GetComponent<TransformComponent>(id);
@@ -46,7 +46,11 @@ namespace GameEngine.Systems
 
                 effect.View = camera.viewMatrix;
                 effect.Projection = camera.projectionMatrix;
-                effect.Texture = buffer.Texture[i++];
+
+                if (textureIndex < buffer.Texture.Length - 1)
+                    textureIndex++;
+
+                effect.Texture = buffer.Texture[textureIndex];
 
                 gd.SetVertexBuffer(buffer.VertexBuffer);
                 gd.Indices = buffer.IndexBuffer;
@@ -54,9 +58,10 @@ namespace GameEngine.Systems
 
                 foreach (EffectPass pass in effect.CurrentTechnique.Passes)
                 {
-                    pass.Apply(); 
+                    pass.Apply();
 
-                    gd.DrawIndexedPrimitives(PrimitiveType.LineList, 0, 0, buffer.PrimitiveCount);
+                    if (boundingVolume.bbox.Intersects(camera.bFrustum)) //Just draw all parts of heightmap that is anyhow inside the camera frustum.
+                        gd.DrawIndexedPrimitives(buffer.PrimitiveType, 0, 0, buffer.PrimitiveCount);
                 }
 
                 BoundingVolume.DrawBoundingVolume(gd, boundingVolume, camera, transform.ObjectWorld * world);

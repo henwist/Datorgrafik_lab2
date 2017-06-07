@@ -158,6 +158,7 @@ namespace Datorgrafik_lab2.Managers
                 Texture = textures,
 
                 PrimitiveCount = tree.indexBuffer.IndexCount / 2,
+                PrimitiveType = PrimitiveType.LineList,
             };
 
             TransformComponent[] transforms = new TransformComponent[INSTANCECOUNT];
@@ -242,25 +243,25 @@ namespace Datorgrafik_lab2.Managers
         {
             HeightmapObject hmobj = new HeightmapObject();
             hmobj.scaleFactor = HEIGHTMAP_SCALE*Vector3.One;
-            hmobj.position = Vector3.Zero;
+            hmobj.position = new Vector3(0, 0, 0);  /* Vector3.Zero;*/
             hmobj.terrainFileName = "..\\..\\..\\..\\Content\\Textures\\fire.png";
             hmobj.textureFileNames = new string[] {
                                             "..\\..\\..\\..\\Content\\Textures\\grass.png",
                                             "..\\..\\..\\..\\Content\\Textures\\fire.png",
                                             "..\\..\\..\\..\\Content\\Textures\\grass.png",
                                             "..\\..\\..\\..\\Content\\Textures\\fire.png",
-                                            //"..\\..\\..\\..\\Content\\Textures\\grass.png",
-                                            //"..\\..\\..\\..\\Content\\Textures\\fire.png",
-                                            //"..\\..\\..\\..\\Content\\Textures\\grass.png",
-                                            //"..\\..\\..\\..\\Content\\Textures\\fire.png",
-                                            //"..\\..\\..\\..\\Content\\Textures\\grass.png",
-                                            //"..\\..\\..\\..\\Content\\Textures\\fire.png",
-                                            //"..\\..\\..\\..\\Content\\Textures\\grass.png",
-                                            //"..\\..\\..\\..\\Content\\Textures\\fire.png",
-                                            //"..\\..\\..\\..\\Content\\Textures\\grass.png",
-                                            //"..\\..\\..\\..\\Content\\Textures\\fire.png",
-                                            //"..\\..\\..\\..\\Content\\Textures\\grass.png",
-                                            //"..\\..\\..\\..\\Content\\Textures\\fire.png",
+                                            "..\\..\\..\\..\\Content\\Textures\\grass.png",
+                                            "..\\..\\..\\..\\Content\\Textures\\fire.png",
+                                            "..\\..\\..\\..\\Content\\Textures\\grass.png",
+                                            "..\\..\\..\\..\\Content\\Textures\\fire.png",
+                                            "..\\..\\..\\..\\Content\\Textures\\grass.png",
+                                            "..\\..\\..\\..\\Content\\Textures\\fire.png",
+                                            "..\\..\\..\\..\\Content\\Textures\\grass.png",
+                                            "..\\..\\..\\..\\Content\\Textures\\fire.png",
+                                            "..\\..\\..\\..\\Content\\Textures\\grass.png",
+                                            "..\\..\\..\\..\\Content\\Textures\\fire.png",
+                                            "..\\..\\..\\..\\Content\\Textures\\grass.png",
+                                            "..\\..\\..\\..\\Content\\Textures\\fire.png",
                                             //                                            "..\\..\\..\\..\\Content\\Textures\\grass.png",
                                             //"..\\..\\..\\..\\Content\\Textures\\fire.png",
                                             //"..\\..\\..\\..\\Content\\Textures\\grass.png",
@@ -278,9 +279,9 @@ namespace Datorgrafik_lab2.Managers
                                             //"..\\..\\..\\..\\Content\\Textures\\grass.png",
                                             //"..\\..\\..\\..\\Content\\Textures\\fire.png",
             };
-            hmobj.objectWorld = Microsoft.Xna.Framework.Matrix.Identity;
-            hmobj.world = Microsoft.Xna.Framework.Matrix.Identity;
-            hmobj.breakUpInNumParts =4; //16 //match with count of textureNames above
+            //hmobj.objectWorld = Microsoft.Xna.Framework.Matrix.Identity;
+            //hmobj.world = Microsoft.Xna.Framework.Matrix.Identity;
+            hmobj.breakUpInNumParts =16; //16 //match with count of textureNames above
             hmobj.spacingBetweenParts = new Vector3(0f,0f,0f);
             heightmapObjects.Add(hmobj);
 

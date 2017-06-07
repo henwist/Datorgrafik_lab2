@@ -21,10 +21,10 @@ namespace GameEngine.Components
 
         public VertexPositionNormalTexture[] vertices { get; set; }
 
-        public VertexBuffer vertexBuffer { get; set; }
-        public IndexBuffer indexBuffer   { get; set; }
+        //public VertexBuffer vertexBuffer { get; set; }
+        //public IndexBuffer indexBuffer   { get; set; }
 
-        public int[] indices       { get; set; }
+        public int[] indices { get; set; }
         public float[,] heightData { get; set; }
 
         public Bitmap bmpHeightdata { get; private set; }
@@ -34,14 +34,14 @@ namespace GameEngine.Components
         public Texture2D texture { get; set; }
         public string[] textureFileNames { get; set; }
 
-        public Matrix objectWorld { get; set; }
-        public Matrix world { get; set; }
+        //public Matrix objectWorld { get; set; }
+        //public Matrix world { get; set; }
 
         public int breakUpInNumParts { get; set; }
 
         public Vector3 spacingBetweenParts { get; set; }
 
-        public HeightmapComponent(GraphicsDevice gd, Vector3 scaleFactor, string terrainFileName, string[] textureFileNames, Matrix world)
+        public HeightmapComponent(GraphicsDevice gd, Vector3 scaleFactor, string terrainFileName, string[] textureFileNames/*, Matrix world*/)
         {
             this.terrainFileName = terrainFileName;
 
@@ -62,8 +62,8 @@ namespace GameEngine.Components
 
             heightData = new float[terrainWidth, terrainHeight];
 
-            vertexBuffer = new VertexBuffer(gd, typeof(VertexPositionNormalTexture), vertexCount, BufferUsage.None);
-            indexBuffer = new IndexBuffer(gd, typeof(int), indexCount, BufferUsage.None);
+            //vertexBuffer = new VertexBuffer(gd, typeof(VertexPositionNormalTexture), vertexCount, BufferUsage.None);
+            //indexBuffer = new IndexBuffer(gd, typeof(int), indexCount, BufferUsage.None);
 
             //bmpTexture = new Bitmap(textureFileName);
             //texture = Texture2D.CreateTex2DFromBitmap(bmpTexture, gd) //; bmpTexture, gd);
@@ -72,8 +72,8 @@ namespace GameEngine.Components
             //texture.Name = textureFileNames;
             this.textureFileNames = textureFileNames;
 
-            objectWorld = Matrix.Identity;
-            this.world = world;
+            //objectWorld = Matrix.Identity;
+            //this.world = world;
 
             breakUpInNumParts = 1;
 
