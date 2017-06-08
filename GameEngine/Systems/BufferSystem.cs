@@ -33,6 +33,10 @@ namespace GameEngine.Systems
             EffectComponent effectCmp = ComponentManager.GetComponents<EffectComponent>().Cast<EffectComponent>().Select(x => x).ElementAt(0);
             BasicEffect effect = effectCmp.effect;
 
+
+            effect.View = camera.viewMatrix;
+            effect.Projection = camera.projectionMatrix;
+
             Matrix world = ComponentManager.GetComponents<WorldMatrixComponent>().Cast<WorldMatrixComponent>().Select(x => x).ElementAt(0).WorldMatrix;
 
             int textureIndex = 0;
@@ -43,14 +47,10 @@ namespace GameEngine.Systems
                 boundingVolume = ComponentManager.GetComponent<BoundingVolumeComponent>(id);
 
                 effect.World = transform.ObjectWorld * world;
-
-                effect.View = camera.viewMatrix;
-                effect.Projection = camera.projectionMatrix;
+                effect.Texture = buffer.Texture[textureIndex];
 
                 if (textureIndex < buffer.Texture.Length - 1)
                     textureIndex++;
-
-                effect.Texture = buffer.Texture[textureIndex];
 
                 gd.SetVertexBuffer(buffer.VertexBuffer);
                 gd.Indices = buffer.IndexBuffer;

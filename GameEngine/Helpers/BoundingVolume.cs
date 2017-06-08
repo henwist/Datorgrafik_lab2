@@ -14,8 +14,12 @@ namespace GameEngine.Helpers
         {
             BoundingVolumeComponent bvCmp = new BoundingVolumeComponent();
 
+            //Matrix withoutRotation = Matrix.CreateScale(objWorld.Scale) * Matrix.CreateTranslation(objWorld.Translation);
+            VertexPositionNormalTexture[] copyVertices;/* = new VertexPositionNormalTexture[vertices.Length];*/
+            copyVertices = vertices.ToArray();
+
             for (int i = 0; i < vertices.Length; i++)
-                vertices[i].Position = Vector3.Transform(vertices[i].Position, objWorld);
+                copyVertices[i].Position = Vector3.Transform(vertices[i].Position, objWorld);
 
             //List<VertexPositionNormalTexture> verts = vertices.ToList();
             //VertexPositionNormalTexture[] verts = vertices.ToArray();
@@ -26,9 +30,9 @@ namespace GameEngine.Helpers
 
                 //vertices.ToList().ForEach(x => x.Position = Vector3.Transform(x.Position, objWorld));
 
-            bvCmp.bbox = BoundingBox.CreateFromPoints(vertices.Select(x => x.Position));
+            bvCmp.bbox = BoundingBox.CreateFromPoints(copyVertices.Select(x => x.Position));
 
-            return bvCmp;
+             return bvCmp;
         }
 
         public static void DrawBoundingVolume(GraphicsDevice gd, BoundingVolumeComponent boundingVolume, CameraComponent camera, Matrix objWorld)
