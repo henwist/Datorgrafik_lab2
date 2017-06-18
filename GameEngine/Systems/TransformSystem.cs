@@ -26,45 +26,30 @@ namespace GameEngine.Systems
 
         public void Update(GameTime gameTime)
         {
-            //List<ulong> comps = ComponentManager.GetAllEntitiesWithComp<TransformComponent>();
+            TransformComponent transform;
+            Quaternion qrot;
+            Vector3 prevTrans = Vector3.One;
+            foreach (ulong id in ComponentManager.GetAllIds<TransformComponent>())
+            {
+                transform = ComponentManager.GetComponent<TransformComponent>(id);
 
-            //foreach (ulong c in comps)
-            //{
-            //    CameraComponent camera = ComponentManager.GetComponent<CameraComponent>(c);
-            //    TransformComponent transform = ComponentManager.GetComponent<TransformComponent>(c);
+                if (transform.IsMovable == true)
+                {
+                    qrot = Quaternion.CreateFromYawPitchRoll(transform.Yaw, transform.Pitch, transform.Roll);
+                    qrot.Normalize();
 
-            //    if (Keyboard.GetState().IsKeyDown(Keys.W))
-            //    {
-            //        Matrix movement = Matrix.CreateRotationY(transform.rotation);
-            //        Vector3 v = new Vector3(0, 0, transform.speed);
-            //        v = Vector3.Transform(v, movement);
+                    prevTrans = transform.ObjectWorld.Translation;
 
-            //        transform.position.Z += v.Z;
-            //        transform.position.Z += v.X;
-            //        //camera.cameraPosition += camera.cameraDirection * transform.speed;
-            //    }
-            //    if (Keyboard.GetState().IsKeyDown(Keys.S))
-            //    {
+                    transform.ObjectWorld = Matrix.CreateScale(transform.Scale)
+                                          //*(Matrix.CreateTranslation(prevTrans) * -1)
+                                          * Matrix.CreateFromQuaternion(qrot)
+                                          //* 1 * Matrix.CreateTranslation(prevTrans)
+                                          * Matrix.CreateTranslation(transform.Position);
 
-            //        Matrix movement = Matrix.CreateRotationY(transform.rotation);
-            //        Vector3 v = new Vector3(0, 0, -transform.speed);
-            //        v = Vector3.Transform(v, movement);
-
-            //        transform.position.Z += v.Z;
-            //        transform.position.Z += v.X;
-            //        //camera.cameraPosition -= camera.cameraDirection * transform.speed;
-                    
-            //    }
-                    
-            //    if (Keyboard.GetState().IsKeyDown(Keys.D))
-            //        transform.rotation += transform.speed;
-            //        //camera.cameraPosition += Vector3.Cross(camera.cameraUp, camera.cameraDirection) * transform.speed;
-            //    if (Keyboard.GetState().IsKeyDown(Keys.A))
-            //        transform.rotation += transform.speed;
-            //        //camera.cameraPosition -= Vector3.Cross(camera.cameraUp, camera.cameraDirection) * transform.speed;
-
-            //    //camera.CreateLookAt();
-            //}
+                    if (Double.IsNaN(transform.ObjectWorld.Translation.X))
+                        break;
+                }
+            }
         }
     }
 }

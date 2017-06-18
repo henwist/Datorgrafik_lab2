@@ -10,15 +10,16 @@ using System.IO;
 using Microsoft.Xna.Framework.Input;
 using GameEngine.Components;
 using GameEngine.Managers;
+using Datorgrafik_lab2.Managers;
 
 namespace Datorgrafik_lab2.CreateModels
 {
     public class Figure
     {
-        public List<VertexPositionNormalTexture> vertices { get; protected set; }
-        public int[] indices { get; protected set; }
-        public VertexBuffer vertexBuffer;
-        public IndexBuffer indexBuffer;
+        public List<VertexPositionNormalTexture> Vertices { get; protected set; }
+        public int[] Indices { get; protected set; }
+        public VertexBuffer VertexBuffer;
+        public IndexBuffer IndexBuffer;
 
         private string TORSO = "torso";
         private int INDICES_COUNT = 36;
@@ -45,7 +46,7 @@ namespace Datorgrafik_lab2.CreateModels
         private Dictionary<string, Texture2D> textures;
 
         private float rotation;
-        private Vector3 position;
+
         private Dictionary<string, float> bodypartRotation;
         private Dictionary<string, int> rotationDirection;
         private Dictionary<string, float> maxRotAngle;
@@ -53,20 +54,20 @@ namespace Datorgrafik_lab2.CreateModels
 
         private float twoPI;
 
+        private float MV = 0.1f;
+
         public Figure(GraphicsDevice gd)
         {
             this.gd = gd;
 
             rotation = 0f;
 
-            position = Vector3.Zero;
-
             bodypartRotation = new Dictionary<string, float>();
             rotationDirection = new Dictionary<string, int>();
             maxRotAngle = new Dictionary<string, float>();
             minRotAngle = new Dictionary<string, float>();
 
-            twoPI = 2 * MathHelper.Pi;
+            twoPI = MathHelper.TwoPi;
 
             textures = new Dictionary<string, Texture2D>();
 
@@ -82,10 +83,9 @@ namespace Datorgrafik_lab2.CreateModels
 
             InitMinAngles();
 
-            BuildInstanceTree(new Vector3(10, 10, -10));
-
-
+            BuildInstanceTree();
         }
+
 
         private void InitRotationDirections()
         {
@@ -103,6 +103,8 @@ namespace Datorgrafik_lab2.CreateModels
             rotationDirection.Add("lowerLeftLeg", 1);
             rotationDirection.Add("lowerRightLeg", -1);
 
+            rotationDirection.Add("torso", -1);
+
 
 
             bodypartRotation.Add("upperRightArm", 0.01f);
@@ -119,6 +121,9 @@ namespace Datorgrafik_lab2.CreateModels
             bodypartRotation.Add("upperRightLeg", 0.01f);
             bodypartRotation.Add("lowerRightLeg", 0.05f);
 
+            bodypartRotation.Add("torso", 0.05f);
+
+
         }
 
         private void InitMaxAngles()
@@ -129,6 +134,7 @@ namespace Datorgrafik_lab2.CreateModels
             maxRotAngle.Add("lowerLeftArm", 1 / 4f * twoPI);
             maxRotAngle.Add("lowerRightArm", 1 / 4f * twoPI);
 
+            maxRotAngle.Add("torso", twoPI);
 
 
             maxRotAngle.Add("upperLeftLeg", 1 / 8f * twoPI);
@@ -153,6 +159,8 @@ namespace Datorgrafik_lab2.CreateModels
 
             minRotAngle.Add("lowerLeftLeg", 0);
             minRotAngle.Add("lowerRightLeg", 0);
+
+            minRotAngle.Add("torso", -twoPI);
         }
 
         private void LoadTextures()
@@ -179,8 +187,8 @@ namespace Datorgrafik_lab2.CreateModels
 
             Matrix world = ComponentManager.GetComponents<WorldMatrixComponent>().Cast<WorldMatrixComponent>().Select(x => x).ElementAt(0).WorldMatrix;
 
-            gd.SetVertexBuffer(vertexBuffer);
-            gd.Indices = indexBuffer;
+            gd.SetVertexBuffer(VertexBuffer);
+            gd.Indices = IndexBuffer;
 
             Draw(world, effect, root);
 
@@ -196,7 +204,7 @@ namespace Datorgrafik_lab2.CreateModels
             {
                 pass.Apply();
 
-                Matrix finalTransforms = root.nodeTransform * root.GetParentTransforms() * world;
+                Matrix finalTransforms = root.nodeTransform *  root.GetParentTransforms() * world;
                 effect.World = finalTransforms;
                 effect.Texture = root.texture;
 
@@ -217,40 +225,65 @@ namespace Datorgrafik_lab2.CreateModels
 
         public void Update()
         {
+            TransformComponent transform = ComponentManager.GetComponent<TransformComponent>(SceneManager.FigureId);
+            HeightmapComponent hmCmp = ComponentManager.GetComponents<HeightmapComponent>().Cast<HeightmapComponent>().Select(x => x).ElementAt(0);
+
             if (Keyboard.GetState().IsKeyDown(Keys.Up))
-                position += new Vector3(0, 0, -1);
+                transform.Position += new Vector3(0, 0, -MV);
 
             if (Keyboard.GetState().IsKeyDown(Keys.Down))
-                position += new Vector3(0, 0, 1);
+                transform.Position += new Vector3(0, 0, MV);
 
             if (Keyboard.GetState().IsKeyDown(Keys.Right))
-                position += new Vector3(1, 0, 0);
+                transform.Position += new Vector3(MV, 0, 0);
 
             if (Keyboard.GetState().IsKeyDown(Keys.Left))
-                position += new Vector3(-1, 0, 0);
+                transform.Position += new Vector3(-MV, 0, 0);
 
-            BuildInstanceTree(position);
+            transform.Position = new Vector3(transform.Position.X, 
+                                             hmCmp.scaleFactor.X * hmCmp.heightData[(int)(transform.Position.X * 1 / hmCmp.scaleFactor.X), 
+                                             -(int)(transform.Position.Z * 1 / hmCmp.scaleFactor.X)], transform.Position.Z);
+
+            //Console.WriteLine(transform.Position);
+
+            BuildInstanceTree();
         }
 
 
 
         private void InitBuffers()
         {
-            vertices = new List<VertexPositionNormalTexture>();
-            vertices.AddRange(bodyParts.GetBodyPart(TORSO).vertices.ToArray());
+            Vertices = new List<VertexPositionNormalTexture>();
+            Vertices.AddRange(bodyParts.GetBodyPart(TORSO).vertices.ToArray());
 
-            vertexBuffer = new VertexBuffer(gd, typeof(VertexPositionNormalTexture), bodyParts.GetBodyPart(TORSO).vertices.Count(), BufferUsage.None);
-            vertexBuffer.SetData(vertices.ToArray());
+            VertexBuffer = new VertexBuffer(gd, typeof(VertexPositionNormalTexture), bodyParts.GetBodyPart(TORSO).vertices.Count(), BufferUsage.None);
+            VertexBuffer.SetData(Vertices.ToArray());
 
-            indices = Enumerable.Range(0, vertices.Count).ToArray();
-            indexBuffer = new IndexBuffer(gd, typeof(int), INDICES_COUNT, BufferUsage.None);
-            indexBuffer.SetData(indices);
+            Indices = Enumerable.Range(0, Vertices.Count).ToArray();
+            IndexBuffer = new IndexBuffer(gd, typeof(int), INDICES_COUNT, BufferUsage.None);
+            IndexBuffer.SetData(Indices);
         }
+
 
 
         private void InitTreeParts()
         {
-            root = new InstanceTree("torso", Matrix.CreateScale(1f) * Matrix.CreateTranslation(position/*new Vector3(10, 10, -10)*//*new Vector3(10, 10, -10)*/), textures["orange"]); //parent tree node
+            //position += new Vector3(5, 5, 5);
+
+            //Matrix torsoWorld = Matrix.Identity * Matrix.CreateScale(1f) * Matrix.CreateTranslation(position);
+
+            //if (root != null)
+            //{
+
+            //    torsoWorld = rotateAroundYAxis(rot += 0.1f, root);
+            //    //torsoWorld = Matrix.CreateTranslation(-1 * currentTransform.Translation)
+            //    //                        * Matrix.CreateFromQuaternion(rotateAroundYAxis(rot, root))
+            //    //                        * Matrix.CreateTranslation(1 * currentTransform.Translation)
+            //    //                        /** currentTransform*/;
+            //}
+            TransformComponent transform = ComponentManager.GetComponent<TransformComponent>(SceneManager.FigureId);
+
+            root = new InstanceTree("torso", /*Matrix.CreateTranslation(position) * */ Matrix.CreateScale(1f) * transform.ObjectWorld/*Matrix.CreateTranslation(transform.Position)*/, textures["orange"]); //parent tree node
 
             head = new InstanceTree("head", Matrix.CreateScale(0.5f) * Matrix.CreateTranslation(0, Cube.LENGTH_Y / 2, 0), textures["green"]);
 
@@ -288,6 +321,8 @@ namespace Datorgrafik_lab2.CreateModels
 
             RotateBodyPart(0.01f, upperLeftArm, 1, "upperLeftArm");
             RotateBodyPart(0.01f, lowerLeftArm, -1, "lowerLeftArm");
+
+            //RotateBodyPart(rot, root, 1, "torso");
         }
 
 
@@ -320,7 +355,7 @@ namespace Datorgrafik_lab2.CreateModels
         }
 
 
-        private void BuildInstanceTree(Vector3 position)
+        private void BuildInstanceTree()
         {
             InitTreeParts();
 

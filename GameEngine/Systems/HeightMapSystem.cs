@@ -360,7 +360,7 @@ namespace GameEngine.Systems
                     for (int y = 0; y < cmp.terrainHeight; y++)
                     {
                         System.Drawing.Color color = cmp.bmpHeightdata.GetPixel(x, y);
-                        cmp.heightData[x, y] = ((color.R + color.G + color.B) / 3);
+                        cmp.heightData[x, y] = color.R * 0.2f;/*((color.R + color.G + color.B) / 3);*/
                     }
                 }
 

@@ -19,12 +19,7 @@ namespace Datorgrafik_lab2
     {
         GraphicsDeviceManager graphics;
 
-        GraphicsDevice device;
-
-        Figure figure;
-
-        VertexBuffer figureBuffer;
-        IndexBuffer figureIndices;
+        public static GraphicsDevice device;
 
         private float angle = 0f;
 
@@ -41,6 +36,9 @@ namespace Datorgrafik_lab2
 
         private int CAMERA_MOVE_SCALE = 10;
 
+        private float milliSec;
+        private int frameCount;
+
         public static ContentManager ContentManager;
 
         public Game1()
@@ -55,7 +53,10 @@ namespace Datorgrafik_lab2
             graphics.PreferredBackBufferHeight = 768;
             graphics.IsFullScreen = false;
             graphics.GraphicsProfile = GraphicsProfile.HiDef;
+            graphics.SynchronizeWithVerticalRetrace = false;
             graphics.ApplyChanges();
+
+            IsFixedTimeStep = false;
 
             base.Initialize();
         }
@@ -66,10 +67,6 @@ namespace Datorgrafik_lab2
             Game1.ContentManager = Content;
 
             device = graphics.GraphicsDevice;
-
-            figure = new Figure(device);
-            figureBuffer = new VertexBuffer(GraphicsDevice, typeof(VertexPositionNormalTexture), figure.vertices.Count, BufferUsage.None);
-            figureIndices = new IndexBuffer(GraphicsDevice, IndexElementSize.ThirtyTwoBits, figure.indices.Length, BufferUsage.None);
 
             sceneManager = new Managers.SceneManager(this, Matrix.Identity);
 
@@ -127,7 +124,7 @@ namespace Datorgrafik_lab2
             if (Keyboard.GetState().IsKeyDown(Keys.O))
                 radObj += 0.0001f;
 
-            figure.Update();
+
 
 
             //TransformComponent transform = ComponentManager.GetComponent<TransformComponent>(sceneManager.cameraID);
@@ -177,12 +174,12 @@ namespace Datorgrafik_lab2
         {
             device.Clear(Color.DarkSlateBlue);
 
-            Window.Title = "Datorgrafik_lab2 av: Rasmus Lundquist(S142465) och Henrik Wistbacka(S142066) - a,s,d,w,e,arrows. Gubbe gömmer sig mitt på mappen bland träden, W zoomar.";
-
+            //Window.Title = /*"Datorgrafik_lab2 av: Rasmus Lundquist(S142465) och Henrik Wistbacka(S142066) - a,s,d,w,e,arrows. Gubbe gömmer sig mitt på mappen bland träden, W zoomar.";*/
+            FPSCounter(gameTime);
 
             setShaderParameters();
 
-            figure.Draw(gameTime);
+
 
             sceneManager.Draw(gameTime);
 
@@ -190,6 +187,21 @@ namespace Datorgrafik_lab2
             base.Draw(gameTime);
         }
 
+        private void FPSCounter(GameTime gameTime)
+        {
+            milliSec += gameTime.ElapsedGameTime.Milliseconds;
+
+            frameCount++;
+
+            if (milliSec >= 1000)
+            {
+                Window.Title = "FPS: " + frameCount + " .  Datorgrafik_lab2 av: Rasmus Lundquist(S142465)och Henrik Wistbacka(S142066) - a, s, d, w, e, arrows.Gubbe gömmer sig mitt på mappen bland träden, W zoomar.";
+                milliSec -= 1000;
+                frameCount = 0;
+            }
+
+
+        }
 
         //private void CreateControllerBindings()
         //{
@@ -206,11 +218,5 @@ namespace Datorgrafik_lab2
 
         //}
 
-
-        //private enum Constants : int
-        //{
-        //    Pristine = 0,
-        //    GameLength = 6000
-        //}
     }
 }

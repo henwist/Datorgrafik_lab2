@@ -34,10 +34,10 @@ namespace Datorgrafik_lab2.CreateModels
         private string[] recursiveStrings;
         private int countVertices;
 
-        public VertexPositionNormalTexture[] vertices { get; set; }
-        public int[] indices { get; set; }
-        public VertexBuffer vertexBuffer { get; private set; }
-        public IndexBuffer indexBuffer { get; private set; }
+        public VertexPositionNormalTexture[] Vertices { get; set; }
+        public int[] Indices { get; set; }
+        public VertexBuffer VertexBuffer { get; private set; }
+        public IndexBuffer IndexBuffer { get; private set; }
 
         private Vector3 startPosition;
         private Vector3 segmentVector;
@@ -119,17 +119,17 @@ namespace Datorgrafik_lab2.CreateModels
             //setVertexAndIndexBuffer(gd, cubeVertices, cubeIndices);
 
             //Used for tree - uncomment the right draw function in Game1 too.
-            setVertexAndIndexBuffer(gd, vertices, indices);
+            setVertexAndIndexBuffer(gd, Vertices, Indices);
         }
 
 
         private void setVertexAndIndexBuffer(GraphicsDevice gd, VertexPositionNormalTexture[] vertices, int[] indices)
         {
-            vertexBuffer = new VertexBuffer(gd, typeof(VertexPositionNormalTexture), vertices.Count(), BufferUsage.None);
-            indexBuffer = new IndexBuffer(gd, typeof(int), indices.Count(), BufferUsage.None);
+            VertexBuffer = new VertexBuffer(gd, typeof(VertexPositionNormalTexture), vertices.Count(), BufferUsage.None);
+            IndexBuffer = new IndexBuffer(gd, typeof(int), indices.Count(), BufferUsage.None);
 
-            vertexBuffer.SetData<VertexPositionNormalTexture>(vertices);
-            indexBuffer.SetData<int>(indices);
+            VertexBuffer.SetData<VertexPositionNormalTexture>(vertices);
+            IndexBuffer.SetData<int>(indices);
         }
 
 
@@ -185,7 +185,7 @@ namespace Datorgrafik_lab2.CreateModels
                 }
             }
 
-            vertices = treeStack.Reverse().ToArray();
+            Vertices = treeStack.Reverse().ToArray();
         }
 
 
@@ -221,7 +221,7 @@ namespace Datorgrafik_lab2.CreateModels
                 }
             }
 
-            this.indices = indices.Reverse().ToArray();
+            this.Indices = indices.Reverse().ToArray();
         }
 
 

@@ -17,6 +17,9 @@ namespace Datorgrafik_lab2.Managers
 {
     public class SceneManager
     {
+        public static ulong FigureId { get; private set; }
+        public static ulong CameraId { get; private set; }
+
         private Game game;
         private GraphicsDevice gd;
 
@@ -34,17 +37,20 @@ namespace Datorgrafik_lab2.Managers
         private Texture2D[] textures;
         
 
-        private float HEIGHTMAP_SCALE = .1f;
+        private float HEIGHTMAP_SCALE = 1f;
 
         private HeightmapSystem.HeightData heightMapData;
 
-        private Vector3 cameraPos = new Vector3(200, 200, 200);
+        private Vector3 cameraPos = new Vector3(20, 200, 20);
         private Vector3 cameraTarget = new Vector3(0, 0, 0);
         private Vector3 cameraUp = Vector3.Up;
-        public static ulong cameraID { get; private set; }
+        private Vector3 perspectiveOffset = new Vector3(0, -200, -200);
 
         private BasicEffect effect;
 
+        private Figure figure;
+
+        private House house;
 
 
         public SceneManager(Game game, Microsoft.Xna.Framework.Matrix world)
@@ -66,9 +72,33 @@ namespace Datorgrafik_lab2.Managers
 
             createHeightmap();
 
+            createHouse();
+
             createTreeStructures();
 
             bufferSystem = new BufferSystem(game.GraphicsDevice);
+
+            createFigure();
+        }
+
+        private void createHouse()
+        {
+            house = new House();
+        }
+
+        private void createFigure()
+        {
+            ulong entId = ComponentManager.GetNewId();
+            FigureId = entId;
+
+            Vector3 startPos = new Vector3(0, 0, 0);
+
+            ComponentManager.StoreComponent(entId, new TransformComponent(startPos, 0f, 0f, 0f, 1f, true));
+
+            figure = new Figure(gd);
+
+
+
         }
 
         private void initRasterizerState()
@@ -121,14 +151,13 @@ namespace Datorgrafik_lab2.Managers
 
         private void createCameraStructures()
         {
-            Vector3 position = new Vector3(100, 100, 100);
-            TransformComponent transform = new TransformComponent(position, 0f, 0f, 0f, 1f);
+            TransformComponent transform = new TransformComponent(cameraPos, 0f, 0f, 0f, 1f, false);
 
-            CameraComponent cameraCmp = new CameraComponent(position, cameraTarget, cameraUp, game.GraphicsDevice.DisplayMode.AspectRatio, new Vector3(0, -200, -200), true);
+            CameraComponent cameraCmp = new CameraComponent(cameraPos, cameraTarget, cameraUp, game.GraphicsDevice.DisplayMode.AspectRatio, perspectiveOffset, true);
 
-            cameraID = ComponentManager.GetNewId();
-            ComponentManager.StoreComponent(cameraID, transform);
-            ComponentManager.StoreComponent(cameraID, cameraCmp);
+            CameraId = ComponentManager.GetNewId();
+            ComponentManager.StoreComponent(CameraId, transform);
+            ComponentManager.StoreComponent(CameraId, cameraCmp);
         }
 
 
@@ -151,15 +180,17 @@ namespace Datorgrafik_lab2.Managers
 
             BufferComponent buffer = new BufferComponent()
             {
-                IndexBuffer = tree.indexBuffer,
-                Indices = tree.indices,
-                VertexBuffer = tree.vertexBuffer,
-                Vertices = tree.vertices,
+                IndexBuffer = house.IndexBuffer,
+                Indices = house.Indices,
+                VertexBuffer = house.VertexBuffer,
+                Vertices = house.Vertices,
 
                 Texture = textures,
 
-                PrimitiveCount = tree.indexBuffer.IndexCount / 2,
-                PrimitiveType = PrimitiveType.LineList,
+                //PrimitiveCount = tree.IndexBuffer.IndexCount / 2,
+                //PrimitiveType = PrimitiveType.LineList,
+                PrimitiveCount = house.PrimitiveCount,
+                PrimitiveType = house.PrimitiveType,
             };
 
             TransformComponent[] transforms = new TransformComponent[INSTANCECOUNT];
@@ -223,8 +254,11 @@ namespace Datorgrafik_lab2.Managers
 
         public void Update(GameTime gameTime)
         {
+            figure.Update();
 
+            trackFigure();
 
+            TransformSystem.Instance.Update(gameTime);
         }
 
         public void Draw(GameTime gameTime)
@@ -236,9 +270,25 @@ namespace Datorgrafik_lab2.Managers
 
             bufferSystem.Draw(gameTime);
 
+            figure.Draw(gameTime);
+
         }
 
 
+        private void trackFigure()
+        {
+            CameraComponent camera = ComponentManager.GetComponent<CameraComponent>(CameraId);
+
+            TransformComponent figureTransform = ComponentManager.GetComponent<TransformComponent>(FigureId);
+            TransformComponent cameraTransform = ComponentManager.GetComponent<TransformComponent>(CameraId);
+
+            camera.target = figureTransform.Position;
+
+            //cameraTransform.Position = figureTransform.Position - camera.perspectiveOffset;
+
+
+
+        }
 
         private void createHeightmapObjects()
         {
@@ -318,7 +368,7 @@ namespace Datorgrafik_lab2.Managers
             };
             //hmobj.objectWorld = Microsoft.Xna.Framework.Matrix.Identity;
             //hmobj.world = Microsoft.Xna.Framework.Matrix.Identity;
-            hmobj.breakUpInNumParts =64; //16 //match with count of textureNames above
+            hmobj.breakUpInNumParts = 1; //16 //match with count of textureNames above
             hmobj.spacingBetweenParts = new Vector3(0f,0f,0f);
             heightmapObjects.Add(hmobj);
 
