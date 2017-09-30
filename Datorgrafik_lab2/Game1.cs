@@ -26,7 +26,7 @@ namespace Datorgrafik_lab2
         float radx = 0f;
         float rady = 0f;
         float radz = 0f;
-        float scale = 1f;
+        float scale = 0.75f;
         float radObj = 0.001f;
         float translatex = 1f;
         float translatey = 1f;
@@ -106,20 +106,20 @@ namespace Datorgrafik_lab2
             //    cameraPosition.Y -= 1.0f;
 
             if (Keyboard.GetState().IsKeyDown(Keys.A))
-                radx += 0.02f;
+                radx += 0.002f;
 
             if (Keyboard.GetState().IsKeyDown(Keys.S))
-                rady += 0.02f;
+                rady += 0.002f;
 
             if (Keyboard.GetState().IsKeyDown(Keys.D))
-                radz += 0.02f;
+                radz += 0.002f;
 
             if (Keyboard.GetState().IsKeyDown(Keys.W))
-                scale += 0.01f;
+                scale += 0.0001f;
 
 
             if (Keyboard.GetState().IsKeyDown(Keys.E))
-                scale -= 0.01f;
+                scale -= 0.0001f;
 
             if (Keyboard.GetState().IsKeyDown(Keys.O))
                 radObj += 0.0001f;
@@ -174,7 +174,7 @@ namespace Datorgrafik_lab2
         {
             device.Clear(Color.DarkSlateBlue);
 
-            //Window.Title = /*"Datorgrafik_lab2 av: Rasmus Lundquist(S142465) och Henrik Wistbacka(S142066) - a,s,d,w,e,arrows. Gubbe gömmer sig mitt på mappen bland träden, W zoomar.";*/
+            Window.Title = "Datorgrafik_lab2 av: Rasmus Lundquist(S142465) och Henrik Wistbacka(S142066) - a,s,d,w,e,arrows. W zoomar.";
             FPSCounter(gameTime);
 
             setShaderParameters();
@@ -195,7 +195,7 @@ namespace Datorgrafik_lab2
 
             if (milliSec >= 1000)
             {
-                Window.Title = "FPS: " + frameCount + " .  Datorgrafik_lab2 av: Rasmus Lundquist(S142465)och Henrik Wistbacka(S142066) - a, s, d, w, e, arrows.Gubbe gömmer sig mitt på mappen bland träden, W zoomar.";
+                Window.Title = "FPS: " + frameCount + " .  Datorgrafik_lab2 av: Rasmus Lundquist(S142465)och Henrik Wistbacka(S142066) - a, s, d, w, e, arrows. W zoomar.";
                 milliSec -= 1000;
                 frameCount = 0;
             }

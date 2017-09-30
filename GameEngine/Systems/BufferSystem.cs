@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using GameEngine.Managers;
 using GameEngine.Components;
-using CollisionSample;
+//using CollisionSample;
 using GameEngine.Helpers;
 
 namespace GameEngine.Systems
@@ -64,7 +64,7 @@ namespace GameEngine.Systems
                         gd.DrawIndexedPrimitives(buffer.PrimitiveType, 0, 0, buffer.PrimitiveCount);
                 }
 
-                BoundingVolume.DrawBoundingVolume(gd, boundingVolume, camera, /*transform.ObjectWorld **/ world);
+                //BoundingVolume.DrawBoundingVolume(gd, boundingVolume, camera, /*transform.ObjectWorld **/ world);
              }    
         }
 

@@ -41,7 +41,7 @@ namespace Datorgrafik_lab2.Managers
 
         private HeightmapSystem.HeightData heightMapData;
 
-        private Vector3 cameraPos = new Vector3(0, 0, 0);
+        private Vector3 cameraPos = new Vector3(40, 40, 20);
         private Vector3 cameraTarget = new Vector3(0, 0, 0);
         private Vector3 cameraUp = Vector3.Up;
         private Vector3 perspectiveOffset = new Vector3(0, 0, 0);
@@ -375,7 +375,7 @@ namespace Datorgrafik_lab2.Managers
             };
             //hmobj.objectWorld = Microsoft.Xna.Framework.Matrix.Identity;
             //hmobj.world = Microsoft.Xna.Framework.Matrix.Identity;
-            hmobj.breakUpInNumParts = 1; //16 //match with count of textureNames above
+            hmobj.breakUpInNumParts = 16; //16 //match with count of textureNames above
             hmobj.spacingBetweenParts = new Vector3(0f,0f,0f);
             heightmapObjects.Add(hmobj);
 

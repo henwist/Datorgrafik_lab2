@@ -1,4 +1,4 @@
-﻿using CollisionSample;
+﻿//using CollisionSample;
 using GameEngine.Components;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -35,26 +35,26 @@ namespace GameEngine.Helpers
              return bvCmp;
         }
 
-        public static void DrawBoundingVolume(GraphicsDevice gd, BoundingVolumeComponent boundingVolume, CameraComponent camera, Matrix objWorld)
-        {
-            DebugDraw debugDraw = new DebugDraw(gd);
+        //public static void DrawBoundingVolume(GraphicsDevice gd, BoundingVolumeComponent boundingVolume, CameraComponent camera, Matrix objWorld)
+        //{
+        //    DebugDraw debugDraw = new DebugDraw(gd);
 
-            debugDraw.Begin(objWorld, camera.viewMatrix, camera.projectionMatrix);
-            debugDraw.DrawWireBox(boundingVolume.bbox, Color.White);
-            debugDraw.End();
+        //    debugDraw.Begin(objWorld, camera.viewMatrix, camera.projectionMatrix);
+        //    debugDraw.DrawWireBox(boundingVolume.bbox, Color.White);
+        //    debugDraw.End();
 
-            debugDraw.Dispose();
-        }
+        //    debugDraw.Dispose();
+        //}
 
-        public static void DrawWireFrustum(GraphicsDevice gd, CameraComponent camera)
-        {
-            DebugDraw debugDraw = new DebugDraw(gd);
+        //public static void DrawWireFrustum(GraphicsDevice gd, CameraComponent camera)
+        //{
+        //    DebugDraw debugDraw = new DebugDraw(gd);
 
-            debugDraw.Begin(Matrix.Identity, camera.viewMatrix, camera.projectionMatrix);
-            debugDraw.DrawWireFrustum(camera.bFrustum, Color.Cyan);
-            debugDraw.End();
+        //    debugDraw.Begin(Matrix.Identity, camera.viewMatrix, camera.projectionMatrix);
+        //    debugDraw.DrawWireFrustum(camera.bFrustum, Color.Cyan);
+        //    debugDraw.End();
 
-            debugDraw.Dispose();
-        } 
+        //    debugDraw.Dispose();
+        //} 
     }
 }

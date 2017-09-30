@@ -56,7 +56,7 @@ namespace Datorgrafik_lab2.CreateModels
 
         private float twoPI;
 
-        private float MV = 0.1f;
+        private float MV = 0.01f;
 
         public Figure(GraphicsDevice gd)
         {
