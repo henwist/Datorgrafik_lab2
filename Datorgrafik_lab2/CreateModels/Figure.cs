@@ -225,24 +225,48 @@ namespace Datorgrafik_lab2.CreateModels
 
         public void Update()
         {
-            TransformComponent transform = ComponentManager.GetComponent<TransformComponent>(SceneManager.FigureId);
-            HeightmapComponent hmCmp = ComponentManager.GetComponents<HeightmapComponent>().Cast<HeightmapComponent>().Select(x => x).ElementAt(0);
 
-            if (Keyboard.GetState().IsKeyDown(Keys.Up))
+            TransformComponent transform = ComponentManager.GetComponent<TransformComponent>(SceneManager.FigureId);
+            HeightmapComponent hmCmp = ComponentManager.GetComponents<HeightmapComponent>().Cast<HeightmapComponent>().Select(n => n).ElementAt(0);
+
+            int x = (int)(transform.Position.X * 1 / hmCmp.scaleFactor.X);
+            int z = -(int)(transform.Position.Z * 1 / hmCmp.scaleFactor.X);
+
+            int lengthx = hmCmp.heightData.GetLength(0);
+            int lengthz = hmCmp.heightData.GetLength(1);
+
+            //keep x, z within indices in array
+            if (x < 0)
+                x *= -1;
+
+            if (z < 0)
+                z *= -1;
+
+            if (x >= lengthx - 1)
+                x -= 1;
+
+
+            if (z >= lengthz - 1 )
+                z -= 1;
+
+
+            //move figure
+            if (Keyboard.GetState().IsKeyDown(Keys.Up) && z < lengthz - 1)
                 transform.Position += new Vector3(0, 0, -MV);
 
-            if (Keyboard.GetState().IsKeyDown(Keys.Down))
+            if (Keyboard.GetState().IsKeyDown(Keys.Down) && z < lengthz - 1)
                 transform.Position += new Vector3(0, 0, MV);
 
-            if (Keyboard.GetState().IsKeyDown(Keys.Right))
+            if (Keyboard.GetState().IsKeyDown(Keys.Right) && x < lengthx - 1)
                 transform.Position += new Vector3(MV, 0, 0);
 
-            if (Keyboard.GetState().IsKeyDown(Keys.Left))
+            if (Keyboard.GetState().IsKeyDown(Keys.Left) && x < lengthx - 1)
                 transform.Position += new Vector3(-MV, 0, 0);
 
+
+
             transform.Position = new Vector3(transform.Position.X, 
-                                             hmCmp.scaleFactor.X * hmCmp.heightData[(int)(transform.Position.X * 1 / hmCmp.scaleFactor.X), 
-                                             -(int)(transform.Position.Z * 1 / hmCmp.scaleFactor.X)], transform.Position.Z);
+                                             hmCmp.scaleFactor.X * hmCmp.heightData[x, z], transform.Position.Z);
 
             //Console.WriteLine(transform.Position);
 
