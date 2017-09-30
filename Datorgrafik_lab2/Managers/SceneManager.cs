@@ -30,10 +30,10 @@ namespace Datorgrafik_lab2.Managers
 
         private Microsoft.Xna.Framework.Matrix world;
 
-        private static readonly int INSTANCECOUNT = 10;
+        private static readonly int INSTANCECOUNT = 100;
         private Tree tree;
         private int TREE_SCALE_MIN = 5;
-        private int TREE_SCALE_MAX = 50;
+        private int TREE_SCALE_MAX = 10;
         private Texture2D[] textures;
         
 
@@ -41,10 +41,10 @@ namespace Datorgrafik_lab2.Managers
 
         private HeightmapSystem.HeightData heightMapData;
 
-        private Vector3 cameraPos = new Vector3(20, 200, 20);
+        private Vector3 cameraPos = new Vector3(0, 0, 0);
         private Vector3 cameraTarget = new Vector3(0, 0, 0);
         private Vector3 cameraUp = Vector3.Up;
-        private Vector3 perspectiveOffset = new Vector3(0, -200, -200);
+        private Vector3 perspectiveOffset = new Vector3(0, 0, 0);
 
         private BasicEffect effect;
 
@@ -68,6 +68,8 @@ namespace Datorgrafik_lab2.Managers
 
             textures = new Texture2D[INSTANCECOUNT];
 
+            createFigure();
+
             createCameraStructures();
 
             createHeightmap();
@@ -77,8 +79,6 @@ namespace Datorgrafik_lab2.Managers
             createTreeStructures();
 
             bufferSystem = new BufferSystem(game.GraphicsDevice);
-
-            createFigure();
         }
 
         private void createHouse()
@@ -91,7 +91,8 @@ namespace Datorgrafik_lab2.Managers
             ulong entId = ComponentManager.GetNewId();
             FigureId = entId;
 
-            Vector3 startPos = new Vector3(0, 0, 0);
+            Vector3 startPos = new Vector3(100, -10, -50);
+            cameraTarget = startPos;
 
             ComponentManager.StoreComponent(entId, new TransformComponent(startPos, 0f, 0f, 0f, 1f, true));
 
@@ -158,6 +159,15 @@ namespace Datorgrafik_lab2.Managers
             CameraId = ComponentManager.GetNewId();
             ComponentManager.StoreComponent(CameraId, transform);
             ComponentManager.StoreComponent(CameraId, cameraCmp);
+
+
+
+            TransformComponent figureTransform = ComponentManager.GetComponent<TransformComponent>(FigureId);
+            TransformComponent cameraTransform = ComponentManager.GetComponent<TransformComponent>(CameraId);
+
+            cameraCmp.target = figureTransform.Position;
+
+            cameraCmp.perspectiveOffset = cameraTransform.Position - figureTransform.Position;
         }
 
 
@@ -282,12 +292,9 @@ namespace Datorgrafik_lab2.Managers
             TransformComponent figureTransform = ComponentManager.GetComponent<TransformComponent>(FigureId);
             TransformComponent cameraTransform = ComponentManager.GetComponent<TransformComponent>(CameraId);
 
-            camera.target = figureTransform.Position;
+            camera.target = figureTransform.Position + figure.FIGURE_HEIGHT;
 
-            //cameraTransform.Position = figureTransform.Position - camera.perspectiveOffset;
-
-
-
+            cameraTransform.Position = figureTransform.Position + camera.perspectiveOffset + figure.FIGURE_HEIGHT;
         }
 
         private void createHeightmapObjects()

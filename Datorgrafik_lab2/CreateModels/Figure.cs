@@ -21,6 +21,8 @@ namespace Datorgrafik_lab2.CreateModels
         public VertexBuffer VertexBuffer;
         public IndexBuffer IndexBuffer;
 
+        public Vector3 FIGURE_HEIGHT = new Vector3(0f, 22.5f, 0f);
+
         private string TORSO = "torso";
         private int INDICES_COUNT = 36;
 
@@ -268,6 +270,7 @@ namespace Datorgrafik_lab2.CreateModels
             transform.Position = new Vector3(transform.Position.X, 
                                              hmCmp.scaleFactor.X * hmCmp.heightData[x, z], transform.Position.Z);
 
+            transform.Position -= FIGURE_HEIGHT;
             //Console.WriteLine(transform.Position);
 
             BuildInstanceTree();
