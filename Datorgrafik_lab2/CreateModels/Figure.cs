@@ -25,6 +25,7 @@ namespace Datorgrafik_lab2.CreateModels
 
         private string TORSO = "torso";
         private int INDICES_COUNT = 36;
+        private bool moving = false;
 
         private InstanceTree root;
         private InstanceTree head;
@@ -162,6 +163,7 @@ namespace Datorgrafik_lab2.CreateModels
             minRotAngle.Add("lowerLeftLeg", 0);
             minRotAngle.Add("lowerRightLeg", 0);
 
+
             minRotAngle.Add("torso", -twoPI);
         }
 
@@ -254,18 +256,37 @@ namespace Datorgrafik_lab2.CreateModels
 
             //move figure
             if (Keyboard.GetState().IsKeyDown(Keys.Up) && z < lengthz - 1)
+            {
                 transform.Position += new Vector3(0, 0, -MV);
+                moving = true;
+            }
+                
 
             if (Keyboard.GetState().IsKeyDown(Keys.Down) && z < lengthz - 1)
+            {
                 transform.Position += new Vector3(0, 0, MV);
+                moving = true;
+            }
+                
 
             if (Keyboard.GetState().IsKeyDown(Keys.Right) && x < lengthx - 1)
+            {
                 transform.Position += new Vector3(MV, 0, 0);
+                moving = true;
+            }
+               
 
             if (Keyboard.GetState().IsKeyDown(Keys.Left) && x < lengthx - 1)
+            {
                 transform.Position += new Vector3(-MV, 0, 0);
-
-
+                moving = true;
+            }
+            
+            if(!Keyboard.GetState().IsKeyDown(Keys.Left) && !Keyboard.GetState().IsKeyDown(Keys.Right)
+                && !Keyboard.GetState().IsKeyDown(Keys.Up) && !Keyboard.GetState().IsKeyDown(Keys.Down))
+            {
+                moving = false;
+            }
 
             transform.Position = new Vector3(transform.Position.X, 
                                              hmCmp.scaleFactor.X * hmCmp.heightData[x, z], transform.Position.Z);
@@ -349,6 +370,12 @@ namespace Datorgrafik_lab2.CreateModels
             RotateBodyPart(0.01f, upperLeftArm, 1, "upperLeftArm");
             RotateBodyPart(0.01f, lowerLeftArm, -1, "lowerLeftArm");
 
+            RotateBodyPart(0.01f, upperRightLeg, -1, "upperRightArm");
+            RotateBodyPart(0.01f, lowerRightLeg, 1, "lowerRightArm");
+
+            RotateBodyPart(0.01f, upperLeftLeg, -1, "upperLeftArm");
+            RotateBodyPart(0.01f, lowerLeftLeg, 1, "lowerLeftArm");
+
             //RotateBodyPart(rot, root, 1, "torso");
         }
 
@@ -394,27 +421,30 @@ namespace Datorgrafik_lab2.CreateModels
 
         private void RotateBodyPart(float posX, InstanceTree bodyPart, int translationSign, string bodyPartName)
         {
-            Matrix currentTransform = Matrix.Identity;
+            if (moving)
+            {
+                Matrix currentTransform = Matrix.Identity;
 
-            bodypartRotation[bodyPartName] += posX * rotationDirection[bodyPartName];
-            rotation = bodypartRotation[bodyPartName];
+                bodypartRotation[bodyPartName] += posX * rotationDirection[bodyPartName];
+                rotation = bodypartRotation[bodyPartName];
 
-            if (rotation >= maxRotAngle[bodyPartName])
-                rotationDirection[bodyPartName] *= -1;
+                if (rotation >= maxRotAngle[bodyPartName])
+                    rotationDirection[bodyPartName] *= -1;
 
-            if (rotation <= minRotAngle[bodyPartName])
-                rotationDirection[bodyPartName] *= -1;
+                if (rotation <= minRotAngle[bodyPartName])
+                    rotationDirection[bodyPartName] *= -1;
 
 
-            Quaternion qrot = bodyPart.GetParentTransforms().Rotation * Quaternion.CreateFromRotationMatrix(Matrix.CreateRotationX(bodypartRotation[bodyPartName]));
-            qrot.Normalize();
+                Quaternion qrot = bodyPart.GetParentTransforms().Rotation * Quaternion.CreateFromRotationMatrix(Matrix.CreateRotationX(bodypartRotation[bodyPartName]));
+                qrot.Normalize();
 
-            currentTransform =  bodyPart.GetParentTransforms();
+                currentTransform = bodyPart.GetParentTransforms();
 
-            bodyPart.nodeTransform = Matrix.CreateTranslation(translationSign * -1 * currentTransform.Translation)
-                                    * Matrix.CreateFromQuaternion(qrot)
-                                    * Matrix.CreateTranslation(translationSign * 1 * currentTransform.Translation)
-                                    * currentTransform;
+                bodyPart.nodeTransform = Matrix.CreateTranslation(translationSign * -1 * currentTransform.Translation)
+                                        * Matrix.CreateFromQuaternion(qrot)
+                                        * Matrix.CreateTranslation(translationSign * 1 * currentTransform.Translation)
+                                        * currentTransform;
+            }
         }
     }
 }

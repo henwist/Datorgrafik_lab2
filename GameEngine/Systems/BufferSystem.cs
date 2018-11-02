@@ -40,7 +40,7 @@ namespace GameEngine.Systems
             Matrix world = ComponentManager.GetComponents<WorldMatrixComponent>().Cast<WorldMatrixComponent>().Select(x => x).ElementAt(0).WorldMatrix;
 
             int textureIndex = 0;
-            foreach(ulong id in ComponentManager.GetAllIds<BufferComponent>())
+            foreach (ulong id in ComponentManager.GetAllIds<BufferComponent>())
             {
                 transform = ComponentManager.GetComponent<TransformComponent>(id);
                 buffer = ComponentManager.GetComponent<BufferComponent>(id);
